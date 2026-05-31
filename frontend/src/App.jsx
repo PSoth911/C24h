@@ -12,7 +12,7 @@ function App() {
       });
   }, []);
   return (
-    <div>
+    <div className='bg-amber-800'>
       <ArrowDownRight />
       {(typeof backendData.users === "undefined")? (
         <p>Loading...</p>
