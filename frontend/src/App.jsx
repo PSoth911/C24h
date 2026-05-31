@@ -1,5 +1,5 @@
 import { useState,useEffect } from 'react'
-
+import { ArrowDownRight } from 'lucide-react'
 
 function App() {
   const [backendData, setBackendData] = useState({});
@@ -13,6 +13,7 @@ function App() {
   }, []);
   return (
     <div>
+      <ArrowDownRight />
       {(typeof backendData.users === "undefined")? (
         <p>Loading...</p>
       ):(
