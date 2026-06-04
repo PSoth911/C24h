@@ -1,7 +1,11 @@
 import { useState,useEffect } from 'react'
 import { ArrowDownRight } from 'lucide-react'
 import DeliveryLogin from './pages/deliver/DeliveryLogin.jsx'
+import DeliveryDashboard from './pages/deliver/DeliveryDashboard.jsx'
 import { Route, Routes } from 'react-router-dom'
+import DeliveryMap from './pages/deliver/DeliveryMap.jsx'
+import DeliveryEarning from './pages/deliver/DeliveryEarning.jsx'
+import DeliveryProfile from './pages/deliver/DeliveryProfile.jsx'
 
 function App() {
   const [backendData, setBackendData] = useState({});
@@ -14,22 +18,26 @@ function App() {
       });
   }, []);
   return (
-    <div>
-      <div className='bg-amber-800'>
-        <ArrowDownRight />
-        {(typeof backendData.users === "undefined")? (
-          <p>Loading...</p>
-        ):(
-          backendData.users.map((user, i) => (
-            <p key={i}>{user}</p>
-          ))
-        )}
-      </div>
-      <Routes>
-        <Route path='/login' element={<DeliveryLogin/>}/>
-      </Routes>
+    <Routes>
+        {/* <div className='bg-amber-800'>
+          <ArrowDownRight />
+          {(typeof backendData.users === "undefined")? (
+            <p>Loading...</p>
+          ):(
+            backendData.users.map((user, i) => (
+              <p key={i}>{user}</p>     
+            ))
+          )}
+        </div> */}
+
+      <Route path='/login' element={<DeliveryLogin/>}/>
+      <Route path='/dashboard' element={<DeliveryDashboard/>}/>
+      <Route path='/map' element={<DeliveryMap/>}/>
+      <Route path='/earning' element={<DeliveryEarning/>}/>
+      <Route path='/profile' element={<DeliveryProfile/>}/>
+    </Routes>
       
-    </div>
+  
   )
 }
 
