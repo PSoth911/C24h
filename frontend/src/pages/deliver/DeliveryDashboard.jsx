@@ -1,5 +1,6 @@
 import DeliveryNav from "../../components/DeliveryNav"
-import {TotalOrdersCard} from "../../components/DeliveryCard"
+import DeliverySideNav from "../../components/DeliverySideNav";
+import {TotalOrdersCard,NewOrder,Earning,Rating} from "../../components/DeliveryCard"
 
 export default function DeliveryDashboard(){
     const orderStats = [
@@ -40,17 +41,53 @@ export default function DeliveryDashboard(){
                 </div>
             </div>
 
-            <div className="hidden lg:flex flex-col justify-start items-center w-full h-full">
+            {/* <div className="hidden lg:flex flex-col justify-start items-center w-full h-full">
                 <DeliveryNav></DeliveryNav>
-                <div className="grid grid-cols-2 gap-10 mt-16">
-                    <div>
+                <div className="w-full h-fit px-40 mt-8">
+                    <h1 className="text-2xl font-medium">Good Morning, Sophea!!</h1>
+                </div>
+                <div className="grid grid-cols-2 gap-12 mt-8 w-full">
+                    <div className="w-full h-full flex flex-col justify-start items-end gap-12">
                         <TotalOrdersCard orderStats={orderStats}></TotalOrdersCard>
-                    </div>
-                    <div className="">
                         
                     </div>
+                    <div className="w-full h-full flex flex-col justify-start items-start gap-12">
+                        <NewOrder></NewOrder>
+                        <div className="flex gap-2">
+                        <Earning></Earning>
+                        <Rating></Rating>
+
+                        </div>
+                    </div>
+                    
                 </div>
                 
+            </div> */}
+            <div className="hidden lg:flex w-full h-screen">
+                
+                <DeliverySideNav />
+
+               
+                <div className="flex-1 p-8 overflow-y-auto">
+                    <h1 className="text-2xl font-medium mb-8">
+                        Good Morning, Sophea!!
+                    </h1>
+
+                    <div className="grid grid-cols-2 gap-12">
+                        <div className="flex flex-col gap-12">
+                            <TotalOrdersCard orderStats={orderStats} />
+                        </div>
+
+                        <div className="flex flex-col gap-12">
+                            <NewOrder />
+
+                            <div className="flex gap-4">
+                                <Earning />
+                                <Rating />
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     )
