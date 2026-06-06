@@ -2,7 +2,7 @@ import {Utensils,MapPin,Check,X,Wallet,Star} from 'lucide-react'
 
 function TotalOrdersCard({orderStats}){
     return (
-        <div className="w-fit h-fit bg-[#f1fff0] flex flex-col justify-center items-start p-8 rounded-2xl text-[#004953] shadow-lg">
+        <div className="w-full h-fit bg-[#f1fff0] flex flex-col justify-center items-start p-8 rounded-2xl text-[#004953] shadow-lg ">
             <h1 className="font-medium text-2xl pb-2">Ordered This Week</h1>
             <p className="text-sm pb-4">Total orders : 70</p>
             {orderStats.map((item) => (
@@ -21,7 +21,7 @@ function TotalOrdersCard({orderStats}){
 
 function NewOrder(){
     return (
-        <div className='w-120 h-fit p-2 bg-[#f1fff0] flex flex-col justify-start items-center rounded-2xl shadow-xl text-[#004953]'>
+        <div className='w-full h-fit p-2 bg-[#f1fff0] flex flex-col justify-start items-center rounded-2xl shadow-xl text-[#004953]'>
             <div className='w-full'>
                 <h1 className='font-medium'>New Order</h1>
             </div>
@@ -57,7 +57,7 @@ function NewOrder(){
 
 function Earning(){
     return (
-        <div className='w-60 h-fit pl-1 bg-[#004953] flex flex-col justify-start items-center rounded-2xl shadow-xl text-[#004953]'>
+        <div className='w-[50%] h-fit pl-1 bg-[#004953] flex flex-col justify-start items-center rounded-2xl shadow-xl text-[#004953]'>
            <div className='bg-[#f1fff0] w-full h-20 rounded-xl px-6 py-2 flex justify-between items-center'>
             <div className=''>
                 <h1 className='text-lg font-medium'>Earning</h1>
@@ -70,7 +70,7 @@ function Earning(){
 }
 function Rating(){
     return (
-        <div className='w-60 h-fit pl-1 bg-[#004953] flex flex-col justify-start items-center rounded-2xl shadow-xl text-[#004953]'>
+        <div className='w-[50%] h-fit pl-1 bg-[#004953] flex flex-col justify-start items-center rounded-2xl shadow-xl text-[#004953]'>
            <div className='bg-[#f1fff0] w-full h-20 rounded-xl px-6 py-2 flex justify-between items-center'>
             <div className=''>
                 <h1 className='text-lg font-medium'>Rating</h1>
