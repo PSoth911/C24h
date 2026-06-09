@@ -1,7 +1,21 @@
 import DeliveryNav from "../../components/DeliveryNav"
 import DeliverySideNav from "../../components/DeliverySideNav"
+import WeeklyEarningChart from "../../components/WeeklyEarningChart"
+
+import DeliveryHistory from "../../components/DeliveryHistory";
+import EarningsOverview from "../../components/EarningsOverview";
+import PerformanceCard from "../../components/PerformanceCard";
 
 export default function DeliveryEarning(){
+    const data = [
+        { day: "Mon", earning: 120 },
+        { day: "Tue", earning: 180 },
+        { day: "Wed", earning: 150 },
+        { day: "Thu", earning: 220 },
+        { day: "Fri", earning: 300 },
+        { day: "Sat", earning: 280 },
+        { day: "Sun", earning: 170 }
+    ];
     return(
         <div className="w-full h-screen">
             <div className="lg:hidden flex flex-col w-full h-full">
@@ -14,11 +28,17 @@ export default function DeliveryEarning(){
                 <DeliveryNav></DeliveryNav>
                 <div className="w-full h-fit flex">
                     <DeliverySideNav />
-                    <div className="flex-1 p-8 m-4 overflow-y-auto bg-[#F3F4F4] rounded-4xl text-[#004953]">
-                        <h1 className="text-3xl font-medium mb-8">
-                            Good Morning, Sophea!!
-                        </h1>
-
+                    <div className="flex-1 p-12 mx-12 my-6 overflow-y-auto bg-[#F3F4F4] rounded-4xl text-[#004953]">
+                        
+                        <div className="grid grid-cols-2 gap-8">
+                            <EarningsOverview></EarningsOverview>
+                            <WeeklyEarningChart data={data}></WeeklyEarningChart>
+                            <PerformanceCard></PerformanceCard>
+                            <DeliveryHistory></DeliveryHistory>
+                        </div>
+                        
+                            
+                       
                         
                     </div>
                 </div>

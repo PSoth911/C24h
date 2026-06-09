@@ -1,5 +1,11 @@
 import DeliveryNav from "../../components/DeliveryNav"
 import DeliverySideNav from "../../components/DeliverySideNav"
+import ProfileHeader from "../../components/ProfileHeader"
+import InfoCard from "../../components/InfoCard"
+import DocumentsCard from "../../components/DocumentsCard"
+import PayoutCard from "../../components/PayoutCard"
+import AvailabilitySchedule from "../../components/AvailabilitySchedule"
+import PreferencesCard from "../../components/PreferencesCard"
 
 export default function DeliveryProfile(){
     return(
@@ -15,11 +21,16 @@ export default function DeliveryProfile(){
                 <div className="w-full h-fit flex">
                     <DeliverySideNav />
                     <div className="flex-1 p-8 m-4 overflow-y-auto bg-[#F3F4F4] rounded-4xl text-[#004953]">
-                        <h1 className="text-3xl font-medium mb-8">
-                            Good Morning, Sophea!!
-                        </h1>
-
-                        
+                            <ProfileHeader></ProfileHeader>
+                        <div className="grid grid-cols-3 gap-6 mt-6">
+                            <div className="col-span-1">
+                                <PayoutCard />
+                            </div>
+                            <InfoCard></InfoCard>
+                            <DocumentsCard></DocumentsCard>
+                        </div>
+                        <AvailabilitySchedule></AvailabilitySchedule>
+                        <PreferencesCard></PreferencesCard>
                     </div>
                 </div>
                 

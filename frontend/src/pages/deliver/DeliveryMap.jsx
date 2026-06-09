@@ -1,5 +1,6 @@
 import DeliveryNav from "../../components/DeliveryNav"
 import DeliverySideNav from "../../components/DeliverySideNav"
+import DeliveryTrackingCard from "../../components/DeliveryTrackingCard"
 
 export default function DeliveryMap(){
     return(
@@ -15,10 +16,10 @@ export default function DeliveryMap(){
                 <div className="w-full h-fit flex">
                     <DeliverySideNav />
                     <div className="flex-1 p-8 m-4 overflow-y-auto bg-[#F3F4F4] rounded-4xl text-[#004953]">
-                        <h1 className="text-3xl font-medium mb-8">
-                            Good Morning, Sophea!!
-                        </h1>
-
+                        
+                        <div className="flex flex-col gap-8 mx-40 pt-12">
+                            <DeliveryTrackingCard></DeliveryTrackingCard>
+                        </div>
                         
                     </div>
                 </div>

@@ -1,6 +1,13 @@
 import DeliveryNav from "../../components/DeliveryNav"
 import DeliverySideNav from "../../components/DeliverySideNav";
-import {TotalOrdersCard,NewOrder,Earning,Rating} from "../../components/DeliveryCard"
+
+import Map from "../../components/Map";
+import WeeklyEarningChart from "../../components/WeeklyEarningChart";
+import StatsCard from "../../components/StatusCard";
+import NewOrder from "../../components/NewOrder";
+import TotalOrdersCard from "../../components/TotalOrder";
+
+import {Star} from 'lucide-react'
 
 export default function DeliveryDashboard(){
     const orderStats = [
@@ -33,6 +40,40 @@ export default function DeliveryDashboard(){
         textColor: "text-blue-400",
     },
     ];
+    // const earningStats = [
+    // {
+    //     label: "Monday",
+    //     amount: 120,
+    //     percent: 60,
+    //     color: "bg-green-400",
+    //     textColor: "text-green-400",
+    // },
+    // {
+    //     label: "Tuesday",
+    //     amount: 180,
+    //     percent: 90,
+    //     color: "bg-blue-400",
+    //     textColor: "text-blue-400",
+    // },
+    // {
+    //     label: "Wednesday",
+    //     amount: 150,
+    //     percent: 75,
+    //     color: "bg-yellow-400",
+    //     textColor: "text-yellow-400",
+    // },
+    // ];
+
+    const data = [
+        { day: "Mon", earning: 120 },
+        { day: "Tue", earning: 180 },
+        { day: "Wed", earning: 150 },
+        { day: "Thu", earning: 220 },
+        { day: "Fri", earning: 300 },
+        { day: "Sat", earning: 280 },
+        { day: "Sun", earning: 170 }
+    ];
+
     return(
         <div className="w-full h-screen">
             <div className="lg:hidden flex flex-col w-full h-full">
@@ -67,24 +108,22 @@ export default function DeliveryDashboard(){
                 <DeliveryNav></DeliveryNav>
                 <div className="w-full h-fit flex">
                     <DeliverySideNav />
-                    <div className="flex-1 p-8 m-4 overflow-y-auto bg-[#F3F4F4] rounded-4xl text-[#004953]">
+                    <div className="flex-1 p-12 mx-12 my-6 overflow-y-auto bg-[#F3F4F4] rounded-4xl text-[#004953]">
                         <h1 className="text-3xl font-medium mb-8">
                             Good Morning, Sophea!!
                         </h1>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="flex flex-col gap-4">
+                        <div className="grid grid-cols-2 gap-12">
+                            <div className="flex flex-col gap-12">
                                 <TotalOrdersCard orderStats={orderStats} />
-                                <TotalOrdersCard orderStats={orderStats} />
+                                <Map></Map>
                             </div>
 
-                            <div className="flex flex-col gap-4">
+                            <div className="flex flex-col gap-6">
                                 <NewOrder />
-
-                                <div className="flex gap-4">
-                                    <Earning />
-                                    <Rating />
-                                </div>
+                                <StatsCard title="Rating" value="4.8" icon={Star} progress={96} />     
+                                <WeeklyEarningChart data={data}></WeeklyEarningChart>
+                                
                             </div>
                         </div>
                     </div>

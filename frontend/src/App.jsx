@@ -6,6 +6,7 @@ import { Route, Routes } from 'react-router-dom'
 import DeliveryMap from './pages/deliver/DeliveryMap.jsx'
 import DeliveryEarning from './pages/deliver/DeliveryEarning.jsx'
 import DeliveryProfile from './pages/deliver/DeliveryProfile.jsx'
+import axios from 'axios'
 
 function App() {
   const [backendData, setBackendData] = useState({});
