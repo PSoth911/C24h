@@ -1,10 +1,10 @@
-import DeliveryNav from "../../components/DeliveryNav"
-import DeliverySideNav from "../../components/DeliverySideNav"
-import WeeklyEarningChart from "../../components/WeeklyEarningChart"
+import DeliveryNav from "../../components/delivery/DeliveryNav"
+import DeliverySideNav from "../../components/delivery/DeliverySideNav"
+import WeeklyEarningChart from "../../components/delivery/WeeklyEarningChart"
 
-import DeliveryHistory from "../../components/DeliveryHistory";
-import EarningsOverview from "../../components/EarningsOverview";
-import PerformanceCard from "../../components/PerformanceCard";
+import DeliveryHistory from "../../components/delivery/DeliveryHistory";
+import EarningsOverview from "../../components/delivery/EarningsOverview";
+import PerformanceCard from "../../components/delivery/PerformanceCard";
 
 export default function DeliveryEarning(){
     const data = [

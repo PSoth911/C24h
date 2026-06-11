@@ -1,6 +1,6 @@
-import DeliveryNav from "../../components/DeliveryNav"
-import DeliverySideNav from "../../components/DeliverySideNav"
-import DeliveryTrackingCard from "../../components/DeliveryTrackingCard"
+import DeliveryNav from "../../components/delivery/DeliveryNav"
+import DeliverySideNav from "../../components/delivery/DeliverySideNav"
+import DeliveryTrackingCard from "../../components/delivery/DeliveryTrackingCard"
 
 export default function DeliveryMap(){
     return(

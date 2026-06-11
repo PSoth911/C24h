@@ -1,11 +1,11 @@
-import DeliveryNav from "../../components/DeliveryNav"
-import DeliverySideNav from "../../components/DeliverySideNav"
-import ProfileHeader from "../../components/ProfileHeader"
-import InfoCard from "../../components/InfoCard"
-import DocumentsCard from "../../components/DocumentsCard"
-import PayoutCard from "../../components/PayoutCard"
-import AvailabilitySchedule from "../../components/AvailabilitySchedule"
-import PreferencesCard from "../../components/PreferencesCard"
+import DeliveryNav from "../../components/delivery/DeliveryNav"
+import DeliverySideNav from "../../components/delivery/DeliverySideNav"
+import ProfileHeader from "../../components/delivery/ProfileHeader"
+import InfoCard from "../../components/delivery/InfoCard"
+import DocumentsCard from "../../components/delivery/DocumentsCard"
+import PayoutCard from "../../components/delivery/PayoutCard"
+import AvailabilitySchedule from "../../components/delivery/AvailabilitySchedule"
+import PreferencesCard from "../../components/delivery/PreferencesCard"
 
 export default function DeliveryProfile(){
     return(

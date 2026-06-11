@@ -1,11 +1,11 @@
-import DeliveryNav from "../../components/DeliveryNav"
-import DeliverySideNav from "../../components/DeliverySideNav";
+import DeliveryNav from "../../components/delivery/DeliveryNav"
+import DeliverySideNav from "../../components/delivery/DeliverySideNav";
 
-import Map from "../../components/Map";
-import WeeklyEarningChart from "../../components/WeeklyEarningChart";
-import StatsCard from "../../components/StatusCard";
-import NewOrder from "../../components/NewOrder";
-import TotalOrdersCard from "../../components/TotalOrder";
+import Map from "../../components/delivery/Map";
+import WeeklyEarningChart from "../../components/delivery/WeeklyEarningChart";
+import StatsCard from "../../components/delivery/StatusCard";
+import NewOrder from "../../components/delivery/NewOrder";
+import TotalOrdersCard from "../../components/delivery/TotalOrder";
 
 import {Star} from 'lucide-react'
 
