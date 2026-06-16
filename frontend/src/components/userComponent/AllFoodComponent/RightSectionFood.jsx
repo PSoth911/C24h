@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import PATH from "../../../path/path";
+import {PATH} from "../../../path.js";
 const RightSectionFood = () => {
     const [loves, setLoves] = useState([]);
     

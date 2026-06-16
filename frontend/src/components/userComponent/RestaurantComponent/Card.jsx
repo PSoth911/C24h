@@ -4,7 +4,7 @@ import {
   faPlus,
 } from "@fortawesome/free-solid-svg-icons"
 import { useNavigate } from "react-router-dom";
-import PATH from '../../../path/path';
+import {PATH} from '../../../path.js';
 
 const Card = ({cartitems,setcartitems}) => {
   const navigate=useNavigate()

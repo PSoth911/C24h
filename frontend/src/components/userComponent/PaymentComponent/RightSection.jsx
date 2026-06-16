@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import PATH from "../../../path/path";
+import {PATH} from "../../../path.js";
 const RightSection = () => {
      const navigate = useNavigate()
     const order = {

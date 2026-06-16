@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import PATH from "../../../path/path"
+import {PATH} from "../../../path.js";
 const Rightsection = () => {
 const navigate = useNavigate()
   const Subtotal = 46.90

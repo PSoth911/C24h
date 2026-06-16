@@ -8,7 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import logo from '../../../assets/image copy 28.png'
 import { useNavigate } from 'react-router-dom'
-import PATH from '../../../path/path'
+import {PATH} from '../../../path.js'
 const Navbar = () => {
   const navigate =useNavigate()
   return (

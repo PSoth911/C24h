@@ -15,21 +15,14 @@
     "@fortawesome/free-solid-svg-icons": "^7.2.0",
     "@fortawesome/react-fontawesome": "^3.3.1",
     "@tailwindcss/vite": "^4.3.0",
-<<<<<<< HEAD
     "axios": "^1.17.0",
-    "lucide-react": "^1.3.0",
-    "react": "^19.2.6",
-    "react-dom": "^19.2.6",
-    "react-router-dom": "^7.16.0",
-    "recharts": "^3.8.1",
-=======
     "leaflet": "^1.9.4",
     "lucide-react": "^1.3.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.17.0",
->>>>>>> origin/daro
+    "recharts": "^3.8.1",
     "tailwindcss": "^4.3.0"
   },
   "devDependencies": {

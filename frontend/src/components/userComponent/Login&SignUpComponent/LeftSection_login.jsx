@@ -1,7 +1,7 @@
 import image1 from '../../../assets/image.png';
 import image2 from '../../../assets/image copy.png';
 import image3 from '../../../assets/image copy 2.png'
-import PATH from '../../../path/path';
+import {PATH} from '../../../path.js';
 import {useNavigate} from 'react-router-dom';
 const LeftSection_login = () => {
     const navigate = useNavigate();

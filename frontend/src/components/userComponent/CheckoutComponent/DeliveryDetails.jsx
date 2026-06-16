@@ -8,7 +8,7 @@ import {
   faLock,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import PATH from "../../../path/path";
+import {PATH} from "../../../path.js";
 
 const DeliveryDetails = () => {
   const addresses = [
