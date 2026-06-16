@@ -1,16 +1,22 @@
 import { useState } from "react";
 import AdminSidebar from "../../components/admin/AdminSidebar.jsx";
 import { PATH } from "../../path.js";
+import { useEffect } from "react";
 
 export default function AdminUserManagement() {
   const [search, setSearch] = useState("");
 
-  const users = [
-    { id: 1, name: "John Doe", email: "john@gmail.com", role: "User", status: "Active" },
-    { id: 2, name: "Jane Smith", email: "jane@gmail.com", role: "User", status: "Banned" },
-    { id: 3, name: "Alex Kim", email: "alex@gmail.com", role: "Admin", status: "Active" },
-  ];
-
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:5000/allusers")
+      .then((res) => res.json())
+      .then((data) => {
+        setUsers(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
   return (
     <div className="min-h-screen bg-slate-100 flex">
 
@@ -37,8 +43,8 @@ export default function AdminUserManagement() {
           {/* Mobile Cards */}
           <div className="grid gap-4 lg:hidden">
             {users.map((u) => (
-              <div key={u.id} className="bg-white p-4 rounded-2xl shadow">
-                <h3 className="font-bold">{u.name}</h3>
+              <div key={u.user_id} className="bg-white p-4 rounded-2xl shadow">
+                <h3 className="font-bold">{u.full_name}</h3>
                 <p className="text-sm text-gray-500">{u.email}</p>
 
                 <div className="flex justify-between mt-3">
@@ -84,12 +90,12 @@ export default function AdminUserManagement() {
               <tbody>
                 {users
                   .filter((u) =>
-                    u.name.toLowerCase().includes(search.toLowerCase())
+                    u.full_name.toLowerCase().includes(search.toLowerCase())
                   )
                   .map((u) => (
-                    <tr key={u.id} className="border-b hover:bg-gray-50">
-                      <td className="p-4">{u.id}</td>
-                      <td className="p-4 font-medium">{u.name}</td>
+                    <tr key={u.user_id} className="border-b hover:bg-gray-50">
+                      <td className="p-4">{u.user_id}</td>
+                      <td className="p-4 font-medium">{u.full_name}</td>
                       <td className="p-4">{u.email}</td>
                       <td className="p-4">{u.role}</td>
 

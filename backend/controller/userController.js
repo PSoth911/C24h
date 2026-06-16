@@ -1,11 +1,14 @@
-const getJournalistById = ((req,res)=>{
-    const id = parseInt(req.params.id);
+import { pool } from "../database/db.js";
 
-    const journalist = journalists.find(jou=>jou.id===id);
-
-    if(!journalist){
-        return res.status(404).json("Error!!! journalist not found");
-    }
-
-    res.json(journalist);
+const getAllUsers = (async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM users");
+    res.json(rows);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
 })
+
+export { getAllUsers };

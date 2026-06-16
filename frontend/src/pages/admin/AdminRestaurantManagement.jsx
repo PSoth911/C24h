@@ -1,15 +1,22 @@
 import { useState } from "react";
 import AdminSidebar from "../../components/admin/AdminSidebar.jsx";
 import { PATH } from "../../path.js";
+import { useEffect } from "react";
 
 export default function AdminRestaurantManagement() {
   const [search, setSearch] = useState("");
 
-  const restaurants = [
-    { id: 1, name: "Burger House", owner: "John", category: "Fast Food", status: "Active" },
-    { id: 2, name: "Pizza Hub", owner: "Sarah", category: "Italian", status: "Pending" },
-    { id: 3, name: "Sushi World", owner: "Ken", category: "Japanese", status: "Active" },
-  ];
+  const [restaurants, setRestaurants] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:5000/allrestaurants")
+      .then((res) => res.json())
+      .then((data) => {
+        setRestaurants(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   return (
     <div className="min-h-screen bg-slate-100 flex">
@@ -51,11 +58,11 @@ export default function AdminRestaurantManagement() {
 
               <tbody>
                 {restaurants
-                  .filter(r => r.name.toLowerCase().includes(search.toLowerCase()))
+                  .filter(r => r.full_name.toLowerCase().includes(search.toLowerCase()))
                   .map(r => (
                     <tr key={r.id} className="border-b hover:bg-gray-50">
                       <td className="p-4">{r.id}</td>
-                      <td className="p-4 font-medium">{r.name}</td>
+                      <td className="p-4 font-medium">{r.full_name}</td>
                       <td className="p-4">{r.owner}</td>
                       <td className="p-4">{r.category}</td>
                       <td className="p-4">

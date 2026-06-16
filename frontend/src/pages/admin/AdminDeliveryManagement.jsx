@@ -1,16 +1,22 @@
 import { useState } from "react";
 import AdminSidebar from "../../components/admin/AdminSidebar.jsx";
 import { PATH } from "../../path.js";
+import { useEffect } from "react";
 
 export default function AdminDeliveryManagement() {
   const [search, setSearch] = useState("");
 
-  const drivers = [
-    { id: 1, name: "David", vehicle: "Bike", status: "Online", orders: 12 },
-    { id: 2, name: "Anna", vehicle: "Car", status: "Offline", orders: 5 },
-    { id: 3, name: "Leo", vehicle: "Bike", status: "Online", orders: 20 },
-  ];
-
+  const [drivers, setDrivers] = useState([]);
+  useEffect(() => {
+    fetch("http://localhost:5000/alldeliveries")
+      .then((res) => res.json())
+      .then((data) => {
+        setDrivers(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
   return (
     <div className="min-h-screen bg-slate-100 flex">
 
@@ -45,11 +51,11 @@ export default function AdminDeliveryManagement() {
 
               <tbody>
                 {drivers
-                  .filter(d => d.name.toLowerCase().includes(search.toLowerCase()))
+                  .filter(d => d.full_name.toLowerCase().includes(search.toLowerCase()))
                   .map(d => (
-                    <tr key={d.id} className="border-b hover:bg-gray-50">
-                      <td className="p-4">{d.id}</td>
-                      <td className="p-4 font-medium">{d.name}</td>
+                    <tr key={d.user_id} className="border-b hover:bg-gray-50">
+                      <td className="p-4">{d.user_id}</td>
+                      <td className="p-4 font-medium">{d.full_name}</td>
                       <td className="p-4">{d.vehicle}</td>
                       <td className="p-4">
                         <span className={`px-3 py-1 rounded-full text-xs ${

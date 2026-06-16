@@ -1,12 +1,11 @@
 import express from 'express';
+import { getAllDeliveries } from '../controller/deliverController.js';
+
 
 const route = express.Router();
 
-route.get('/',getAllArticles);
-route.get('/:id',getArticleById);
-route.post('/',createArticle);
-route.put('/:id',updateArticle);
-route.delete('/:id',deleteArticle);
+route.get('/alldeliveries',getAllDeliveries);
+
 
 export default route;
 
