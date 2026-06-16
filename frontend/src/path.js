@@ -26,5 +26,9 @@ export const PATH = {
         SucessPayment : "/user/restaurant/checkout/addadress/payment/sucesspayment",
         Trackorder : "/user/restaurant/checkout/addadress/payment/sucesspayment/trackorder",
         Payment : "/user/restaurant/checkout/addadress/payment"
+    },
+    AUTH:{
+        LOGIN: "/auth/login",
+        SIGNUP: "/auth/signup"
     }
 }
