@@ -21,10 +21,22 @@ export default function AdminLogin() {
         }
       );
 
-      localStorage.setItem("token", response.data.token);
-      localStorage.setItem("role", response.data.role);
+      const { token, role } = response.data;
 
-      navigate(PATH.ADMIN.DASHBOARD);
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("role", role);
+
+      if (role === "admin") {
+        navigate(PATH.ADMIN.DASHBOARD);
+      }
+
+      if (role === "delivery") {
+        navigate(PATH.DELIVERY.DASHBOARD);
+      }
+
+      if (role === "customer") {
+        navigate(PATH.USER.HOME);
+      }
     } catch (error) {
       alert("Invalid email or password");
     }
@@ -47,7 +59,7 @@ export default function AdminLogin() {
             </p>
           </div>
 
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleLogin}>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email
@@ -55,6 +67,8 @@ export default function AdminLogin() {
               <input
                 type="email"
                 placeholder="admin@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#004953]"
               />
             </div>
@@ -66,6 +80,8 @@ export default function AdminLogin() {
               <input
                 type="password"
                 placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#004953]"
               />
             </div>
@@ -128,7 +144,7 @@ export default function AdminLogin() {
               </p>
             </div>
 
-            <form className="space-y-5">
+            <form className="space-y-5" onSubmit={handleLogin}>
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700">
                   Email Address
@@ -173,7 +189,6 @@ export default function AdminLogin() {
 
               <button
                 type="submit"
-                onClick={handleLogin}
                 className="w-full bg-[#004953] text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-all"
               >
                 Sign In

@@ -18,25 +18,53 @@ app.use("/", sellerRoutes);
 app.post("/api/admin/login", async (req, res) => {
   const { email, password } = req.body;
 
-  const admin = {
-    id: 1,
-    email: "admin@gmail.com",
-    password: "123456",
-    role: "admin",
-  };
-
-  if (
-    email === admin.email &&
-    password === admin.password
-  ) {
-    return res.json({
-      token: "abc123",
+  const users = [
+    {
+      id: 1,
+      email: "admin@gmail.com",
+      password: "123456",
       role: "admin",
+    },
+    {
+      id: 2,
+      email: "rider@gmail.com",
+      password: "123456",
+      role: "delivery",
+    },
+    {
+      id: 3,
+      email: "customer@gmail.com",
+      password: "123456",
+      role: "customer",
+    },
+    {
+      id: 4,
+      email: "restaurant@gmail.com",
+      password: "123456",
+      role: "restaurant_owner",
+    },
+  ];
+
+  const user = users.find(
+    (u) =>
+      u.email === email &&
+      u.password === password
+  );
+
+  if (!user) {
+    return res.status(401).json({
+      message: "Invalid credentials",
     });
   }
 
-  return res.status(401).json({
-    message: "Invalid credentials",
+  return res.json({
+    token: `mock-token-${user.id}`,
+    role: user.role,
+    user: {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    },
   });
 });
 
