@@ -1,4 +1,35 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { PATH } from "../../path.js";
+
 export default function AdminLogin() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/api/admin/login",
+        {
+          email,
+          password,
+        }
+      );
+
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("role", response.data.role);
+
+      navigate(PATH.ADMIN.DASHBOARD);
+    } catch (error) {
+      alert("Invalid email or password");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-100">
       {/* Mobile Layout */}
@@ -106,6 +137,8 @@ export default function AdminLogin() {
                 <input
                   type="email"
                   placeholder="admin@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#004953]"
                 />
               </div>
@@ -118,6 +151,8 @@ export default function AdminLogin() {
                 <input
                   type="password"
                   placeholder="Enter your password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#004953]"
                 />
               </div>
@@ -138,6 +173,7 @@ export default function AdminLogin() {
 
               <button
                 type="submit"
+                onClick={handleLogin}
                 className="w-full bg-[#004953] text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-all"
               >
                 Sign In

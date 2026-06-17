@@ -13,7 +13,7 @@ export default function ProtectedRoute({
   }
 
   if (role && role !== userRole) {
-    return <Navigate to="/" replace />;
+    return <Navigate to={loginPath} replace />;
   }
 
   return children;
