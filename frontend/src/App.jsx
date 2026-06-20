@@ -29,7 +29,6 @@ import TrackOrderPage from './pages/user_page/TrackOrderPage.jsx';
 import PaymentPage from './pages/user_page/Payment.jsx';
 
 import PortalLayout from './components/Seller/PortalLayout';
-import SellerLogin from './pages/seller/Login.jsx';
 import Dashboard from './pages/seller/Dashboard';
 import Orders from './pages/seller/Orders';
 import MenuManagement from './pages/seller/MenuManagement';
@@ -45,6 +44,7 @@ function App() {
   
   return (
     <Routes>
+      
       <Route path={PATH.ADMIN.LOGIN} element={<AdminLogin/>}/>
       {/* <Route path={PATH.DELIVERY.LOGIN} element={<DeliveryLogin/>}/>
       <Route path={PATH.USER.LOGIN} element={<Login/>}/> */}
@@ -62,7 +62,7 @@ function App() {
       <Route path={PATH.ADMIN.DASHBOARD} element={<ProtectedRoute role="admin" loginPath={PATH.ADMIN.LOGIN}> <AdminDashboard/> </ProtectedRoute>}/>
 
       
-      <Route element={<ProtectedRoute role="seller" loginPath={PATH.SELLER.LOGIN}> <PortalLayout /> </ProtectedRoute>}>
+      <Route element={<ProtectedRoute role="seller" loginPath={PATH.SELLER.LOGIN}><PortalLayout /></ProtectedRoute>}>
         <Route path={PATH.SELLER.DASHBOARD} element={<Dashboard />} />
         <Route path={PATH.SELLER.ORDERS} element={<Orders />} />
         <Route path={PATH.SELLER.MENU} element={<MenuManagement />} />
