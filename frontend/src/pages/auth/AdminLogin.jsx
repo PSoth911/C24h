@@ -21,7 +21,8 @@ export default function AdminLogin() {
         }
       );
 
-      const { token, role } = response.data;
+      const { token, user } = response.data;
+      const role = user.role;
 
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("role", role);

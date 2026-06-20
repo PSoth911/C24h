@@ -36,7 +36,7 @@ const User = sequelize.define(
       type: DataTypes.ENUM(
         "customer",
         "restaurant_owner",
-        "rider",
+        "delivery",
         "admin"
       ),
       defaultValue: "customer",
