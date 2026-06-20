@@ -31,6 +31,8 @@ import PaymentPage from './pages/user_page/Payment.jsx';
 import './index.css';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
 
+import { Navigate } from "react-router-dom";
+
 
 function App() {
   
@@ -39,30 +41,31 @@ function App() {
         
 
       <Route path={PATH.ADMIN.LOGIN} element={<AdminLogin/>}/>
+      <Route path="/" element={<Navigate to={PATH.ADMIN.LOGIN} replace/>}/>
       {/* <Route path={PATH.DELIVERY.LOGIN} element={<DeliveryLogin/>}/>
       <Route path={PATH.USER.LOGIN} element={<Login/>}/> */}
       {/* <Route path={PATH.USER.SIGNUP} element={<Signup/>}/> */}
 
-      <Route path={PATH.DELIVERY.DASHBOARD} element={<ProtectedRoute role="delivery" loginPath={PATH.DELIVERY.LOGIN}> <DeliveryDashboard/> </ProtectedRoute>} />
-      <Route path={PATH.DELIVERY.MAP} element={<ProtectedRoute role="delivery" loginPath={PATH.DELIVERY.LOGIN}> <DeliveryMap/> </ProtectedRoute>}/>
-      <Route path={PATH.DELIVERY.EARNING} element={<ProtectedRoute role="delivery" loginPath={PATH.DELIVERY.LOGIN}> <DeliveryEarning/> </ProtectedRoute>}/>
-      <Route path={PATH.DELIVERY.PROFILE} element={<ProtectedRoute role="delivery" loginPath={PATH.DELIVERY.LOGIN}> <DeliveryProfile/> </ProtectedRoute>}/>
+      <Route path={PATH.DELIVERY.DASHBOARD} element={<ProtectedRoute role="delivery"> <DeliveryDashboard/> </ProtectedRoute>} />
+      <Route path={PATH.DELIVERY.MAP} element={<ProtectedRoute role="delivery"> <DeliveryMap/> </ProtectedRoute>}/>
+      <Route path={PATH.DELIVERY.EARNING} element={<ProtectedRoute role="delivery"> <DeliveryEarning/> </ProtectedRoute>}/>
+      <Route path={PATH.DELIVERY.PROFILE} element={<ProtectedRoute role="delivery"> <DeliveryProfile/> </ProtectedRoute>}/>
 
-      <Route path={PATH.ADMIN.PROFILE} element={<ProtectedRoute role="admin" loginPath={PATH.ADMIN.LOGIN}> <AdminProfile/> </ProtectedRoute>}/>
-      <Route path={PATH.ADMIN.RESTAURANTS} element={<ProtectedRoute role="admin" loginPath={PATH.ADMIN.LOGIN}> <AdminRestaurantManagement/> </ProtectedRoute>}/>
-      <Route path={PATH.ADMIN.USERS} element={<ProtectedRoute role="admin" loginPath={PATH.ADMIN.LOGIN}> <AdminUserManagement/> </ProtectedRoute>}/>
-      <Route path={PATH.ADMIN.DELIVERIES} element={<ProtectedRoute role="admin" loginPath={PATH.ADMIN.LOGIN}> <AdminDeliveryManagement/> </ProtectedRoute>}/>
-      <Route path={PATH.ADMIN.DASHBOARD} element={<ProtectedRoute role="admin" loginPath={PATH.ADMIN.LOGIN}> <AdminDashboard/> </ProtectedRoute>}/>
+      <Route path={PATH.ADMIN.PROFILE} element={<ProtectedRoute role="admin"> <AdminProfile/> </ProtectedRoute>}/>
+      <Route path={PATH.ADMIN.RESTAURANTS} element={<ProtectedRoute role="admin"> <AdminRestaurantManagement/> </ProtectedRoute>}/>
+      <Route path={PATH.ADMIN.USERS} element={<ProtectedRoute role="admin"> <AdminUserManagement/> </ProtectedRoute>}/>
+      <Route path={PATH.ADMIN.DELIVERIES} element={<ProtectedRoute role="admin"> <AdminDeliveryManagement/> </ProtectedRoute>}/>
+      <Route path={PATH.ADMIN.DASHBOARD} element={<ProtectedRoute role="admin"> <AdminDashboard/> </ProtectedRoute>}/>
 
-      <Route path={PATH.USER.HOME} element={<ProtectedRoute role="customer" loginPath={PATH.USER.LOGIN}> <HomePage/> </ProtectedRoute>}/>
-      <Route path={PATH.USER.Profile} element={<ProtectedRoute role="customer" loginPath={PATH.USER.LOGIN}> <Profile/> </ProtectedRoute>}/>
-      <Route path={PATH.USER.AllFood} element={<ProtectedRoute role="customer" loginPath={PATH.USER.LOGIN}> <AllFoodPage/> </ProtectedRoute>}/>
-      <Route path={PATH.USER.Restaurant} element={<ProtectedRoute role="customer" loginPath={PATH.USER.LOGIN}> <RestaurantPage/> </ProtectedRoute>}/>
-      <Route path={PATH.USER.Checkout} element={<ProtectedRoute role="customer" loginPath={PATH.USER.LOGIN}> <CheckoutPage/> </ProtectedRoute>}/>
-      <Route path={PATH.USER.AddAdress} element={<ProtectedRoute role="customer" loginPath={PATH.USER.LOGIN}> <AddAdressPage/> </ProtectedRoute>}/>
-      <Route path={PATH.USER.SucessPayment} element={<ProtectedRoute role="customer" loginPath={PATH.USER.LOGIN}> <SucessPaymentPage/> </ProtectedRoute>}/>
-      <Route path={PATH.USER.Trackorder} element={<ProtectedRoute role="customer" loginPath={PATH.USER.LOGIN}> <TrackOrderPage/> </ProtectedRoute>}/>
-      <Route path={PATH.USER.Payment} element={<ProtectedRoute role="customer" loginPath={PATH.USER.LOGIN}> <PaymentPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.HOME} element={<ProtectedRoute role="customer"> <HomePage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.Profile} element={<ProtectedRoute role="customer"> <Profile/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.AllFood} element={<ProtectedRoute role="customer"> <AllFoodPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.Restaurant} element={<ProtectedRoute role="customer"> <RestaurantPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.Checkout} element={<ProtectedRoute role="customer"> <CheckoutPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.AddAdress} element={<ProtectedRoute role="customer"> <AddAdressPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.SucessPayment} element={<ProtectedRoute role="customer"> <SucessPaymentPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.Trackorder} element={<ProtectedRoute role="customer"> <TrackOrderPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.Payment} element={<ProtectedRoute role="customer"> <PaymentPage/> </ProtectedRoute>}/>
 
     </Routes>
       

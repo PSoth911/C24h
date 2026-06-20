@@ -1,4 +1,4 @@
-import pool from "../src/config/db.js";
+import {pool} from "../database/db.js";
 export const findbyemail= async(email)=>{
     const [row]=await pool.query(`select * from user where email = ?`,[email])
     return row[0]
