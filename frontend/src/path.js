@@ -1,13 +1,17 @@
 export const PATH = {
+    AUTH: {
+        LOGIN: "/auth/login",
+        SIGNUP: "/auth/signup"
+    },
     DELIVERY:{
-        LOGIN:"/delivery/login",
+        // LOGIN:"/delivery/login",
         DASHBOARD:"/delivery/dashboard",
         MAP:"/delivery/map",
         EARNING:"/delivery/earning",
         PROFILE:"/delivery/profile"
     },
     ADMIN:{
-        LOGIN:"/admin/login",
+        // LOGIN:"/auth/login",
         DASHBOARD:"/admin/dashboard",
         DELIVERIES:"/admin/deliveries",
         PROFILE:"/admin/profile",
@@ -15,8 +19,8 @@ export const PATH = {
         USERS:"/admin/users"
     },
     USER:{
-        LOGIN: "/user/login",
-        SIGNUP: "/user/signup",
+        // LOGIN: "/user/login",
+        // SIGNUP: "/user/signup",
         HOME: "/user/home",
         Profile : "/user/profile",
         AllFood : "/user/allfood",
@@ -27,8 +31,4 @@ export const PATH = {
         Trackorder : "/user/restaurant/checkout/addadress/payment/sucesspayment/trackorder",
         Payment : "/user/restaurant/checkout/addadress/payment"
     },
-    AUTH:{
-        LOGIN: "/auth/login",
-        SIGNUP: "/auth/signup"
-    }
 }

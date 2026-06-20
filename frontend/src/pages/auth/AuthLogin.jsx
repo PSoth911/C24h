@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { PATH } from "../../path.js";
 
-export default function AdminLogin() {
+export default function AuthLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-
   const handleLogin = async (e) => {
     e.preventDefault();
 
+
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/admin/login",
+        "http://localhost:5000/api/auth/login",
         {
           email,
           password,
@@ -27,16 +27,20 @@ export default function AdminLogin() {
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("role", role);
 
-      if (role === "admin") {
-        navigate(PATH.ADMIN.DASHBOARD);
-      }
+      switch (role) {
+        case "admin":
+          navigate(PATH.ADMIN.DASHBOARD);
+          break;
+        case "driver":
+          navigate(PATH.DELIVERY.DASHBOARD);
+          break;
 
-      if (role === "delivery") {
-        navigate(PATH.DELIVERY.DASHBOARD);
-      }
+        case "customer":
+          navigate(PATH.USER.HOME);
+          break;
 
-      if (role === "customer") {
-        navigate(PATH.USER.HOME);
+        default:
+          navigate("/");
       }
     } catch (error) {
       alert("Invalid email or password");
@@ -145,7 +149,7 @@ export default function AdminLogin() {
               </p>
             </div>
 
-            <form className="space-y-5" onSubmit={handleLogin}>
+            <form className="space-y-4" onSubmit={handleLogin}>
               <div>
                 <label className="block mb-2 text-sm font-medium text-gray-700">
                   Email Address
@@ -190,11 +194,16 @@ export default function AdminLogin() {
 
               <button
                 type="submit"
-                className="w-full bg-[#004953] text-white py-3 rounded-xl font-semibold hover:opacity-90 transition-all"
+                className="w-full bg-[#004953] text-white mt-3 py-3 rounded-xl font-semibold hover:opacity-90 transition-all"
               >
                 Sign In
               </button>
+
             </form>
+              <div className="flex gap-2 mt-2 w-full text-right  text-slate-600">
+                  <p className="flex">Don't has account yet?</p>
+                  <p className="cursor-pointer text-[#004953] font-semibold hover:underline" onClick={()=>navigate(PATH.AUTH.SIGNUP)}>Sign Up</p>
+              </div>
           </div>
         </div>
       </div>

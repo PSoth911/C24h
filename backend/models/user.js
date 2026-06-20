@@ -11,35 +11,43 @@ const User = sequelize.define(
     },
 
     full_name: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(150),
       allowNull: false,
     },
 
     email: {
-      type: DataTypes.STRING(100),
+      type: DataTypes.STRING(150),
       allowNull: false,
       unique: true,
     },
 
-    phone: DataTypes.STRING(20),
+    phone: {
+      type: DataTypes.STRING(20),
+      unique: true,
+    },
 
     password_hash: {
       type: DataTypes.STRING(255),
       allowNull: false,
     },
 
-    profile_image: DataTypes.STRING(255),
-
-    address: DataTypes.TEXT,
-
     role: {
       type: DataTypes.ENUM(
+        "admin",
         "customer",
         "restaurant_owner",
-        "delivery",
-        "admin"
+        "driver"
       ),
       defaultValue: "customer",
+    },
+
+    status: {
+      type: DataTypes.ENUM(
+        "active",
+        "inactive",
+        "suspended"
+      ),
+      defaultValue: "active",
     },
   },
   {

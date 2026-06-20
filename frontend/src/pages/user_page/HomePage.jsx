@@ -12,7 +12,25 @@ import SuperfastDelivery from '../../components/userComponent/HomepageComponent/
 import NewMenu from '../../components/userComponent/HomepageComponent/NewMenu'
 import GetApp from '../../components/userComponent/HomepageComponent/GetApp'
 import Footer from '../../components/userComponent/HomepageComponent/Footer'
+import { useEffect, useState } from "react";
+import axios from "axios";
 const HomePage = ()=>{
+    const [user, setUser] = useState(null);
+    useEffect(() => {
+        const token = sessionStorage.getItem("token");
+
+        axios.get("http://localhost:5000/api/users/me", {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+        })
+        .then((res) => {
+        setUser(res.data);
+        })
+        .catch((err) => {
+        console.error(err);
+        });
+    }, []);
     return(
     <div>
         <div className='px-15 py-5'>

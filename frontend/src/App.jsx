@@ -1,23 +1,25 @@
 import { useState,useEffect } from 'react'
 import { ArrowDownRight } from 'lucide-react'
-import DeliveryLogin from './pages/auth/DeliveryLogin.jsx'
+import AuthLogin from './pages/auth/AuthLogin.jsx'
+import AuthSignUp from './pages/auth/AuthSignUp.jsx'
+
+
 import DeliveryDashboard from './pages/deliver/DeliveryDashboard.jsx'
 import { Route, Routes } from 'react-router-dom'
 import DeliveryMap from './pages/deliver/DeliveryMap.jsx'
 import DeliveryEarning from './pages/deliver/DeliveryEarning.jsx'
 import DeliveryProfile from './pages/deliver/DeliveryProfile.jsx'
 
-import axios from 'axios'
+// import axios from 'axios'
 import { PATH } from './path.js'
 import AdminProfile from './pages/admin/AdminProfile.jsx'
 import AdminRestaurantManagement from './pages/admin/AdminRestaurantManagement.jsx'
 import AdminUserManagement from './pages/admin/AdminUserManagement.jsx'
 import AdminDeliveryManagement from './pages/admin/AdminDeliveryManagement.jsx'
 import AdminDashboard from './pages/admin/AdminDashboard.jsx'
-import AdminLogin from './pages/auth/AdminLogin.jsx'
 
-import Signup from './pages/auth/SignUp.jsx';
-import Login from './pages/auth/Login.jsx';
+// import Signup from './pages/auth/SignUp.jsx';
+// import Login from './pages/auth/Login.jsx';
 import HomePage from './pages/user_page/HomePage.jsx';
 import AllFoodPage from './pages/user_page/AllFoodPage.jsx';
 import Profile from './pages/user_page/UserProfile.jsx'
@@ -40,16 +42,17 @@ function App() {
     <Routes>
         
 
-      <Route path={PATH.ADMIN.LOGIN} element={<AdminLogin/>}/>
-      <Route path="/" element={<Navigate to={PATH.ADMIN.LOGIN} replace/>}/>
+      <Route path={PATH.AUTH.LOGIN} element={<AuthLogin/>}/>
+      <Route path={PATH.AUTH.SIGNUP} element={<AuthSignUp/>}/>
+      <Route path="/" element={<Navigate to={PATH.AUTH.LOGIN} replace/>}/>
       {/* <Route path={PATH.DELIVERY.LOGIN} element={<DeliveryLogin/>}/>
       <Route path={PATH.USER.LOGIN} element={<Login/>}/> */}
       {/* <Route path={PATH.USER.SIGNUP} element={<Signup/>}/> */}
 
-      <Route path={PATH.DELIVERY.DASHBOARD} element={<ProtectedRoute role="delivery"> <DeliveryDashboard/> </ProtectedRoute>} />
-      <Route path={PATH.DELIVERY.MAP} element={<ProtectedRoute role="delivery"> <DeliveryMap/> </ProtectedRoute>}/>
-      <Route path={PATH.DELIVERY.EARNING} element={<ProtectedRoute role="delivery"> <DeliveryEarning/> </ProtectedRoute>}/>
-      <Route path={PATH.DELIVERY.PROFILE} element={<ProtectedRoute role="delivery"> <DeliveryProfile/> </ProtectedRoute>}/>
+      <Route path={PATH.DELIVERY.DASHBOARD} element={<ProtectedRoute role="driver"> <DeliveryDashboard/> </ProtectedRoute>} />
+      <Route path={PATH.DELIVERY.MAP} element={<ProtectedRoute role="driver"> <DeliveryMap/> </ProtectedRoute>}/>
+      <Route path={PATH.DELIVERY.EARNING} element={<ProtectedRoute role="driver"> <DeliveryEarning/> </ProtectedRoute>}/>
+      <Route path={PATH.DELIVERY.PROFILE} element={<ProtectedRoute role="driver"> <DeliveryProfile/> </ProtectedRoute>}/>
 
       <Route path={PATH.ADMIN.PROFILE} element={<ProtectedRoute role="admin"> <AdminProfile/> </ProtectedRoute>}/>
       <Route path={PATH.ADMIN.RESTAURANTS} element={<ProtectedRoute role="admin"> <AdminRestaurantManagement/> </ProtectedRoute>}/>

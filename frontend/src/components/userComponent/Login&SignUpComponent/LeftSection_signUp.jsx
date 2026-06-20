@@ -6,7 +6,7 @@ import cakeImg from '../../../assets/image copy 7.png';
 
 const LeftSection_signUp = () => {
   return (
-    <div className="right-section relative w-full min-h-screen overflow-hidden bg-[#004953] flex flex-col justify-between px-12 py-6">
+    <div className="right-section rounded-l-2xl relative w-full overflow-hidden bg-[#004953] flex flex-col justify-between px-10 py-6">
 
       {/* Logo */}
       <div className="z-20">
@@ -121,7 +121,7 @@ const LeftSection_signUp = () => {
       </div>
 
       {/* Bottom Features */}
-      <div className="flex justify-center gap-5 flex-wrap mb-5">
+      <div className="flex justify-center gap-5 flex-wrap">
 
         <div
           className="

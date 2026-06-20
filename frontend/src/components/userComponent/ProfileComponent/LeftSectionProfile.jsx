@@ -1,7 +1,10 @@
 import user from '../../../assets/image copy 27.png'
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faReceipt ,faHeart,faMoneyCheck,faGear,faMap,faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from 'react-router-dom';
+import { PATH } from '../../../path';
 const LeftSectionProfile = ({activeMenu,setactiveMenu}) => {
+    const navigate = useNavigate()
     const Menu =[
         {id :"Orders", name : "Orders",icon: faReceipt},
         {id :"Favourite",name : "Favourite",icon: faHeart},
@@ -35,7 +38,7 @@ const LeftSectionProfile = ({activeMenu,setactiveMenu}) => {
                 ))}
             </div>
         </div>
-        <button className='flex gap-2 items-center justify-center text-white bg-[#004953] hover:cursor-pointer hover:shadow-2xl hover:scale-[1.05] hover:text-black p-3 transition-all duration-300 rounded-2xl'>
+        <button onClick={()=>navigate(PATH.AUTH.LOGIN)} className='flex gap-2 items-center justify-center text-white bg-[#004953] hover:cursor-pointer hover:shadow-2xl hover:scale-[1.05] hover:text-black p-3 transition-all duration-300 rounded-2xl'>
             <FontAwesomeIcon
             icon={faRightFromBracket}
             />

@@ -21,7 +21,7 @@ export const getAllDeliveries = async (req, res) => {
   try {
     const riders = await User.findAll({
       where: {
-        role: "rider",
+        role: "driver",
       },
     });
 
