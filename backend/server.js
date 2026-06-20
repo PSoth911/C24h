@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
-import { pool } from "./database/db.js";
+// import { pool } from "./database/db.js";
+import sequelize from "./database/db.js";
+import User from "./models/user.js";
 
 import userRoutes from "./routes/uerRoutes.js";
 import sellerRoutes from "./routes/sellerRoutes.js";
@@ -71,8 +73,20 @@ app.post("/api/admin/login", async (req, res) => {
   });
 });
 
+async function startServer() {
+  try {
+    await sequelize.authenticate();
+    console.log("Database connected");
 
+    await sequelize.sync(); // create tables if needed
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+    app.listen(PORT, () => {
+      console.log(`Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Unable to connect to database:", error);
+  }
+}
+
+startServer();
+

@@ -1,9 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import {
-    findbyemail,
-    createcustomer,
-} from "../repositories/user_repositories.js";
+import { findByEmail, createCustomer } from "../repositories/user_repositories.js";
 
 export const register = async (
     first_name,
