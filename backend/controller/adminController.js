@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import {User,Restaurant,Driver, Category,Order} from "../models/associations.js"
+import {User,Restaurant,Driver, Category,Order,Customer} from "../models/associations.js"
 
 export const getAllUsers = async (req,res)=>{
     try {
@@ -76,7 +76,6 @@ export const getAllDeliveries = async (req,res)=>{
 
 export const getMe = async (req, res) => {
   try {
-    console.log("HEADERS:", req.headers);
     const authHeader = req.headers.authorization;
 
     if (!authHeader) {
@@ -108,6 +107,17 @@ export const getDashboardStats = async (req, res) => {
     const totalRestaurants = await Restaurant.count();
     const totalUsers = await User.count();
     const totalOrders = await Order.count();
+    const orders = await Order.findAll({
+        include: [
+                {
+                    model: Customer,
+                    attributes: { exclude: ["password_hash"] },
+                },
+                {
+                    model: Restaurant,
+                },
+            ],
+    });
 
      res.status(200).json({
         success:true,
@@ -115,6 +125,7 @@ export const getDashboardStats = async (req, res) => {
                 totalRestaurants,
                 totalUsers,
                 totalOrders,
+                orders,
         },
     })
 

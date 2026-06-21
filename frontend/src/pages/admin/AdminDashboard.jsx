@@ -147,27 +147,35 @@ export default function AdminDashboard() {
                 </thead>
 
                 <tbody>
-                  <tr className="border-b">
-                    <td className="p-4">#1001</td>
-                    <td className="p-4">John Doe</td>
-                    <td className="p-4">Burger House</td>
-                    <td className="p-4">
-                      <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                        Delivered
-                      </span>
-                    </td>
-                  </tr>
+                  {dashboard?.orders?.map((order) => (
+                    <tr key={order.order_id} className="border-b">
+                      
+                      <td className="p-4">#{order.order_id}</td>
 
-                  <tr>
-                    <td className="p-4">#1002</td>
-                    <td className="p-4">Jane Smith</td>
-                    <td className="p-4">Pizza Hub</td>
-                    <td className="p-4">
-                      <span className="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full">
-                        Preparing
-                      </span>
-                    </td>
-                  </tr>
+                      <td className="p-4">
+                        {order.Customer?.user_id}
+                      </td>
+
+                      <td className="p-4">
+                        {order.Restaurant?.restaurant_name}
+                      </td>
+
+                      <td className="p-4">
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm ${
+                            order.order_status === "delivered"
+                              ? "bg-green-100 text-green-700"
+                              : order.order_status === "pending"
+                              ? "bg-yellow-100 text-yellow-700"
+                              : "bg-blue-100 text-blue-700"
+                          }`}
+                        >
+                          {order.order_status}
+                        </span>
+                      </td>
+
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>

@@ -27,7 +27,6 @@ async function startServer() {
 
     await sequelize.sync();
     console.log(" Models synchronized");
-    
     app.listen(PORT, () => {
       console.log(` Server running on port ${PORT}`);
     });
