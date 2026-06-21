@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import sequelize from "./database/db.js";
-import "./database/associations.js";
+import "./models/associations.js";
 
 import authRoutes from "./routes/auth_route.js";
 

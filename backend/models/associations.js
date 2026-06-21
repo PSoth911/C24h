@@ -1,17 +1,17 @@
-import User from "../models/User.js";
-import Customer from "../models/Customer.js";
-import Restaurant from "../models/Restaurant.js";
-import Driver from "../models/Driver.js";
-import Category from "../models/Category.js";
-import Product from "../models/Product.js";
-import Cart from "../models/Cart.js";
-import CartItem from "../models/CartItem.js";
-import Order from "../models/Order.js";
-import OrderItem from "../models/OrderItem.js";
-import Payment from "../models/Payment.js";
-import Delivery from "../models/Delivery.js";
-import Review from "../models/Review.js";
-import Notification from "../models/Notification.js";
+import User from "./User.js";
+import Customer from "./Customer.js";
+import Restaurant from "./Restaurant.js";
+import Driver from "./Driver.js";
+import Category from "./Category.js";
+import Product from "./Product.js";
+import Cart from "./Cart.js";
+import CartItem from "./CartItem.js";
+import Order from "./Order.js";
+import OrderItem from "./OrderItem.js";
+import Payment from "./Payment.js";
+import Delivery from "./Delivery.js";
+import Review from "./Review.js";
+import Notification from "./Notification.js";
 
 // user
 User.hasOne(Customer, {
