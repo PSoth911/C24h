@@ -158,6 +158,15 @@ Review.belongsTo(Product, {
   foreignKey: "product_id",
 });
 
+//Restaurant and Category
+Category.hasMany(Restaurant, {
+  foreignKey: "category_id",
+});
+
+Restaurant.belongsTo(Category, {
+  foreignKey: "category_id",
+});
+
 export {
   User,
   Customer,
