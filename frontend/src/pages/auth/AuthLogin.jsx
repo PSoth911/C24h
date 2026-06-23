@@ -20,12 +20,13 @@ export default function AuthLogin() {
           password,
         }
       );
-
       const { token, user } = response.data;
       const role = user.role;
 
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("role", role);
+      sessionStorage.setItem("user", JSON.stringify(user));
+   
 
       switch (role) {
         case "admin":

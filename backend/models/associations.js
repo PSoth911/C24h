@@ -1,5 +1,5 @@
-import User from "./User.js";
-import Customer from "./Customer.js";
+import User from "./user.js";
+import Customer from "./customer.js";
 import Restaurant from "./Restaurant.js";
 import Driver from "./Driver.js";
 import Category from "./Category.js";
