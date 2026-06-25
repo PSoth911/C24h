@@ -79,7 +79,7 @@ function App() {
       <Route path={PATH.USER.Payment} element={<ProtectedRoute role="customer"> <PaymentPage/> </ProtectedRoute>}/>
 
       
-      <Route element={<ProtectedRoute role="seller" loginPath={PATH.SELLER.LOGIN}><PortalLayout /></ProtectedRoute>}>
+      <Route element={<ProtectedRoute role="restaurant_owner" loginPath={PATH.SELLER.LOGIN}><PortalLayout /></ProtectedRoute>}>
         <Route path={PATH.SELLER.DASHBOARD} element={<Dashboard />} />
         <Route path={PATH.SELLER.ORDERS} element={<Orders />} />
         <Route path={PATH.SELLER.MENU} element={<MenuManagement />} />
