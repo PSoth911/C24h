@@ -18,6 +18,15 @@ export const PATH = {
         RESTAURANTS:"/admin/restaurants",
         USERS:"/admin/users"
     },
+    SELLER:{
+        LOGIN:"/seller/login",
+        DASHBOARD:"/seller/dashboard",
+        ORDERS:"/seller/orders",
+        MENU:"/seller/menu",
+        ANALYTICS:"/seller/analytics",
+        PROMOTIONS:"/seller/promotions",
+        SETTINGS:"/seller/settings"
+    },
     USER:{
         // LOGIN: "/user/login",
         // SIGNUP: "/user/signup",
