@@ -10,11 +10,11 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: "http://localhost:5000/api",
       },
     ],
   },
-  apis: ["./routes/*.js"],
+  apis: ["./routes/**/*.js"],
 };
 
 const swaggerSpec = swaggerJsdoc(options);
