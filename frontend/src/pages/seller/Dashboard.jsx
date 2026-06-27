@@ -1,4 +1,4 @@
-import React from 'react';
+import {React} from 'react';
 import DashboardMetrics from '../../components/Seller/DashboardMetrics';
 import RevenueChart from '../../components/Seller/RevenueChart';
 import OrdersStream from '../../components/Seller/OrdersStream';

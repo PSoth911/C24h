@@ -8,10 +8,10 @@ export default function AdminDeliveryManagement() {
 
   const [drivers, setDrivers] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/alldeliveries")
+    fetch("http://localhost:5000/api/admin/deliveries")
       .then((res) => res.json())
       .then((data) => {
-        setDrivers(data);
+        setDrivers(data.data);
       })
       .catch((err) => {
         console.error(err);
@@ -51,22 +51,22 @@ export default function AdminDeliveryManagement() {
 
               <tbody>
                 {drivers
-                  .filter(d => d.full_name.toLowerCase().includes(search.toLowerCase()))
+                  .filter(d => d.vehicle_type.toLowerCase().includes(search.toLowerCase()))
                   .map(d => (
-                    <tr key={d.user_id} className="border-b hover:bg-gray-50">
+                    <tr key={d.driver_id} className="border-b hover:bg-gray-50">
                       <td className="p-4">{d.user_id}</td>
-                      <td className="p-4 font-medium">{d.full_name}</td>
-                      <td className="p-4">{d.vehicle}</td>
+                      <td className="p-4 font-medium">{d.User.full_name}</td>
+                      <td className="p-4">{d.vehicle_type}</td>
                       <td className="p-4">
                         <span className={`px-3 py-1 rounded-full text-xs ${
-                          d.status === "Online"
+                          d.current_status === "Online"
                             ? "bg-green-100 text-green-700"
                             : "bg-gray-200 text-gray-600"
                         }`}>
-                          {d.status}
+                          {d.current_status}
                         </span>
                       </td>
-                      <td className="p-4">{d.orders}</td>
+                      <td className="p-4">{d.current_status}</td>
                     </tr>
                   ))}
               </tbody>
