@@ -38,6 +38,9 @@ export default function AuthLogin() {
         case "customer":
           navigate(PATH.USER.HOME);
           break;
+        case "restaurant_owner":
+          navigate(PATH.SELLER.DASHBOARD);
+          break;
 
         default:
           navigate("/");

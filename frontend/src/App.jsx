@@ -79,14 +79,12 @@ function App() {
       <Route path={PATH.USER.Payment} element={<ProtectedRoute role="customer"> <PaymentPage/> </ProtectedRoute>}/>
 
       
-      <Route element={<ProtectedRoute role="restaurant_owner" loginPath={PATH.SELLER.LOGIN}><PortalLayout /></ProtectedRoute>}>
-        <Route path={PATH.SELLER.DASHBOARD} element={<Dashboard />} />
-        <Route path={PATH.SELLER.ORDERS} element={<Orders />} />
-        <Route path={PATH.SELLER.MENU} element={<MenuManagement />} />
-        <Route path={PATH.SELLER.ANALYTICS} element={<Analytics />} />
-        <Route path={PATH.SELLER.PROMOTIONS} element={<Promotions />} />
-        <Route path={PATH.SELLER.SETTINGS} element={<Settings />} />
-      </Route>
+      <Route path={PATH.SELLER.DASHBOARD} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><Dashboard /></PortalLayout></ProtectedRoute>} />
+      <Route path={PATH.SELLER.ORDERS} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><Orders /></PortalLayout></ProtectedRoute>} />
+      <Route path={PATH.SELLER.MENU} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><MenuManagement /></PortalLayout></ProtectedRoute>} />
+      <Route path={PATH.SELLER.ANALYTICS} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><Analytics /></PortalLayout></ProtectedRoute>} />
+      <Route path={PATH.SELLER.PROMOTIONS} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><Promotions /></PortalLayout></ProtectedRoute>} />
+      <Route path={PATH.SELLER.SETTINGS} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><Settings /></PortalLayout></ProtectedRoute>} />
 
 
 
