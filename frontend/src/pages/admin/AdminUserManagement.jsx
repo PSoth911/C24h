@@ -8,10 +8,10 @@ export default function AdminUserManagement() {
 
   const [users, setUsers] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/allusers")
+    fetch("http://localhost:5000/api/admin/users")
       .then((res) => res.json())
       .then((data) => {
-        setUsers(data);
+        setUsers(data.data);
       })
       .catch((err) => {
         console.error(err);

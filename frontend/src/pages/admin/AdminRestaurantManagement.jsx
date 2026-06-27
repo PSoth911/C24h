@@ -8,10 +8,10 @@ export default function AdminRestaurantManagement() {
 
   const [restaurants, setRestaurants] = useState([]);
   useEffect(() => {
-    fetch("http://localhost:5000/allrestaurants")
+    fetch("http://localhost:5000/api/admin/restaurants")
       .then((res) => res.json())
       .then((data) => {
-        setRestaurants(data);
+        setRestaurants(data.data);
       })
       .catch((err) => {
         console.error(err);
@@ -58,13 +58,13 @@ export default function AdminRestaurantManagement() {
 
               <tbody>
                 {restaurants
-                  .filter(r => r.full_name.toLowerCase().includes(search.toLowerCase()))
+                  .filter(r => r.restaurant_name.toLowerCase().includes(search.toLowerCase()))
                   .map(r => (
-                    <tr key={r.id} className="border-b hover:bg-gray-50">
-                      <td className="p-4">{r.id}</td>
-                      <td className="p-4 font-medium">{r.full_name}</td>
-                      <td className="p-4">{r.owner}</td>
-                      <td className="p-4">{r.category}</td>
+                    <tr key={r.restaurant_id} className="border-b hover:bg-gray-50">
+                      <td className="p-4">{r.restaurant_id}</td>
+                      <td className="p-4 font-medium">{r.restaurant_name}</td>
+                      <td className="p-4">{r.User.full_name}</td>
+                      <td className="p-4">{r.Category.category_name}</td>
                       <td className="p-4">
                         <span className={`px-3 py-1 rounded-full text-xs ${
                           r.status === "Active"

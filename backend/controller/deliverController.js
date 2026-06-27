@@ -1,33 +1,35 @@
-// import { pool } from "../database/db.js";
-
-// const getAllDeliveries = (async (req, res) => {
-//   try {
-//     const [rows] = await pool.query(
-//     "SELECT * FROM users WHERE role = 'rider';"
-//     );
-//     res.json(rows);
-//   } catch (error) {
-//     res.status(500).json({
-//       message: error.message,
-//     });
-//   }
-// })
-
-// export { getAllDeliveries };
-
 import User from "../models/user.js";
+import Driver from "../models/Driver.js";
+import Delivery from "../models/Delivery.js";
 
-export const getAllDeliveries = async (req, res) => {
+export const getProfile = async (req, res) => {
   try {
-    const riders = await User.findAll({
-      where: {
-        role: "driver",
+    console.log("BODY:", req.body);
+
+    const { user_id } = req.body;
+
+    const foundUser = await User.findByPk(user_id, {
+      attributes: {
+        exclude: ["password_hash"],
       },
+      include: [
+        {
+          model: Driver,
+          include: [
+            {
+              model: Delivery,
+            },
+          ],
+        },
+      ],
     });
 
-    res.status(200).json(riders);
+    console.log("FOUND USER:", foundUser);
+
+    return res.json(foundUser);
   } catch (error) {
-    res.status(500).json({
+    console.error(error);
+    return res.status(500).json({
       message: error.message,
     });
   }

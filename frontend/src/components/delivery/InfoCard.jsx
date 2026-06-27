@@ -1,7 +1,7 @@
 import ProfileCard from "./ProfileCard";
 import { Mail, MapPin } from "lucide-react";
 
-export default function InfoCard() {
+export default function InfoCard({email }) {
   return (
     <ProfileCard title="Personal Information">
       <div className="space-y-5">
@@ -11,7 +11,7 @@ export default function InfoCard() {
             <p className="text-sm text-gray-500">
               Email
             </p>
-            <p>m.sterling@c24h.com</p>
+            <p>{email}</p>
           </div>
         </div>
 
