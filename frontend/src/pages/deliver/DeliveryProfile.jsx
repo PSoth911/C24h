@@ -1,17 +1,19 @@
+// DeliveryProfile.jsx
 import { useEffect, useState } from "react";
 import {
   Mail, Phone, ShieldCheck, Circle,
   Edit, X, CheckCircle, AlertCircle,
   Package, Star, TrendingUp,
 } from "lucide-react";
-
+import { useNavigate } from "react-router-dom";
 import DeliveryNav from "../../components/delivery/DeliveryNav";
 import DeliverySideNav from "../../components/delivery/DeliverySideNav";
 
 const BASE = "http://localhost:5000/api";
 
 export default function DeliveryProfile() {
-  const sessionUser = JSON.parse(sessionStorage.getItem("user"));
+  const navigate  = useNavigate();
+  const user      = JSON.parse(sessionStorage.getItem("user"));
 
   const [profile,  setProfile]  = useState(null);
   const [stats,    setStats]    = useState(null);
@@ -26,12 +28,14 @@ export default function DeliveryProfile() {
   };
 
   useEffect(() => {
+    if (!user) { navigate("/auth/login"); return; }
+
     const fetchAll = async () => {
       try {
         const res  = await fetch(`${BASE}/deliver/profile`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ user_id: sessionUser?.id ?? sessionUser?.user_id }),
+          body: JSON.stringify({ user_id: user.id ?? user.user_id }),
         });
         const data = await res.json();
         if (!data.success) throw new Error(data.message);
@@ -40,8 +44,8 @@ export default function DeliveryProfile() {
 
         const driverId = data.data?.Driver?.driver_id;
         if (driverId) {
-          const sr   = await fetch(`${BASE}/deliver/stats/${driverId}`);
-          const sd   = await sr.json();
+          const sr = await fetch(`${BASE}/deliver/stats/${driverId}`);
+          const sd = await sr.json();
           if (sd.success) setStats(sd.data);
         }
       } catch (e) {
@@ -50,6 +54,7 @@ export default function DeliveryProfile() {
         setLoading(false);
       }
     };
+
     fetchAll();
   }, []);
 
@@ -61,14 +66,18 @@ export default function DeliveryProfile() {
     });
     const data = await res.json();
     if (!data.success) { showToast("error", data.message ?? "Update failed."); return; }
+
+    // update sessionStorage so the name reflects immediately
+    const updated = { ...user, full_name: data.data.full_name, phone: data.data.phone };
+    sessionStorage.setItem("user", JSON.stringify(updated));
+
     setProfile((prev) => ({ ...prev, full_name: data.data.full_name, phone: data.data.phone }));
     setModal(false);
     showToast("success", "Profile updated.");
   };
 
   const initials =
-    profile?.full_name
-      ?.split(" ").map((n) => n[0]).join("").substring(0, 2).toUpperCase() ?? "D";
+    profile?.full_name?.split(" ").map((n) => n[0]).join("").substring(0, 2).toUpperCase() ?? "D";
 
   const isActive = profile?.status === "Active";
 
@@ -80,7 +89,6 @@ export default function DeliveryProfile() {
         <DeliverySideNav />
 
         <main className="flex-1 p-8 space-y-8 relative">
-          {/* Toast */}
           {toast && (
             <div className={`fixed top-5 right-5 z-50 flex items-center gap-2 px-5 py-3 rounded-2xl shadow-lg text-white text-sm font-medium ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}`}>
               {toast.type === "success" ? <CheckCircle size={16}/> : <AlertCircle size={16}/>}
@@ -88,7 +96,6 @@ export default function DeliveryProfile() {
             </div>
           )}
 
-          {/* Page header */}
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-slate-800">My Profile</h1>
@@ -112,7 +119,6 @@ export default function DeliveryProfile() {
             </div>
           ) : (
             <div className="grid lg:grid-cols-3 gap-8">
-              {/* Left card */}
               <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-8 shadow-sm text-center">
                 <div className="relative inline-block">
                   <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-teal-600 to-cyan-500 text-white flex items-center justify-center text-4xl font-bold shadow-lg">
@@ -120,25 +126,20 @@ export default function DeliveryProfile() {
                   </div>
                   <span className={`absolute -bottom-2 -right-2 w-4 h-4 rounded-full border-2 border-white ${isActive ? "bg-green-500" : "bg-red-400"}`} />
                 </div>
-
                 <h2 className="mt-6 text-xl font-bold text-slate-800">{profile.full_name}</h2>
                 <p className="text-slate-500 text-sm">{profile.role}</p>
-
                 <div className={`mt-3 inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium ${isActive ? "bg-green-100 text-green-700" : "bg-red-100 text-red-600"}`}>
                   {isActive ? "Active" : "Inactive"}
                 </div>
-
                 <div className="mt-8 space-y-4 text-left">
-                  <InfoRow icon={<Mail size={16}/>}       label="Email"  value={profile.email} />
-                  <InfoRow icon={<Phone size={16}/>}      label="Phone"  value={profile.phone || "Not set"} />
+                  <InfoRow icon={<Mail size={16}/>}        label="Email"  value={profile.email} />
+                  <InfoRow icon={<Phone size={16}/>}       label="Phone"  value={profile.phone || "Not set"} />
                   <InfoRow icon={<ShieldCheck size={16}/>} label="Role"   value={profile.role} />
-                  <InfoRow icon={<Circle size={16}/>}     label="Status" value={profile.status} />
+                  <InfoRow icon={<Circle size={16}/>}      label="Status" value={profile.status} />
                 </div>
               </div>
 
-              {/* Right content */}
               <div className="lg:col-span-2 space-y-6">
-                {/* Personal info fields */}
                 <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-8 shadow-sm">
                   <h2 className="text-lg font-semibold mb-6 text-slate-800">Personal Information</h2>
                   <div className="grid md:grid-cols-2 gap-6">
@@ -151,29 +152,12 @@ export default function DeliveryProfile() {
                   </div>
                 </div>
 
-                {/* Stats mini cards */}
                 <div className="grid md:grid-cols-3 gap-6">
-                  <MiniCard
-                    title="Total Deliveries"
-                    value={stats?.total ?? profile.Driver?.Deliveries?.length ?? "—"}
-                    icon={<Package size={18}/>}
-                    color="from-blue-500 to-blue-400"
-                  />
-                  <MiniCard
-                    title="Completed"
-                    value={stats?.delivered ?? "—"}
-                    icon={<Star size={18}/>}
-                    color="from-green-500 to-green-400"
-                  />
-                  <MiniCard
-                    title="Total Earned"
-                    value={stats ? `$${parseFloat(stats.totalEarnings).toFixed(2)}` : "—"}
-                    icon={<TrendingUp size={18}/>}
-                    color="from-teal-600 to-teal-400"
-                  />
+                  <MiniCard title="Total Deliveries" value={stats?.total     ?? "—"} icon={<Package    size={18}/>} color="from-blue-500 to-blue-400"  />
+                  <MiniCard title="Completed"         value={stats?.delivered ?? "—"} icon={<Star       size={18}/>} color="from-green-500 to-green-400" />
+                  <MiniCard title="Total Earned"      value={stats ? `$${parseFloat(stats.totalEarnings).toFixed(2)}` : "—"} icon={<TrendingUp size={18}/>} color="from-teal-600 to-teal-400" />
                 </div>
 
-                {/* Banner */}
                 <div className="rounded-3xl p-8 text-white bg-gradient-to-br from-teal-600 to-cyan-500 shadow-lg">
                   <h2 className="text-xl font-bold">Driver Access</h2>
                   <p className="text-sm opacity-90 mt-2">
@@ -186,7 +170,6 @@ export default function DeliveryProfile() {
         </main>
       </div>
 
-      {/* Edit Modal */}
       {modal && profile && (
         <EditModal user={profile} onClose={() => setModal(false)} onSave={handleSave} />
       )}
@@ -194,9 +177,8 @@ export default function DeliveryProfile() {
   );
 }
 
-/* ── Edit Modal ── */
 function EditModal({ user, onClose, onSave }) {
-  const [form, setForm] = useState({ full_name: user.full_name ?? "", phone: user.phone ?? "" });
+  const [form, setForm]   = useState({ full_name: user.full_name ?? "", phone: user.phone ?? "" });
   const [saving, setSaving] = useState(false);
   const set = (k) => (e) => setForm((f) => ({ ...f, [k]: e.target.value }));
 
@@ -208,7 +190,7 @@ function EditModal({ user, onClose, onSave }) {
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X size={20}/></button>
         </div>
         <div className="space-y-4">
-          {[["Full Name", "full_name", "text"], ["Phone", "phone", "tel"]].map(([label, key, type]) => (
+          {[["Full Name","full_name","text"],["Phone","phone","tel"]].map(([label,key,type]) => (
             <div key={key}>
               <label className="block text-sm font-medium text-slate-700 mb-1">{label}</label>
               <input type={type} value={form[key]} onChange={set(key)}
@@ -235,7 +217,6 @@ function EditModal({ user, onClose, onSave }) {
   );
 }
 
-/* ── Shared components ── */
 function InfoRow({ icon, label, value }) {
   return (
     <div className="flex items-center gap-3">

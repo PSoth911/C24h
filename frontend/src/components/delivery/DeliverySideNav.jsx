@@ -1,32 +1,23 @@
-import { useEffect } from "react";
+// DeliverySideNav.jsx
 import { NavLink, useNavigate } from "react-router-dom";
-import {
-  LayoutDashboard,
-  Map,
-  Wallet,
-  UserCircle,
-  LogOut,
-} from "lucide-react";
+import { LayoutDashboard, Map, Wallet, UserCircle, LogOut } from "lucide-react";
 import { PATH } from "../../path.js";
-import { useAuth } from "../../context/AuthContext";
 
 export default function DeliverySideNav() {
-  const { user, loading, logout } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate("/login");
-    }
-  }, [user, loading, navigate]);
+  const logout = () => {
+    sessionStorage.clear();
+    navigate("/auth/login");
+  };
 
   const menus = [
     {
       title: "GENERAL",
       items: [
         { name: "Dashboard", path: PATH.DELIVERY.DASHBOARD, icon: LayoutDashboard },
-        { name: "Map",       path: PATH.DELIVERY.MAP,       icon: Map },
-        { name: "Earnings",  path: PATH.DELIVERY.EARNING,   icon: Wallet },
+        { name: "Map",       path: PATH.DELIVERY.MAP,       icon: Map              },
+        { name: "Earnings",  path: PATH.DELIVERY.EARNING,   icon: Wallet           },
       ],
     },
     {
@@ -36,15 +27,6 @@ export default function DeliverySideNav() {
       ],
     },
   ];
-
-  // ✅ don't render sidebar at all while auth is still loading
-  if (loading) {
-    return (
-      <aside className="w-64 bg-[#F8FAFC] h-[calc(100vh-80px)] sticky top-20 flex items-center justify-center">
-        <div className="w-6 h-6 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
-      </aside>
-    );
-  }
 
   return (
     <aside className="w-64 bg-[#F8FAFC] h-[calc(100vh-80px)] sticky top-20 flex flex-col px-5 py-8">
@@ -77,7 +59,7 @@ export default function DeliverySideNav() {
       </div>
 
       <button
-        onClick={() => logout()}
+        onClick={logout}
         className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-white hover:text-red-500 transition"
       >
         <LogOut size={19} />

@@ -121,3 +121,25 @@ export const getAvailableDeliveries = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// driverController.js
+export const acceptDelivery = async (req, res) => {
+  try {
+    const delivery = await Delivery.findByPk(req.params.delivery_id);
+    if (!delivery) return res.status(404).json({ message: "Delivery not found" });
+
+    const driver = await Driver.findOne({ where: { user_id: req.body.driver_id } });
+
+    delivery.driver_id = driver.driver_id;
+    delivery.delivery_status = "pending"; // transitions out of "assigned"
+    await delivery.save();
+
+    driver.current_status = "busy";
+    await driver.save();
+
+    return res.json({ success: true, data: delivery });
+  } catch (e) {
+    res.status(500).json({ message: e.message });
+  }
+};
+

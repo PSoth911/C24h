@@ -47,7 +47,7 @@ export default function AuthLogin() {
           navigate("/");
       }
     } catch (error) {
-      alert("Invalid email or password");
+      alert("Invalid email or password",error);
     }
   };
 

@@ -64,8 +64,8 @@ export default function DeliveryMap() {
         setDelivery((prev) => ({ ...prev, delivery_status: nextStatus }));
         showToast("success", `Status updated to "${nextStatus.replace("_", " ")}"`);
       }
-    } catch (e) {
-      showToast("error", "Failed to update status.");
+    } catch (error) {
+      showToast("error", "Failed to update status.",error);
     } finally {
       setUpdating(false);
     }

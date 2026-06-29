@@ -2,7 +2,7 @@ import { Navigate } from "react-router-dom";
 
 export default function ProtectedRoute({
   children,
-  role=[],
+  role,
 }) {
   const token = sessionStorage.getItem("token");
   const userRole = sessionStorage.getItem("role");

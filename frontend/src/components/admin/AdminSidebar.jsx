@@ -8,10 +8,10 @@ import {
   UtensilsCrossed,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext";
+
 
 export default function AdminSidebar({ PATH }) {
-  const { logout } = useAuth();
+  
   const navigate = useNavigate();
 
   const menus = [
@@ -31,6 +31,11 @@ export default function AdminSidebar({ PATH }) {
       ],
     },
   ];
+
+  const logout = () => {
+    sessionStorage.clear();
+    navigate("/auth/login");
+  };
   
 
   const handleLogout = () => {

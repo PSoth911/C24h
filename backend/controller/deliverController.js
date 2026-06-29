@@ -3,6 +3,7 @@ import Driver from "../models/Driver.js";
 import Delivery from "../models/Delivery.js";
 import Order from "../models/Order.js";
 import Restaurant from "../models/Restaurant.js";
+import { Op } from "sequelize";
 
 /* ─────────────────────────────────────────
    GET /api/deliver/profile
@@ -119,7 +120,7 @@ export const getActiveDelivery = async (req, res) => {
     const active = await Delivery.findOne({
       where: {
         driver_id,
-        delivery_status: ["pending", "picked_up", "on_the_way"],
+        delivery_status: { [Op.in]: ["pending", "picked_up", "on_the_way"] },
       },
       include: [
         {

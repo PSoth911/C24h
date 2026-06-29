@@ -1,43 +1,55 @@
+// DeliveryDashboard.jsx
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Package, CheckCircle2, Clock, XCircle, TrendingUp } from "lucide-react";
-
 import DeliveryNav from "../../components/delivery/DeliveryNav";
 import DeliverySideNav from "../../components/delivery/DeliverySideNav";
-import NewOrder from "../../components/delivery/NewOrder";
+import NewOrder from "../../components/delivery/NewOrder"
 
 const BASE = "http://localhost:5000/api";
 
 export default function DeliveryDashboard() {
-  const user    = JSON.parse(sessionStorage.getItem("user"));
+  const navigate = useNavigate();
+
+  const user = JSON.parse(sessionStorage.getItem("user"));
   const driverId = user?.Driver?.driver_id ?? user?.driver_id;
 
-  const [orders,  setOrders]  = useState([]);
-  const [stats,   setStats]   = useState(null);
-  const [online,  setOnline]  = useState(true);
-
-  const fetchOrders = async () => {
-    try {
-      const res  = await fetch(`${BASE}/driver/available`);
-      const data = await res.json();
-      setOrders(Array.isArray(data) ? data : data.data ?? []);
-    } catch (e) { console.error(e); }
-  };
-
-  const fetchStats = async () => {
-    if (!driverId) return;
-    try {
-      const res  = await fetch(`${BASE}/deliver/stats/${driverId}`);
-      const data = await res.json();
-      if (data.success) setStats(data.data);
-    } catch (e) { console.error(e); }
-  };
+  const [orders, setOrders] = useState([]);
+  const [stats,  setStats]  = useState(null);
+  const [online, setOnline] = useState(true);
 
   useEffect(() => {
+    if (!user) navigate("/auth/login");
+  }, []);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res  = await fetch(`${BASE}/driver/available`);
+        const data = await res.json();
+        setOrders(Array.isArray(data) ? data : data.data ?? []);
+      } catch (e) {
+        console.error("fetchOrders error:", e);
+      }
+    };
     fetchOrders();
-    fetchStats();
     const iv = setInterval(fetchOrders, 10000);
     return () => clearInterval(iv);
   }, []);
+
+  useEffect(() => {
+    if (!driverId) return;
+    const fetchStats = async () => {
+      try {
+        const res  = await fetch(`${BASE}/deliver/stats/${driverId}`);
+        const data = await res.json();
+        if (data.success) setStats(data.data);
+      } catch (e) {
+        console.error("fetchStats error:", e);
+      }
+    };
+    fetchStats();
+  }, [driverId]);
 
   const greeting = () => {
     const h = new Date().getHours();
@@ -54,7 +66,6 @@ export default function DeliveryDashboard() {
         <DeliverySideNav />
 
         <main className="flex-1 p-8 space-y-8">
-          {/* Header */}
           <div>
             <h1 className="text-2xl font-bold text-slate-800">
               {greeting()}, {user?.full_name ?? "Driver"} 👋
@@ -62,15 +73,13 @@ export default function DeliveryDashboard() {
             <p className="text-sm text-slate-500">Here's your overview for today.</p>
           </div>
 
-          {/* Stat Cards */}
           <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
-            <StatCard title="Total Deliveries" value={stats?.total      ?? "—"} icon={<Package      size={20}/>} color="from-blue-500 to-blue-400"/>
-            <StatCard title="Completed"         value={stats?.delivered  ?? "—"} icon={<CheckCircle2 size={20}/>} color="from-green-500 to-green-400"/>
-            <StatCard title="In Progress"       value={stats?.pending    ?? "—"} icon={<Clock        size={20}/>} color="from-orange-500 to-orange-400"/>
-            <StatCard title="Cancelled"         value={stats?.cancelled  ?? "—"} icon={<XCircle      size={20}/>} color="from-red-500 to-red-400"/>
+            <StatCard title="Total Deliveries" value={stats?.total     ?? "—"} icon={<Package      size={20} />} color="from-blue-500 to-blue-400"   />
+            <StatCard title="Completed"         value={stats?.delivered ?? "—"} icon={<CheckCircle2 size={20} />} color="from-green-500 to-green-400"  />
+            <StatCard title="In Progress"       value={stats?.pending   ?? "—"} icon={<Clock        size={20} />} color="from-orange-500 to-orange-400"/>
+            <StatCard title="Cancelled"         value={stats?.cancelled ?? "—"} icon={<XCircle      size={20} />} color="from-red-500 to-red-400"      />
           </div>
 
-          {/* Earnings banner */}
           {stats && (
             <div className="bg-gradient-to-r from-teal-600 to-cyan-500 rounded-3xl p-6 text-white flex items-center justify-between shadow-lg">
               <div>
@@ -78,13 +87,14 @@ export default function DeliveryDashboard() {
                 <h2 className="text-4xl font-bold mt-1">
                   ${parseFloat(stats.totalEarnings ?? 0).toFixed(2)}
                 </h2>
-                <p className="text-sm opacity-70 mt-1">From {stats.delivered} completed deliveries</p>
+                <p className="text-sm opacity-70 mt-1">
+                  From {stats.delivered} completed deliveries
+                </p>
               </div>
               <TrendingUp size={48} className="opacity-30" />
             </div>
           )}
 
-          {/* New orders */}
           <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm">
             <div className="flex items-center justify-between p-6 border-b border-white/30">
               <h2 className="font-semibold text-lg text-slate-800">Incoming Orders</h2>
@@ -94,7 +104,15 @@ export default function DeliveryDashboard() {
             <div className="p-6 grid md:grid-cols-2 gap-4">
               {orders.length > 0 ? (
                 orders.map((order) => (
-                  <NewOrder key={order.delivery_id} order={order} onAccepted={fetchOrders} />
+                  <NewOrder
+                    key={order.delivery_id}
+                    order={order}
+                    onAccepted={async () => {
+                      const res  = await fetch(`${BASE}/driver/available`);
+                      const data = await res.json();
+                      setOrders(Array.isArray(data) ? data : data.data ?? []);
+                    }}
+                  />
                 ))
               ) : (
                 <div className="col-span-2 text-center py-14 text-slate-400">
