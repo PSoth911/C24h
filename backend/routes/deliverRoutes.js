@@ -1,12 +1,25 @@
-import express from 'express';
-import { getProfile } from '../controller/deliverController.js';
-import { verifyToken } from '../middleware/auth_middleware.js';
+import express from "express";
+import {
+  getProfile,
+  getDriverStats,
+  getDeliveryHistory,
+  getActiveDelivery,
+  updateDeliveryStatus,
+  updateProfile,
+} from "../controller/deliverController.js";
 
+const router = express.Router();
 
-const route = express.Router();
+// Profile
+router.post("/profile",              getProfile);
+router.patch("/profile/:user_id",    updateProfile);
 
-route.post('/profile',getProfile);
+// Stats & history
+router.get("/stats/:driver_id",      getDriverStats);
+router.get("/history/:driver_id",    getDeliveryHistory);
 
+// Active delivery
+router.get("/active/:driver_id",     getActiveDelivery);
+router.patch("/status/:delivery_id", updateDeliveryStatus);
 
-export default route;
-
+export default router;

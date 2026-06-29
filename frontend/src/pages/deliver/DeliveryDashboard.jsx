@@ -1,78 +1,128 @@
 import { useEffect, useState } from "react";
+import { Package, CheckCircle2, Clock, XCircle, TrendingUp } from "lucide-react";
 
 import DeliveryNav from "../../components/delivery/DeliveryNav";
 import DeliverySideNav from "../../components/delivery/DeliverySideNav";
-
 import NewOrder from "../../components/delivery/NewOrder";
-import TotalOrdersCard from "../../components/delivery/TotalOrder";
+
+const BASE = "http://localhost:5000/api";
 
 export default function DeliveryDashboard() {
-    const [orders, setOrders] = useState([]);
+  const user    = JSON.parse(sessionStorage.getItem("user"));
+  const driverId = user?.Driver?.driver_id ?? user?.driver_id;
 
-    const user = JSON.parse(sessionStorage.getItem("user"));
+  const [orders,  setOrders]  = useState([]);
+  const [stats,   setStats]   = useState(null);
+  const [online,  setOnline]  = useState(true);
 
-    
-    const fetchOrders = async () => {
-        try {
-            const res = await fetch(
-                "http://localhost:5000/api/driver/available"
-            );
-            const data = await res.json();
-            setOrders(data);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-    useEffect(() => {
-        fetchOrders();
+  const fetchOrders = async () => {
+    try {
+      const res  = await fetch(`${BASE}/driver/available`);
+      const data = await res.json();
+      setOrders(Array.isArray(data) ? data : data.data ?? []);
+    } catch (e) { console.error(e); }
+  };
 
-        // auto refresh every 10 seconds
-        const interval = setInterval(fetchOrders, 10000);
+  const fetchStats = async () => {
+    if (!driverId) return;
+    try {
+      const res  = await fetch(`${BASE}/deliver/stats/${driverId}`);
+      const data = await res.json();
+      if (data.success) setStats(data.data);
+    } catch (e) { console.error(e); }
+  };
 
-        return () => clearInterval(interval);
-    }, []);
+  useEffect(() => {
+    fetchOrders();
+    fetchStats();
+    const iv = setInterval(fetchOrders, 10000);
+    return () => clearInterval(iv);
+  }, []);
 
-    return (
-        <div className="w-full h-screen">
-            <div className="hidden lg:flex flex-col w-full h-fit">
-                <DeliveryNav />
+  const greeting = () => {
+    const h = new Date().getHours();
+    if (h < 12) return "Good Morning";
+    if (h < 17) return "Good Afternoon";
+    return "Good Evening";
+  };
 
-                <div className="w-full h-fit flex">
-                    <DeliverySideNav />
+  return (
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200">
+      <DeliveryNav online={online} onToggleOnline={() => setOnline((o) => !o)} />
 
-                    <div className="flex-1 p-12 mx-12 my-6 overflow-y-auto bg-[#F3F4F4] rounded-4xl text-[#004953]">
+      <div className="flex flex-1">
+        <DeliverySideNav />
 
-                        <h1 className="text-3xl font-medium mb-8">
-                            Good Morning, {user?.full_name}
-                        </h1>
+        <main className="flex-1 p-8 space-y-8">
+          {/* Header */}
+          <div>
+            <h1 className="text-2xl font-bold text-slate-800">
+              {greeting()}, {user?.full_name ?? "Driver"} 👋
+            </h1>
+            <p className="text-sm text-slate-500">Here's your overview for today.</p>
+          </div>
 
-                        <div className="grid grid-cols-2 gap-12">
+          {/* Stat Cards */}
+          <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-6">
+            <StatCard title="Total Deliveries" value={stats?.total      ?? "—"} icon={<Package      size={20}/>} color="from-blue-500 to-blue-400"/>
+            <StatCard title="Completed"         value={stats?.delivered  ?? "—"} icon={<CheckCircle2 size={20}/>} color="from-green-500 to-green-400"/>
+            <StatCard title="In Progress"       value={stats?.pending    ?? "—"} icon={<Clock        size={20}/>} color="from-orange-500 to-orange-400"/>
+            <StatCard title="Cancelled"         value={stats?.cancelled  ?? "—"} icon={<XCircle      size={20}/>} color="from-red-500 to-red-400"/>
+          </div>
 
-                            {/* LEFT SIDE */}
-                            <div className="flex flex-col gap-12">
-                                <TotalOrdersCard />
-                            </div>
-
-                            {/* RIGHT SIDE */}
-                            <div className="flex flex-col gap-6">
-
-                                {orders.length > 0 ? (
-                                    orders.map((order) => (
-                                        <NewOrder
-                                            key={order.delivery_id}
-                                            order={order}
-                                            onAccepted={fetchOrders}
-                                        />
-                                    ))
-                                ) : (
-                                    <p>No new orders</p>
-                                )}
-
-                            </div>
-                        </div>
-                    </div>
-                </div>
+          {/* Earnings banner */}
+          {stats && (
+            <div className="bg-gradient-to-r from-teal-600 to-cyan-500 rounded-3xl p-6 text-white flex items-center justify-between shadow-lg">
+              <div>
+                <p className="text-sm opacity-80">Total Earnings</p>
+                <h2 className="text-4xl font-bold mt-1">
+                  ${parseFloat(stats.totalEarnings ?? 0).toFixed(2)}
+                </h2>
+                <p className="text-sm opacity-70 mt-1">From {stats.delivered} completed deliveries</p>
+              </div>
+              <TrendingUp size={48} className="opacity-30" />
             </div>
+          )}
+
+          {/* New orders */}
+          <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm">
+            <div className="flex items-center justify-between p-6 border-b border-white/30">
+              <h2 className="font-semibold text-lg text-slate-800">Incoming Orders</h2>
+              <span className="text-sm text-slate-500">{orders.length} available</span>
+            </div>
+
+            <div className="p-6 grid md:grid-cols-2 gap-4">
+              {orders.length > 0 ? (
+                orders.map((order) => (
+                  <NewOrder key={order.delivery_id} order={order} onAccepted={fetchOrders} />
+                ))
+              ) : (
+                <div className="col-span-2 text-center py-14 text-slate-400">
+                  <Package size={40} className="mx-auto mb-3 opacity-30" />
+                  <p className="font-medium">No incoming orders</p>
+                  <p className="text-xs mt-1">Auto-refreshing every 10 seconds</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+}
+
+function StatCard({ title, value, icon, color }) {
+  return (
+    <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-6 shadow-sm hover:scale-[1.02] transition">
+      <div className="flex justify-between items-center">
+        <div>
+          <p className="text-sm text-slate-500">{title}</p>
+          <h2 className="text-3xl font-bold mt-1 text-slate-800">{value}</h2>
         </div>
-    );
+        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center text-white bg-gradient-to-br ${color}`}>
+          {icon}
+        </div>
+      </div>
+    </div>
+  );
 }

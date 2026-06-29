@@ -1,53 +1,88 @@
-import { NavLink } from "react-router-dom";
-import { UserRound, LayoutDashboard, Map, Wallet } from "lucide-react";
+import { useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Map,
+  Wallet,
+  UserCircle,
+  LogOut,
+} from "lucide-react";
 import { PATH } from "../../path.js";
+import { useAuth } from "../../context/AuthContext";
 
 export default function DeliverySideNav() {
+  const { user, loading, logout } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate("/login");
+    }
+  }, [user, loading, navigate]);
+
+  const menus = [
+    {
+      title: "GENERAL",
+      items: [
+        { name: "Dashboard", path: PATH.DELIVERY.DASHBOARD, icon: LayoutDashboard },
+        { name: "Map",       path: PATH.DELIVERY.MAP,       icon: Map },
+        { name: "Earnings",  path: PATH.DELIVERY.EARNING,   icon: Wallet },
+      ],
+    },
+    {
+      title: "ACCOUNT",
+      items: [
+        { name: "Profile", path: PATH.DELIVERY.PROFILE, icon: UserCircle },
+      ],
+    },
+  ];
+
+  // ✅ don't render sidebar at all while auth is still loading
+  if (loading) {
     return (
-        <div className="w-72 h-[calc(100vh-80px)] flex justify-center items-start">
-            <div className="w-[90%] h-[90%] flex flex-col justify-between py-8 mt-7 ml-6 rounded-2xl ring-1 ring-gray-200">
-
-              
-                <div className="flex flex-col gap-12">
-                   
-
-                    {/* Navigation */}
-                    <nav className="flex flex-col gap-6 px-6 mt-5 text-[#aeaeae]">
-                        <NavLink to={PATH.DELIVERY.DASHBOARD} className={({ isActive }) => `flex items-center gap-3 pl-4 ${isActive ? "text-[#004953] bg-[#F3F4F4] py-2 rounded-xl " : ""}`}>
-                            <LayoutDashboard size={20} />
-                            Dashboard
-                        </NavLink>
-
-                        <NavLink to={PATH.DELIVERY.MAP} className={({ isActive }) =>`flex items-center gap-3 pl-4 ${isActive ? "text-[#004953] bg-[#F3F4F4] py-2 rounded-xl " : ""}`}>
-                            <Map size={20} />
-                            Map
-                        </NavLink>
-
-                        <NavLink to={PATH.DELIVERY.EARNING} className={({ isActive }) =>`flex items-center gap-3 pl-4 ${isActive ? "text-[#004953] bg-[#F3F4F4] py-2  rounded-xl " : ""}`}>
-                            <Wallet size={20} />
-                            Earning
-                        </NavLink>
-                    </nav>
-                </div>
-
-                {/* Profile */}
-                <div className="px-6">
-                    <NavLink
-                    to={PATH.DELIVERY.PROFILE}
-                    className={({ isActive }) =>
-                        isActive
-                        ? "flex items-center justify-between bg-white text-[#004953] px-4 py-3 rounded-2xl shadow-lg border border-[#004953]"
-                        : "flex items-center justify-between bg-[#004953] text-[#ADFF2F] px-4 py-3 rounded-2xl shadow-lg hover:bg-white hover:text-[#004953] hover:border hover:border-[#004953]"
-                    }
-                    >
-                        <span>Profile</span>
-                        <UserRound size={20} />
-                    </NavLink>
-                </div>
-
-            </div>
-            
-
-        </div>
+      <aside className="w-64 bg-[#F8FAFC] h-[calc(100vh-80px)] sticky top-20 flex items-center justify-center">
+        <div className="w-6 h-6 border-2 border-teal-500 border-t-transparent rounded-full animate-spin" />
+      </aside>
     );
+  }
+
+  return (
+    <aside className="w-64 bg-[#F8FAFC] h-[calc(100vh-80px)] sticky top-20 flex flex-col px-5 py-8">
+      <div className="flex-1">
+        {menus.map((section) => (
+          <div key={section.title} className="mb-8">
+            <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase mb-3 px-3">
+              {section.title}
+            </p>
+            <div className="space-y-1">
+              {section.items.map(({ name, path, icon: Icon }) => (
+                <NavLink
+                  key={name}
+                  to={path}
+                  className={({ isActive }) =>
+                    `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                      isActive
+                        ? "bg-white text-slate-900 shadow-sm"
+                        : "text-slate-500 hover:bg-white hover:text-slate-900"
+                    }`
+                  }
+                >
+                  <Icon size={19} />
+                  <span className="font-medium">{name}</span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={() => logout()}
+        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-white hover:text-red-500 transition"
+      >
+        <LogOut size={19} />
+        Logout
+      </button>
+    </aside>
+  );
 }

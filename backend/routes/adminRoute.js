@@ -5,6 +5,20 @@ import {
   getAllDeliveries,
   getMe,
   getDashboardStats,
+  updateProfileHandler,
+
+  createUser,
+  updateUser,
+  deleteUser,
+  toggleUserStatus,
+
+  createRestaurant,
+  updateRestaurant,
+  deleteRestaurant,
+
+  toggleDriverStatus,
+  updateDriver,
+  deleteDriver
 } from "../controller/adminController.js";
 
 const router = express.Router();
@@ -81,5 +95,17 @@ router.get("/profile", getMe);
  *         description: Dashboard statistics
  */
 router.get("/dashboard", getDashboardStats);
+
+router.post("/users", createUser);
+router.put("/users/:id", updateUser);
+router.patch("/users/:id/status", toggleUserStatus);
+router.delete("/users/:id", deleteUser);
+router.patch("/deliveries/:id/status", toggleDriverStatus);
+router.put("/deliveries/:id", updateDriver);
+router.delete("/deliveries/:id", deleteDriver);
+router.post("/restaurants", createRestaurant);
+router.put("/restaurants/:id", updateRestaurant);
+router.delete("/restaurants/:id", deleteRestaurant);
+router.put("/profile", updateProfileHandler);
 
 export default router;

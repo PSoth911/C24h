@@ -1,93 +1,82 @@
-import { MapPin, Check, X } from "lucide-react";
+import { MapPin, Clock, DollarSign, CheckCircle, XCircle } from "lucide-react";
+import { useState } from "react";
+
+const BASE = "http://localhost:5000/api";
 
 export default function NewOrder({ order, onAccepted }) {
+  const [loading, setLoading] = useState(false);
+  const [declined, setDeclined] = useState(false);
 
-    const acceptOrder = async () => {
-        try {
-            await fetch(
-                `http://localhost:5000/api/driver/delivery/${order.delivery_id}/pickup`,
-                {
-                    method: "PUT",
-                }
-            );
+  const handleAccept = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`${BASE}/driver/accept/${order.delivery_id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+      });
+      const data = await res.json();
+      if (data.success ?? res.ok) onAccepted?.();
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-            alert("Order accepted!");
+  if (declined) return null;
 
-            // refresh list
-            onAccepted();
-
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
-    const rejectOrder = () => {
-        alert("Rejected (you can implement later)");
-    };
-
-    return (
-        <div className="bg-[#f1fff0] rounded-2xl shadow-lg p-6 text-[#004953]">
-
-            {/* Header */}
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-xl font-semibold">
-                    New Order
-                </h1>
-
-                <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
-                    Incoming
-                </span>
-            </div>
-
-            {/* Content */}
-            <div className="bg-white rounded-xl p-4">
-
-                <div className="flex justify-between">
-
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <MapPin size={18} />
-
-                            <h2 className="font-semibold">
-                                {order.restaurant_name}
-                            </h2>
-                        </div>
-
-                        <p className="text-sm text-gray-500 mt-1">
-                            {order.distance} • Pickup in{" "}
-                            {order.pickup_time_estimate}
-                        </p>
-                    </div>
-
-                    <div className="text-right">
-                        <h1 className="font-bold text-xl">
-                            ${order.payout}
-                        </h1>
-                        <p className="text-sm text-gray-500">
-                            Estimated payout
-                        </p>
-                    </div>
-                </div>
-
-                {/* Buttons */}
-                <div className="flex gap-3 mt-5">
-
-                    <button
-                        onClick={acceptOrder}
-                        className="flex-1 bg-[#004953] text-white py-2 rounded-xl flex justify-center items-center gap-2"
-                    >
-                        Accept <Check size={16} />
-                    </button>
-
-                    <button
-                        onClick={rejectOrder}
-                        className="bg-red-500 text-white px-4 rounded-xl flex items-center gap-2"
-                    >
-                        <X size={16} />
-                    </button>
-
-                </div>
-            </div>
+  return (
+    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition space-y-4">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-xs text-slate-400">Order #{order.order_id ?? order.delivery_id}</p>
+          <h3 className="font-semibold text-slate-800 mt-0.5">
+            {order.Order?.Restaurant?.restaurant_name ?? "Restaurant"}
+          </h3>
         </div>
-    );
+        <span className="bg-orange-100 text-orange-700 text-xs font-medium px-3 py-1 rounded-full">
+          New
+        </span>
+      </div>
+
+      {/* Details */}
+      <div className="space-y-2 text-sm text-slate-600">
+        {order.Order?.Restaurant?.address && (
+          <div className="flex items-center gap-2">
+            <MapPin size={14} className="text-slate-400 shrink-0" />
+            <span className="truncate">{order.Order.Restaurant.address}</span>
+          </div>
+        )}
+        <div className="flex items-center gap-4">
+          <span className="flex items-center gap-1">
+            <DollarSign size={14} className="text-slate-400" />
+            ${parseFloat(order.delivery_fee ?? 0).toFixed(2)} fee
+          </span>
+          <span className="flex items-center gap-1">
+            <Clock size={14} className="text-slate-400" />
+            {order.estimated_time ?? "~20 min"}
+          </span>
+        </div>
+      </div>
+
+      {/* Actions */}
+      <div className="flex gap-2 pt-1">
+        <button
+          onClick={() => setDeclined(true)}
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-slate-200 text-slate-500 hover:bg-red-50 hover:border-red-200 hover:text-red-500 text-sm font-medium transition"
+        >
+          <XCircle size={16} /> Decline
+        </button>
+        <button
+          onClick={handleAccept}
+          disabled={loading}
+          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-500 text-white text-sm font-medium shadow hover:scale-[1.02] disabled:opacity-50 transition"
+        >
+          <CheckCircle size={16} />
+          {loading ? "Accepting…" : "Accept"}
+        </button>
+      </div>
+    </div>
+  );
 }

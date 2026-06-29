@@ -1,38 +1,42 @@
-import {NavLink} from 'react-router-dom'
-import {EggFried,Bell,Torus,X} from 'lucide-react'
-import { PATH } from '../../path.js'
+import { NavLink } from "react-router-dom";
+import { UtensilsCrossed, Bell, Wifi, WifiOff } from "lucide-react";
+import { PATH } from "../../path.js";
 
-export default function DeliveryNav(){
-    return(
-        <div className="w-full h-20 ">
-            <div className="lg:hidden flex flex-col w-full h-full">
-                <div className="bg-pink-500 w-full h-full flex items-center justify-center">
-                    <h1>this is Mobile layout</h1>
-                </div>
-            </div>
+export default function DeliveryNav({ online = true, onToggleOnline }) {
+  return (
+    <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/70 border-b border-white/40">
+      <div className="h-20 flex justify-between items-center px-8">
+        {/* Logo */}
+        <NavLink to={PATH.DELIVERY.DASHBOARD} className="flex items-center gap-3">
+          <div className="w-11 h-11 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+            <UtensilsCrossed size={20} />
+          </div>
+          <div>
+            <h1 className="font-bold text-lg text-slate-900">Crave24h</h1>
+            <p className="text-xs text-slate-500">Driver Panel</p>
+          </div>
+        </NavLink>
 
-            <div className="hidden lg:flex justify-between items-center w-full h-full bg-white px-6">
-                <NavLink to={PATH.DELIVERY.DASHBOARD} className='flex justify-center items-center gap-2 text-[#004953]'>
-                    <EggFried size={35} />
-                    <h1 className='text-2xl font-medium'>C24h</h1>
-                </NavLink>
+        {/* Right controls */}
+        <div className="flex items-center gap-3">
+          {/* Online toggle */}
+          <button
+            onClick={onToggleOnline}
+            className={`flex items-center gap-2 px-4 py-2 rounded-2xl border text-sm font-medium transition ${
+              online
+                ? "bg-green-50 border-green-300 text-green-700 hover:bg-green-100"
+                : "bg-slate-100 border-slate-300 text-slate-500 hover:bg-slate-200"
+            }`}
+          >
+            {online ? <Wifi size={15} /> : <WifiOff size={15} />}
+            {online ? "Online" : "Offline"}
+          </button>
 
-                    
-                <div className='flex justify-center items-center gap-2'>
-                    <div className='border border-[#62ff00] px-3 py-1 rounded-4xl text-[#004953] font-medium flex justify-center items-center gap-1'>
-                        <Torus size={20} className='text-[#62ff00]'/>
-                        <h1 className='text-sm'>Online</h1> 
-                    </div>
-                    {/* <div className='border border-[#aeaeae] px-3 py-1 rounded-4xl text-[#aeaeae] font-medium flex justify-center items-center gap-1'>
-                        <X size={20} className='text-red-600'/>
-                        <h1 className='text-sm'>Offline</h1>
-                    </div> */}  
-                    <button className='bg-[#004953] text-white p-2 rounded-full'><Bell size={20} /></button>
-                </div>
-                        
-                
-                
-            </div>
+          <button className="w-10 h-10 rounded-2xl bg-white shadow-sm border border-slate-200 flex items-center justify-center hover:scale-105 transition">
+            <Bell size={18} className="text-slate-600" />
+          </button>
         </div>
-    )
+      </div>
+    </div>
+  );
 }

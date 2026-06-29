@@ -1,80 +1,492 @@
-import { useState } from "react";
-import AdminSidebar from "../../components/admin/AdminSidebar.jsx";
-import { PATH } from "../../path.js";
-import { useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Search,
+  Bike,
+  Truck,
+  Clock3,
+  Power,
+  RefreshCw,
+} from "lucide-react";
+
+import AdminSidebar from "../../components/admin/AdminSidebar";
+import { PATH } from "../../path";
+
+import {getDrivers,toggleDriverStatus,deleteDriver, updateDriver} from "../../api/adminApi"; 
 
 export default function AdminDeliveryManagement() {
-  const [search, setSearch] = useState("");
-
   const [drivers, setDrivers] = useState([]);
-  useEffect(() => {
-    fetch("http://localhost:5000/api/admin/deliveries")
-      .then((res) => res.json())
-      .then((data) => {
-        setDrivers(data.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-  }, []);
-  return (
-    <div className="min-h-screen bg-slate-100 flex">
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(null);
+  const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState("all");
 
+  /* ================= FETCH ================= */
+  const fetchDrivers = async () => {
+    try {
+      setLoading(true);
+
+      const data = await getDrivers();
+
+      if (data.success) {
+        setDrivers(data.data);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchDrivers();
+  }, []);
+
+  /* ================= TOGGLE STATUS ================= */
+  const handleToggleDriver = async (id) => {
+    try {
+      setUpdating(id);
+
+      const data = await toggleDriverStatus(id);
+
+      if (data.success) {
+        setDrivers((prev) =>
+          prev.map((driver) =>
+            driver.driver_id === id
+              ? {
+                  ...driver,
+                  current_status: data.data.current_status,
+                }
+              : driver
+          )
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setUpdating(null);
+    }
+  };
+
+  /* ================= STATS ================= */
+  const availableDrivers = drivers.filter(
+    (d) => d.current_status === "available"
+  ).length;
+
+  const busyDrivers = drivers.filter(
+    (d) => d.current_status === "busy"
+  ).length;
+
+  const offlineDrivers = drivers.filter(
+    (d) => d.current_status === "offline"
+  ).length;
+
+  /* ================= FILTER ================= */
+  const filteredDrivers = useMemo(() => {
+    return drivers
+      .filter((driver) => {
+        const keyword = search.toLowerCase();
+
+        return (
+          driver.User?.full_name?.toLowerCase().includes(keyword) ||
+          driver.vehicle_type?.toLowerCase().includes(keyword)
+        );
+      })
+      .filter((driver) => {
+        if (filter === "available")
+          return driver.current_status === "available";
+
+        if (filter === "busy")
+          return driver.current_status === "busy";
+
+        if (filter === "offline")
+          return driver.current_status === "offline";
+
+        return true;
+      });
+  }, [drivers, search, filter]);
+
+  const handleDelete = async (id) => {
+    const confirm = window.confirm("Delete this driver?");
+    if (!confirm) return;
+
+    try {
+      const res = await deleteDriver(id);
+
+      if (res.success !== false) {
+        setDrivers((prev) =>
+          prev.filter((d) => d.driver_id !== id)
+        );
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const [editDriver, setEditDriver] = useState(null);
+  const [formData, setFormData] = useState({
+    vehicle_type: "",
+    license_number: "",
+    current_status: "",
+  });
+  const handleEdit = async (driver) => {
+    
+    setEditDriver(driver);
+
+    setFormData({
+      vehicle_type: driver.vehicle_type || "",
+      license_number: driver.license_number || "",
+      current_status: driver.current_status || "",
+    });
+  
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleUpdate = async () => {
+    try {
+      const res = await updateDriver(editDriver.driver_id, formData);
+
+      if (res.success) {
+        setDrivers((prev) =>
+          prev.map((d) =>
+            d.driver_id === editDriver.driver_id ? res.data : d
+          )
+        );
+
+        setEditDriver(null);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  /* ================= LOADING ================= */
+  if (loading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-slate-50">
+        <p className="text-slate-500 animate-pulse">
+          Loading drivers...
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen bg-slate-50">
       <AdminSidebar PATH={PATH} />
+      {editDriver && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          
+          <div className="bg-white w-[400px] rounded-2xl p-6 shadow-xl">
+
+            <h2 className="text-xl font-bold mb-4">
+              Edit Driver
+            </h2>
+
+            {/* Vehicle Type */}
+            <label className="text-sm text-slate-600">
+              Vehicle Type
+            </label>
+            <input
+              name="vehicle_type"
+              value={formData.vehicle_type}
+              onChange={handleChange}
+              className="w-full mt-1 mb-3 px-3 py-2 border rounded-lg"
+            />
+
+            {/* License */}
+            <label className="text-sm text-slate-600">
+              License Number
+            </label>
+            <input
+              name="license_number"
+              value={formData.license_number}
+              onChange={handleChange}
+              className="w-full mt-1 mb-3 px-3 py-2 border rounded-lg"
+            />
+
+            {/* Status */}
+            <label className="text-sm text-slate-600">
+              Status
+            </label>
+            <select
+              name="current_status"
+              value={formData.current_status}
+              onChange={handleChange}
+              className="w-full mt-1 mb-4 px-3 py-2 border rounded-lg"
+            >
+              <option value="available">Available</option>
+              <option value="busy">Busy</option>
+              <option value="offline">Offline</option>
+            </select>
+
+            {/* Buttons */}
+            <div className="flex justify-end gap-2">
+
+              <button
+                onClick={() => setEditDriver(null)}
+                className="px-4 py-2 rounded-lg bg-gray-200"
+              >
+                Cancel
+              </button>
+
+              <button
+                onClick={handleUpdate}
+                className="px-4 py-2 rounded-lg bg-teal-600 text-white"
+              >
+                Save
+              </button>
+
+            </div>
+
+          </div>
+        </div>
+      )}
 
       <main className="flex-1">
 
-        <div className="bg-white h-20 flex items-center justify-between px-6 shadow-sm">
-          <h2 className="text-xl font-bold">Delivery Management</h2>
+        {/* HEADER */}
+        <div className="sticky top-0 bg-white/70 backdrop-blur-xl z-20">
+          <div className="h-20 px-8 flex items-center justify-between">
 
-          <input
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            placeholder="Search driver..."
-            className="border px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#004953]"
-          />
+            <div>
+              <h1 className="text-3xl font-bold text-slate-800">
+                Delivery Management
+              </h1>
+              <p className="text-slate-500">
+                Monitor all delivery drivers
+              </p>
+            </div>
+
+            <div className="flex gap-3">
+
+              <div className="relative">
+                <Search
+                  size={18}
+                  className="absolute left-3 top-3 text-slate-400"
+                />
+
+                <input
+                  placeholder="Search driver..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="pl-10 pr-4 py-2 w-72 rounded-xl bg-white shadow-sm outline-none focus:ring-2 focus:ring-teal-500"
+                />
+              </div>
+
+              <button
+                onClick={fetchDrivers}
+                className="px-4 rounded-xl bg-white shadow-sm hover:bg-slate-100 transition flex items-center gap-2"
+              >
+                <RefreshCw size={16} />
+                Refresh
+              </button>
+
+            </div>
+
+          </div>
         </div>
 
-        <div className="p-6">
+        <div className="p-8 space-y-8">
 
-          <div className="hidden lg:block bg-white rounded-2xl shadow overflow-hidden">
-            <table className="w-full">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="p-4">ID</th>
-                  <th className="p-4">Name</th>
-                  <th className="p-4">Vehicle</th>
-                  <th className="p-4">Status</th>
-                  <th className="p-4">Orders</th>
-                </tr>
-              </thead>
+          {/* STATS */}
+          <div className="grid md:grid-cols-3 gap-6">
 
-              <tbody>
-                {drivers
-                  .filter(d => d.vehicle_type.toLowerCase().includes(search.toLowerCase()))
-                  .map(d => (
-                    <tr key={d.driver_id} className="border-b hover:bg-gray-50">
-                      <td className="p-4">{d.user_id}</td>
-                      <td className="p-4 font-medium">{d.User.full_name}</td>
-                      <td className="p-4">{d.vehicle_type}</td>
-                      <td className="p-4">
-                        <span className={`px-3 py-1 rounded-full text-xs ${
-                          d.current_status === "Online"
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-200 text-gray-600"
-                        }`}>
-                          {d.current_status}
-                        </span>
-                      </td>
-                      <td className="p-4">{d.current_status}</td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
+            <StatCard
+              title="Available"
+              value={availableDrivers}
+              icon={<Bike size={20} />}
+              color="bg-green-500"
+            />
+
+            <StatCard
+              title="Busy"
+              value={busyDrivers}
+              icon={<Truck size={20} />}
+              color="bg-yellow-500"
+            />
+
+            <StatCard
+              title="Offline"
+              value={offlineDrivers}
+              icon={<Clock3 size={20} />}
+              color="bg-slate-500"
+            />
+
+          </div>
+
+          {/* FILTER */}
+          <div className="flex gap-3">
+
+            <FilterButton
+              active={filter === "all"}
+              onClick={() => setFilter("all")}
+            >
+              All ({drivers.length})
+            </FilterButton>
+
+            <FilterButton
+              active={filter === "available"}
+              onClick={() => setFilter("available")}
+            >
+              Available ({availableDrivers})
+            </FilterButton>
+
+            <FilterButton
+              active={filter === "busy"}
+              onClick={() => setFilter("busy")}
+            >
+              Busy ({busyDrivers})
+            </FilterButton>
+
+            <FilterButton
+              active={filter === "offline"}
+              onClick={() => setFilter("offline")}
+            >
+              Offline ({offlineDrivers})
+            </FilterButton>
+
+          </div>
+
+          {/* DRIVER LIST */}
+          <div className="grid gap-4">
+
+            {filteredDrivers.length === 0 && (
+              <div className="bg-white rounded-2xl p-10 text-center text-slate-500 shadow-sm">
+                No drivers found.
+              </div>
+            )}
+
+            {filteredDrivers.map((driver) => (
+              <div
+                key={driver.driver_id}
+                className="bg-white rounded-2xl shadow-sm p-5 flex justify-between items-center hover:shadow-md transition"
+              >
+
+                <div className="flex items-center gap-4">
+
+                  <div className="relative">
+                    <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-teal-600 to-teal-500 text-white flex items-center justify-center text-lg font-bold">
+                      {driver.User?.full_name?.charAt(0)}
+                    </div>
+
+                    <span
+                      className={`absolute -bottom-1 -right-1 w-3 h-3 rounded-full ${
+                        driver.current_status === "available"
+                          ? "bg-green-500"
+                          : driver.current_status === "busy"
+                          ? "bg-yellow-500"
+                          : "bg-slate-400"
+                      }`}
+                    />
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-lg">
+                      {driver.User?.full_name}
+                    </h3>
+                    <p className="text-sm text-slate-500">
+                      Driver #{driver.driver_id}
+                    </p>
+                    <p className="text-sm text-slate-400">
+                      {driver.vehicle_type}
+                    </p>
+                  </div>
+
+                </div>
+
+                <div className="flex items-center gap-4">
+
+                  <span
+                    className={`px-4 py-1 rounded-full text-sm font-medium ${
+                      driver.current_status === "available"
+                        ? "bg-green-100 text-green-700"
+                        : driver.current_status === "busy"
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-slate-100 text-slate-600"
+                    }`}
+                  >
+                    {driver.current_status}
+                  </span>
+
+                  <button
+                    disabled={updating === driver.driver_id}
+                    onClick={() =>
+                      handleToggleDriver(driver.driver_id)
+                    }
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition disabled:opacity-50"
+                  >
+                    <Power size={16} />
+                    {updating === driver.driver_id
+                      ? "Updating..."
+                      : driver.current_status === "offline"
+                      ? "Activate"
+                      : "Set Offline"}
+                  </button>
+                  
+
+                  <button
+                    onClick={() => handleDelete(driver.driver_id)}
+                    className="px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600"
+                  >
+                    Delete
+                  </button>
+
+                  <button
+                    onClick={() => handleEdit(driver)}
+                    className="px-3 py-1 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                  >
+                    Edit
+                  </button>
+
+                </div>
+
+              </div>
+            ))}
+
           </div>
 
         </div>
       </main>
     </div>
+  );
+}
+
+/* ================= UI COMPONENTS ================= */
+
+function StatCard({ title, value, icon, color }) {
+  return (
+    <div className="bg-white rounded-2xl p-6 shadow-sm">
+      <div className="flex justify-between items-center">
+        <div>
+          <p className="text-slate-500">{title}</p>
+          <h2 className="text-3xl font-bold mt-1">{value}</h2>
+        </div>
+
+        <div className={`w-12 h-12 rounded-xl ${color} text-white flex items-center justify-center`}>
+          {icon}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function FilterButton({ active, children, onClick }) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-5 py-2 rounded-xl transition font-medium ${
+        active
+          ? "bg-slate-900 text-white"
+          : "bg-white shadow-sm hover:bg-slate-100 text-slate-600"
+      }`}
+    >
+      {children}
+    </button>
   );
 }

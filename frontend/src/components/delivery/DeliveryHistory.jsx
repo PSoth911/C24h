@@ -1,69 +1,40 @@
-function DeliveryHistory() {
-    const deliveries = [
-        {
-            id: "#ORD-28491",
-            restaurant: "The Burger Joint",
-            date: "Oct 20, 2023 • 12:45 PM",
-            amount: "$12.40"
-        },
-        {
-            id: "#ORD-28477",
-            restaurant: "Pasta Express",
-            date: "Oct 20, 2023 • 11:20 AM",
-            amount: "$8.50"
-        },
-        {
-            id: "#ORD-28450",
-            restaurant: "Pho 24h Central",
-            date: "Oct 19, 2023 • 08:15 PM",
-            amount: "$15.20"
-        }
-    ];
+import { Package } from "lucide-react";
 
-    return (
-        <div className="w-full bg-[#f1fff0] rounded-2xl shadow-lg p-6 text-[#004953]">
-            <h1 className="text-2xl font-semibold mb-5">
-                Delivery History
-            </h1>
+const deliveries = [
+  { id: "#ORD-28491", restaurant: "The Burger Joint",  date: "Oct 20, 2023 • 12:45 PM", amount: "$12.40" },
+  { id: "#ORD-28477", restaurant: "Pasta Express",     date: "Oct 20, 2023 • 11:20 AM", amount: "$8.50"  },
+  { id: "#ORD-28450", restaurant: "Pho 24h Central",   date: "Oct 19, 2023 • 08:15 PM", amount: "$15.20" },
+];
 
-            <div className="space-y-4">
-                {deliveries.map((delivery) => (
-                    <div
-                        key={delivery.id}
-                        className="bg-white rounded-xl p-4 border-l-4 border-[#004953] shadow-sm flex justify-between items-center"
-                    >
-                        <div>
-                            <p className="text-xs text-gray-500">
-                                {delivery.id}
-                            </p>
+export default function DeliveryHistory() {
+  return (
+    <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h2 className="font-semibold text-lg text-slate-800">Delivery History</h2>
+        <Package size={18} className="text-slate-400" />
+      </div>
 
-                            <h2 className="font-semibold text-lg">
-                                {delivery.restaurant}
-                            </h2>
-
-                            <p className="text-sm text-gray-500">
-                                {delivery.date}
-                            </p>
-                        </div>
-
-                        <div className="text-right">
-                            <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs">
-                                Delivered
-                            </span>
-
-                            <h2 className="font-bold text-xl mt-2">
-                                {delivery.amount}
-                            </h2>
-
-                            <p className="text-sm text-gray-500">
-                                Earned
-                            </p>
-                        </div>
-                    </div>
-                ))}
+      <div className="space-y-3">
+        {deliveries.map((d) => (
+          <div
+            key={d.id}
+            className="bg-white rounded-2xl p-4 border border-slate-100 shadow-sm flex justify-between items-center hover:shadow-md hover:-translate-y-0.5 transition"
+          >
+            <div>
+              <p className="text-xs text-slate-400">{d.id}</p>
+              <h3 className="font-semibold text-slate-800">{d.restaurant}</h3>
+              <p className="text-xs text-slate-500 mt-0.5">{d.date}</p>
             </div>
-        </div>
-    );
+            <div className="text-right">
+              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-medium">
+                Delivered
+              </span>
+              <p className="font-bold text-lg text-slate-800 mt-2">{d.amount}</p>
+              <p className="text-xs text-slate-400">Earned</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 }
-
-export default DeliveryHistory;

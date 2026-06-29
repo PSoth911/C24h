@@ -1,84 +1,100 @@
-import { NavLink } from "react-router-dom";
+import {
+  LayoutDashboard,
+  Users,
+  Store,
+  Bike,
+  UserCircle,
+  LogOut,
+  UtensilsCrossed,
+} from "lucide-react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 export default function AdminSidebar({ PATH }) {
-  return (
-    <aside className="hidden lg:flex w-72 bg-[#004953] text-white flex-col">
+  const { logout } = useAuth();
+  const navigate = useNavigate();
 
-      {/* Logo / Brand */}
-      <div className="p-6 border-b border-white/20">
-        <h1 className="text-2xl font-bold">Food Admin</h1>
-        <p className="text-sm text-white/60">Control Panel</p>
+  const menus = [
+    {
+      title: "GENERAL",
+      items: [
+        { name: "Dashboard",   path: PATH.ADMIN.DASHBOARD,  icon: LayoutDashboard },
+        { name: "Users",       path: PATH.ADMIN.USERS,       icon: Users },
+        { name: "Restaurants", path: PATH.ADMIN.RESTAURANTS, icon: Store },
+        { name: "Deliveries",  path: PATH.ADMIN.DELIVERIES,  icon: Bike },
+      ],
+    },
+    {
+      title: "ACCOUNT",
+      items: [
+        { name: "Profile", path: PATH.ADMIN.PROFILE, icon: UserCircle },
+      ],
+    },
+  ];
+  
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    logout();            
+    navigate("/auth/login"); 
+  };
+
+  return (
+    <aside className="w-64 bg-[#F8FAFC] h-screen flex flex-col px-5 py-8">
+
+      {/* Logo */}
+      <div className="flex items-center gap-3 mb-12">
+        <div className="w-11 h-11 rounded-xl bg-slate-900 text-white flex items-center justify-center">
+          <UtensilsCrossed size={20} />
+        </div>
+        <div>
+          <h1 className="font-bold text-lg text-slate-900">Crave24h</h1>
+          <p className="text-xs text-slate-500">Admin Panel</p>
+        </div>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2">
+      {/* Menu */}
+      <div className="flex-1">
+        {menus.map((section) => (
+          <div key={section.title} className="mb-8">
+            <p className="text-xs font-semibold tracking-widest text-slate-400 uppercase mb-3 px-3">
+              {section.title}
+            </p>
 
-        <NavLink
-          to={PATH.ADMIN.DASHBOARD}
-          className={({ isActive }) =>
-            `block p-3 rounded-xl ${
-              isActive
-                ? "bg-white text-[#004953] font-semibold"
-                : "hover:bg-white/10"
-            }`
-          }
-        >
-          Dashboard
-        </NavLink>
+            <div className="space-y-1">
+              {section.items.map((menu) => {
+                const Icon = menu.icon;
+                return (
+                  <NavLink
+                    key={menu.name}
+                    to={menu.path}
+                    className={({ isActive }) =>
+                      `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
+                        isActive
+                          ? "bg-white text-slate-900 shadow-sm"
+                          : "text-slate-500 hover:bg-white hover:text-slate-900"
+                      }`
+                    }
+                  >
+                    <Icon size={19} />
+                    <span className="font-medium">{menu.name}</span>
+                  </NavLink>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
 
-        <NavLink
-          to={PATH.ADMIN.USERS}
-          className={({ isActive }) =>
-            `block p-3 rounded-xl ${
-              isActive
-                ? "bg-white text-[#004953] font-semibold"
-                : "hover:bg-white/10"
-            }`
-          }
-        >
-          Users
-        </NavLink>
+      {/* Logout */}
+      <button
+        onClick={handleLogout}
+        className="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-500 hover:bg-white hover:text-red-500 transition"
+      >
+        <LogOut size={19} />
+        Logout
+      </button>
 
-        <NavLink
-          to={PATH.ADMIN.RESTAURANTS}
-          className={({ isActive }) =>
-            `block p-3 rounded-xl ${
-              isActive
-                ? "bg-white text-[#004953] font-semibold"
-                : "hover:bg-white/10"
-            }`
-          }
-        >
-          Restaurants
-        </NavLink>
-
-        <NavLink
-          to={PATH.ADMIN.DELIVERIES}
-          className={({ isActive }) =>
-            `block p-3 rounded-xl ${
-              isActive
-                ? "bg-white text-[#004953] font-semibold"
-                : "hover:bg-white/10"
-            }`
-          }
-        >
-          Deliveries
-        </NavLink>
-
-        <NavLink
-          to={PATH.ADMIN.PROFILE}
-          className={({ isActive }) =>
-            `block p-3 rounded-xl ${
-              isActive
-                ? "bg-white text-[#004953] font-semibold"
-                : "hover:bg-white/10"
-            }`
-          }
-        >
-          Profile
-        </NavLink>
-
-      </nav>
     </aside>
   );
 }
