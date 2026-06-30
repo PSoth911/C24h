@@ -1,83 +1,103 @@
-import {
+﻿import {
   faMoneyBillWave,
   faReceipt,
-  faStore,
+  faMotorcycle,
+  faHandHoldingDollar,
   faCircleCheck,
+  faCircleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const CashPayment = () => {
+const CashPayment = ({cart}) => {
+  const steps = [
+    { icon: faReceipt, label: "ORDERED" },
+    { icon: faMotorcycle, label: "ON THE WAY" },
+    { icon: faHandHoldingDollar, label: "PAY ON DELIVERY" },
+  ];
+  const items = cart?.CartItems || [];
+
+  const subtotal = items.reduce((sum, item) => {
+    return sum + Number(item.subtotal);
+  }, 0);
+  const notes = [
+    "Please have your phone reachable so the rider can contact you.",
+    "Unpaid orders may be cancelled automatically.",
+    "A digital receipt is issued once payment is confirmed.",
+  ];
+
   return (
-    <div className="rounded-2xl bg-white p-2 px-6 shadow-2xl">
+    <div className="rounded-2xl bg-white p-7 shadow-xl">
+
+      {/* Icon */}
       <div className="flex justify-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#004953]/10">
-          <FontAwesomeIcon icon={faMoneyBillWave} className="text-3xl text-[#004953]"
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#004953]">
+          <FontAwesomeIcon
+            icon={faMoneyBillWave}
+            className="text-3xl text-[#004953]"
           />
         </div>
       </div>
+
+      {/* Title */}
       <div className="mt-5 text-center">
-        <h2 className="text-2xl font-bold text-[#004953]">
-          Cash Payment
-        </h2>
+        <h2 className="text-2xl font-bold text-[#004953]">Cash on Delivery</h2>
         <p className="mt-2 text-sm text-gray-500">
-          Pay directly at the cinema counter before collecting your ticket.
+          Pay the rider in cash when your order arrives at your door.
         </p>
       </div>
-      <div className="mt-6 rounded-xl border border-[#004953]/20 bg-[#004953]/5 p-5 text-center">
-        <p className="text-sm text-[#004953]">
-          Please prepare the exact amount
+
+      {/* Amount */}
+      <div className="mt-6 rounded-2xl border border-[#004953] bg-[#004953] p-6 text-center">
+        <p className="text-sm text-[#004953]">Please prepare the exact amount</p>
+        <h1 className="mt-2 text-4xl font-bold text-[#004953]">${subtotal.toFixed(2)}</h1>
+        <p className="mt-1 text-xs text-gray-500">
+          Exact change helps speed up handover
         </p>
-        <h1 className="mt-2 text-4xl font-bold text-[#004953]">
-          $35.30
-        </h1>
-        <p className="mt-1 text-xs text-gray-500">Exact change helps speed up the process</p>
       </div>
-      <div className="mt-6 rounded-xl bg-[#004953]/5 p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col items-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#004953] text-white">
-              <FontAwesomeIcon icon={faReceipt} />
+
+      {/* Steps */}
+      <div className="mt-6 rounded-2xl bg-[#004953] p-6">
+        <div className="flex items-start justify-between">
+          {steps.map((step, i) => (
+            <div key={step.label} className="contents">
+              <div className="flex flex-col items-center w-20">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#004953] text-white">
+                  <FontAwesomeIcon icon={step.icon} />
+                </div>
+                <span className="mt-2 text-[11px] font-semibold text-center text-[#004953]">
+                  {step.label}
+                </span>
+              </div>
+              {i < steps.length - 1 && (
+                <div className="mt-5 h-0.5 flex-1 border-t-2 border-dashed border-[#004953]" />
+              )}
             </div>
-            <span className="mt-2 text-xs font-medium">BOOKED</span>
-          </div>
-          <div className="h-0.5 flex-1 border-t-2 border-dashed border-[#004953]"></div>
-          <div className="flex flex-col items-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#004953] text-white">
-              <FontAwesomeIcon icon={faStore} />
-            </div>
-            <span className="mt-2 text-xs font-medium">ARRIVE</span>
-          </div>
-          <div className="h-0.5 flex-1 border-t-2 border-dashed border-[#004953]"></div>
-          <div className="flex flex-col items-center">
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#004953] text-white">
-              <FontAwesomeIcon icon={faMoneyBillWave} />
-            </div>
-            <span className="mt-2 text-xs font-medium">PAY</span>
-          </div>
+          ))}
         </div>
       </div>
-      <div className="mt-6 rounded-xl border border-[#004953]/10 bg-[#004953]/5 p-5">
-        <h3 className="font-semibold text-[#004953]">
+
+      {/* Notes */}
+      <div className="mt-6 rounded-2xl border border-[#004953] bg-white p-5">
+        <h3 className="flex items-center gap-2 font-semibold text-[#004953]">
+          <FontAwesomeIcon icon={faCircleExclamation} />
           Important Notes
         </h3>
         <ul className="mt-3 space-y-3 text-sm text-gray-600">
-          <li>
-            • Please arrive at least 15 minutes before showtime.
-          </li>
-          <li>
-            • Unpaid reservations may be cancelled automatically.
-          </li>
-          <li>
-            • A digital receipt will be issued after payment confirmation.
-          </li>
+          {notes.map((note) => (
+            <li key={note} className="flex items-start gap-2">
+              <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-[#004953] shrink-0" />
+              {note}
+            </li>
+          ))}
         </ul>
       </div>
-      <div className="mt-5 flex items-center justify-center gap-2 text-sm text-[#004953]">
+
+      {/* Footer badge */}
+      <div className="mt-5 flex items-center justify-center gap-2 rounded-xl bg-emerald-50 py-3 text-sm text-[#004953]">
         <FontAwesomeIcon icon={faCircleCheck} />
-        <span>
-          Cash payment available at your selected cinema.
-        </span>
+        <span>Cash on delivery available for your area.</span>
       </div>
+
     </div>
   );
 };

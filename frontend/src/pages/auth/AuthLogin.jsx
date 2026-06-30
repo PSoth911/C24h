@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { PATH } from "../../path.js";
+import {login} from "../../service/authService.js"
 
 export default function AuthLogin() {
   const [email, setEmail] = useState("");
@@ -11,26 +11,19 @@ export default function AuthLogin() {
   const handleLogin = async (e) => {
     e.preventDefault();
 
-
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+      const response = await login(email, password);
 
       const { token, user } = response.data;
-      const role = user.role;
 
-      sessionStorage.setItem("token", token);
-      sessionStorage.setItem("role", role);
+      localStorage.setItem("token", token);
+      localStorage.setItem("role", user.role);
 
-      switch (role) {
+      switch (user.role) {
         case "admin":
           navigate(PATH.ADMIN.DASHBOARD);
           break;
+
         case "driver":
           navigate(PATH.DELIVERY.DASHBOARD);
           break;
@@ -43,13 +36,12 @@ export default function AuthLogin() {
           navigate("/");
       }
     } catch (error) {
-      alert("Invalid email or password");
+      alert(error.response?.data?.message || "Invalid email or password");
     }
   };
 
   return (
     <div className="min-h-screen bg-slate-100">
-      {/* Mobile Layout */}
       <div className="lg:hidden flex items-center justify-center min-h-screen p-6">
         <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8">
           <div className="flex flex-col items-center mb-8">

@@ -1,62 +1,84 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import {
-  faMinus,
-  faPlus,
-} from "@fortawesome/free-solid-svg-icons"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import {PATH} from '../../../path.js';
+import { PATH } from "../../../path";
+import { addToCart } from "../../../service/cartService";
 
-const Card = ({cartitems,setcartitems}) => {
-  const navigate=useNavigate()
+const Card = ({ cartitems, setcartitems }) => {
+  const navigate = useNavigate();
 
-  const subtotal = cartitems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const subtotal = cartitems.reduce((sum, item) => {
+    const price = Number(item.price) || 0;
+    const qty = Number(item.quantity) || 0;
+    return sum + price * qty;
+  }, 0);
 
   const deliveryFee = 1.5;
   const serviceFee = 0.99;
   const total = subtotal + deliveryFee + serviceFee;
 
   const increaseQuantity = (id) => {
-    setcartitems((prevItems) =>
-      prevItems.map((item) =>
+    setcartitems((prev) =>
+      prev.map((item) =>
         item.id === id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    );
-  };
-  const decreaseQuantity = (id) => {
-    setcartitems((prevItems) =>
-      prevItems.map((item) =>
-        item.id === id && item.quantity > 1
-          ? { ...item, quantity: item.quantity - 1 }
+          ? { ...item, quantity: Number(item.quantity) + 1 }
           : item
       )
     );
   };
 
+  const decreaseQuantity = (id) => {
+    setcartitems((prev) =>
+      prev
+        .map((item) =>
+          item.id === id
+            ? { ...item, quantity: Number(item.quantity) - 1 }
+            : item
+        )
+        .filter((item) => item.quantity > 0)
+    );
+  };
+
+const handleCheckout = async () => {
+  try {
+    console.log("Cart Items:", cartitems);
+
+    for (const item of cartitems) {
+      console.log("Sending:", {
+        product_id: item.product_id,
+        quantity: item.quantity,
+      });
+
+      await addToCart({
+        product_id: item.product_id,
+        quantity: item.quantity,
+      });
+    }
+
+    setcartitems([]);
+    navigate(PATH.USER.Checkout);
+  } catch (err) {
+    console.log(err);
+    alert(err.response?.data?.message);
+  }
+};
+
   return (
-    <div className="bg-white rounded-3xl shadow-xl border border-gray-100 p-5 w-full max-w-md h-90 overflow-y-auto scroll-smooth ">
-      <div className="bg-[#004953] rounded-2xl p-1 justify-center flex border border-[#004953]/10">
+    <div className="bg-white rounded-3xl shadow-xl border p-5 w-full max-w-md h-90 overflow-y-auto">
+
+      <div className="bg-[#004953] rounded-2xl p-2 flex justify-center">
         <h3 className="font-bold text-white text-lg">
           Your Items
         </h3>
-
-        <p className="text-gray-500 text-sm mt-1">
-        </p>
       </div>
 
-      <div className="mt-2 space-y-2 ">
+      <div className="mt-3 space-y-3">
         {cartitems.map((item) => (
-          <div
-            key={item.id}
-            className="pb-2 border-b border-gray-100"
-          >
+          <div key={item.id} className="border-b pb-3">
+
             <div className="flex justify-between items-center gap-4">
 
-              <div className="flex gap-4 flex-1 items-center">
+              <div className="flex gap-4 items-center flex-1">
                 <img
                   src={item.image}
                   alt={item.name}
@@ -64,34 +86,36 @@ const Card = ({cartitems,setcartitems}) => {
                 />
 
                 <div>
-                  <h4 className="font-semibold text-lg">
+                  <h4 className="font-semibold">
                     {item.name}
                   </h4>
 
-                  {item.option && (
-                    <p className="text-gray-500 text-sm mt-1">
-                      {item.option}
-                    </p>
-                  )}
-
-                  <p className="font-bold text-[#004953] mt-3">
-                    ${item.price.toFixed(2)}
+                  <p className="font-bold text-[#004953] mt-1">
+                    ${Number(item.price).toFixed(2)}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center bg-gray-100 rounded-full p-1">
-                <button onClick={()=>decreaseQuantity(item.id)}  className="w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-sm">
-                  <FontAwesomeIcon icon={faMinus} size={12} />
+
+                <button
+                  onClick={() => decreaseQuantity(item.id)}
+                  className="w-8 h-8 flex items-center justify-center bg-white rounded-full"
+                >
+                  <FontAwesomeIcon icon={faMinus} />
                 </button>
 
-                <span className="px-4 font-semibold">
+                <span className="px-3 font-semibold">
                   {item.quantity}
                 </span>
 
-                <button onClick={()=>increaseQuantity(item.id)} className="w-9 h-9 rounded-full bg-[#004953] text-white flex items-center justify-center">
-                  <FontAwesomeIcon icon={faPlus} size={12} />
+                <button
+                  onClick={() => increaseQuantity(item.id)}
+                  className="w-8 h-8 flex items-center justify-center bg-[#004953] text-white rounded-full"
+                >
+                  <FontAwesomeIcon icon={faPlus} />
                 </button>
+
               </div>
 
             </div>
@@ -99,7 +123,7 @@ const Card = ({cartitems,setcartitems}) => {
         ))}
       </div>
 
-      <div className="mt-2 space-y-1">
+      <div className="mt-4 space-y-2">
 
         <div className="flex justify-between text-gray-600">
           <span>Subtotal</span>
@@ -116,12 +140,9 @@ const Card = ({cartitems,setcartitems}) => {
           <span>${serviceFee.toFixed(2)}</span>
         </div>
 
-        <div className="border-t pt-4 flex justify-between">
-          <span className="font-bold text-lg">
-            Total
-          </span>
-
-          <span className="font-bold text-2xl text-[#004953]">
+        <div className="border-t pt-3 flex justify-between font-bold text-lg">
+          <span>Total</span>
+          <span className="text-[#004953]">
             ${total.toFixed(2)}
           </span>
         </div>
@@ -130,17 +151,15 @@ const Card = ({cartitems,setcartitems}) => {
 
       <button
         disabled={cartitems.length === 0}
-        className={`w-full mt-6 py-4 rounded-2xl font-semibold transition-all duration-200
-          ${
-            cartitems.length === 0
-              ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-              : "bg-[#004953] hover:bg-[#00363d] hover:scale-[1.05] cursor-pointer text-white"
-          }
-        `}
-        onClick={()=>navigate(PATH.USER.Checkout)}
+        onClick={handleCheckout}
+        className={`w-full mt-5 py-4 rounded-2xl font-semibold transition-all ${
+          cartitems.length === 0
+            ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+            : "bg-[#004953] text-white hover:scale-[1.03]"
+        }`}
       >
-  Proceed to Checkout
-</button>
+        Proceed to Checkout
+      </button>
 
     </div>
   );

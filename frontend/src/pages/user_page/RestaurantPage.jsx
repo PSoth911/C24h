@@ -1,48 +1,78 @@
-import Nav from '../../components/userComponent/HomepageComponent/Navbar'
-import Title from '../../components/userComponent/RestaurantComponent/Title'
-import FoodSection from '../../components/userComponent/RestaurantComponent/FoodSection'
-import Footer from '../../components/userComponent/HomepageComponent/Footer';
+import Nav from "../../components/userComponent/HomepageComponent/Navbar";
+import Title from "../../components/userComponent/RestaurantComponent/Title";
+import FoodSection from "../../components/userComponent/RestaurantComponent/FoodSection";
+import Footer from "../../components/userComponent/HomepageComponent/Footer";
+
+import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
+
+import { getRestaurantById } from "../../service/restaurantService";
+import Loading from "./LoadingPage";
 
 const RestaurantPage = () => {
+  const { id } = useParams();
 
-  const restaurants = [
-    {
-      id: 1,
-      name: "The Velvet Gourmet",
-      image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800",
-      logo: "https://images.unsplash.com/photo-1525610553991-2bede1a236e2?w=300",
-      description: "Modern fusion cuisine with artisanal bakery selections and premium coffee.",
-      status: "CLOSE",
-      cuisine: "Modern Fusion",
-      rating: 4.8,
-      fee: 3.5,
-      minOrder: 15,
-      deliveryTime: "20–30 min",
-      distance: "1.2 KM",
+  const [restaurant, setRestaurant] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+  const fetchRestaurant = async () => {
+    try {
+      setLoading(true);
+
+      const res = await getRestaurantById(id);
+
+      console.log(res.data);
+
+      setRestaurant(res.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
     }
-  ];
+  };
 
-  const restaurant = restaurants[0]; // ✅ pick single restaurant
+  fetchRestaurant();
+}, [id]);
+
+  if (loading) {
+    return (
+      <div >
+        <Loading/>
+      </div>
+    );
+  }
+
+  if (!restaurant) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Restaurant not found
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Nav />
 
-      <div className='px-10'>
+      <div className="px-10">
         <Title
+          restaurantId={id}
           status={restaurant.status}
-          name={restaurant.name}
+          name={restaurant.restaurant_name}
           img={restaurant.image}
+          logo={restaurant.logo}
           dsc={restaurant.description}
+          rating={restaurant.average_rating}
+          phone={restaurant.phone}
+          address={restaurant.address}
           fee={restaurant.fee}
-          distance={restaurant.distance}
-          minOrder={restaurant.minOrder}
+          owner={restaurant.User?.full_name}
         />
-
-        <FoodSection />
+        <FoodSection restaurantId={id} />
       </div>
 
-      <div className='mt-15'>
+      <div className="mt-15">
         <Footer />
       </div>
     </div>

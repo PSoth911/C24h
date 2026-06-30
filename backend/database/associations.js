@@ -1,5 +1,5 @@
-import User from "../models/User.js";
-import Customer from "../models/Customer.js";
+import User from "../models/user.js";
+import Customer from "../models/customer.js";
 import Restaurant from "../models/Restaurant.js";
 import Driver from "../models/Driver.js";
 import Category from "../models/Category.js";
@@ -12,6 +12,8 @@ import Payment from "../models/Payment.js";
 import Delivery from "../models/Delivery.js";
 import Review from "../models/Review.js";
 import Notification from "../models/Notification.js";
+import FavouriteProduct from "../models/FavouriteProduct.js";
+import FavouriteRestaurant from "../models/FavouriteRestaurant.js";
 
 // user
 User.hasOne(Customer, {
@@ -155,6 +157,41 @@ Product.hasMany(Review, {
   foreignKey: "product_id",
 });
 Review.belongsTo(Product, {
+  foreignKey: "product_id",
+});
+
+//Favourite Restaurants
+
+Customer.hasMany(FavouriteRestaurant, {
+  foreignKey: "customer_id",
+});
+
+FavouriteRestaurant.belongsTo(Customer, {
+  foreignKey: "customer_id",
+});
+
+Restaurant.hasMany(FavouriteRestaurant, {
+  foreignKey: "restaurant_id",
+});
+
+FavouriteRestaurant.belongsTo(Restaurant, {
+  foreignKey: "restaurant_id",
+});
+
+// Favourite Products
+Customer.hasMany(FavouriteProduct, {
+  foreignKey: "customer_id",
+});
+
+FavouriteProduct.belongsTo(Customer, {
+  foreignKey: "customer_id",
+});
+
+Product.hasMany(FavouriteProduct, {
+  foreignKey: "product_id",
+});
+
+FavouriteProduct.belongsTo(Product, {
   foreignKey: "product_id",
 });
 

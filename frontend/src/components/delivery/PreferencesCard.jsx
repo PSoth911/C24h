@@ -1,4 +1,4 @@
-import {
+﻿import {
   Bell,
   Megaphone,
   Moon,
@@ -52,7 +52,7 @@ export default function PreferencesCard() {
             className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 hover:bg-slate-100 transition"
           >
             <div className="flex gap-4">
-              <div className="w-10 h-10 rounded-xl bg-[#004953]/10 flex items-center justify-center text-[#004953]">
+              <div className="w-10 h-10 rounded-xl bg-[#004953] flex items-center justify-center text-[#004953]">
                 {setting.icon}
               </div>
 

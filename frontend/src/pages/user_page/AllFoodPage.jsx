@@ -1,30 +1,136 @@
-import Navbar from "../../components/userComponent/HomepageComponent/Navbar"
-import Footer from "../../components/userComponent/HomepageComponent/Footer"
+import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
+import Footer from "../../components/userComponent/HomepageComponent/Footer";
 import LeftSectionFilter from "../../components/userComponent/AllFoodComponent/LeftSectionFilter";
 import RightSectionFood from "../../components/userComponent/AllFoodComponent/RightSectionFood";
+import Loading from "./LoadingPage";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
+import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { searchProducts, getAllProducts, filterProducts } from "../../service/productService";
 
 const AllFoodPage = () => {
-    
+  const [searchParams, setSearchParams] = useSearchParams();
+  const keyword = searchParams.get("search") || "";
 
-    return (
-        <div>
+  const [inputValue, setInputValue] = useState(keyword);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [filters, setFilters] = useState(null);
+  const [clientFilters, setClientFilters] = useState({ sort: "popular" });
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        let res;
+
+        if (filters) {
+          const backendSort = (filters.sort === "highest_price" || filters.sort === "newest") ? "popular" : filters.sort;
+          res = await filterProducts({ categories: filters.categories, maxPrice: filters.maxPrice, sort: backendSort });
+        } else if (keyword.trim()) {
+          res = await searchProducts(keyword);
+        } else {
+          res = await getAllProducts();
+        }
+        setProducts(res.data.products);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [keyword, filters]);
+
+  const handleFilterApply = (incoming) => {
+    if (!incoming) {
+      setFilters(null);
+      setClientFilters({ sort: "popular" });
+      return;
+    }
+    const { sort = "popular", ...rest } = incoming;
+    setFilters({ ...rest, sort });
+    setClientFilters({ sort });
+  };
+
+  const displayProducts = products
+    .sort((a, b) => {
+      if (clientFilters.sort === "highest_price") return b.price - a.price;
+      if (clientFilters.sort === "lowest_price") return a.price - b.price;
+      if (clientFilters.sort === "newest") return new Date(b.created_at) - new Date(a.created_at);
+      return 0;
+    });
+
+  const handleSearch = () => {
+    if (inputValue.trim()) {
+      setSearchParams({ search: inputValue.trim() });
+    } else {
+      setSearchParams({});
+    }
+    setFilters(null);
+  };
+
+  const clearSearch = () => {
+    setInputValue("");
+    setSearchParams({});
+    setFilters(null);
+  };
+
+  return (
+    <div>
+      <Navbar />
+
+      <div className="px-15 py-4 gap-15 grid grid-cols-7 items-start">
+        <LeftSectionFilter onApply={handleFilterApply} />
+
+        <div className="col-span-5">
+          <div className="flex items-center justify-between pt-2 mb-6">
             <div>
-                <Navbar />
+              <h2 className="font-bold text-[#004953] text-2xl">
+                {keyword ? `Results for "${keyword}"` : "All Food"}
+              </h2>
+              <p className="text-gray-500 text-sm mt-1">
+                {displayProducts.length} item{displayProducts.length !== 1 ? "s" : ""} found
+              </p>
             </div>
-            <div className="py-2 px-20">
-                    <h2 className="font-bold text-[#004953] text-2xl">ALL FOOD</h2>
-                    <p className="text-[#004953]">Discover 1,248 delicious dishes near you</p>
-                </div>
-            <div className="px-15 py-4 gap-15 grid grid-cols-7 items-start"> 
-                <LeftSectionFilter />
-                <RightSectionFood/>
+
+            <div className="flex items-center bg-white rounded-2xl shadow-md border border-gray-200 px-4 py-2.5 gap-3 w-80">
+              <FontAwesomeIcon icon={faMagnifyingGlass} className="text-[#004953]" />
+              <input
+                type="text"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
+                placeholder="Search dishes, cuisines..."
+                className="flex-1 outline-none text-sm placeholder:text-gray-400"
+              />
+              {inputValue && (
+                <button
+                  onClick={clearSearch}
+                  className="text-gray-400 hover:text-gray-600 text-lg leading-none"
+                >
+                  ×
+                </button>
+              )}
+              <button
+                onClick={handleSearch}
+                className="bg-[#004953] hover:bg-black text-white px-4 py-1.5 rounded-xl text-sm font-semibold transition whitespace-nowrap"
+              >
+                Search
+              </button>
             </div>
-            <Footer/>
+          </div>
 
-
+          {loading ? <Loading /> : <RightSectionFood products={displayProducts} />}
         </div>
-    )
-}
+      </div>
 
-export default AllFoodPage
+      <Footer />
+    </div>
+  );
+};
+
+export default AllFoodPage;

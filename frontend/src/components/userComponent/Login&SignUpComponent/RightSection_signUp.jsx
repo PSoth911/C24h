@@ -1,34 +1,32 @@
 import image1 from '../../../assets/image copy.png';
-import {PATH} from '../../../path.js';
-import {useNavigate} from 'react-router-dom';
+import { PATH } from '../../../path.js';
+import { useNavigate } from 'react-router-dom';
 import { useState } from "react";
-import axios from "axios";
+import { register } from "../../../service/authService.js";
 const RightSection_signUp = () => {
     const navigate = useNavigate();
     const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const handleRegister = async (e) => {
-    e.preventDefault();
-    try {
-        await axios.post(
-        "http://localhost:5000/api/auth/register",
-        {
-            full_name: fullName,
-            email,
-            password,
+        e.preventDefault();
+
+        try {
+            await register({
+                full_name: fullName,
+                email,
+                password,
+            });
+
+            alert("Account created successfully");
+
+            navigate(PATH.AUTH.LOGIN);
+        } catch (error) {
+            alert(
+                error.response?.data?.message ||
+                "Registration failed"
+            );
         }
-        );
-
-        alert("Account created successfully");
-
-        navigate(PATH.AUTH.LOGIN);
-    } catch (error) {
-        alert(
-        error.response?.data?.message ||
-        "Registration failed"
-        );
-    }
     };
     return (
         <div className="left-section rounded-r-2xl flex flex-col bg-gray-100 justify-center px-32">
@@ -39,15 +37,15 @@ const RightSection_signUp = () => {
             <form onSubmit={handleRegister} className="login-form flex flex-col gap-4">
                 <div className="flex flex-col">
                     <label htmlFor="username">Username</label>
-                    <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full Name" className="border border-gray-500 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500"required/>
+                    <input type="text" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Full Name" className="border border-gray-500 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500" required />
                 </div>
                 <div className="flex flex-col">
                     <label htmlFor="email">Email</label>
-                    <input value={email} onChange={(e)=> setEmail(e.target.value)} className="border border-gray-500 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500" type="email" id="email" placeholder="Email address" required />
+                    <input value={email} onChange={(e) => setEmail(e.target.value)} className="border border-gray-500 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500" type="email" id="email" placeholder="Email address" required />
                 </div>
                 <div className="flex flex-col">
                     <label htmlFor="password">Password</label>
-                    <input value={password} onChange={(e)=>setPassword(e.target.value)} className="border border-gray-500 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500" type="password" id="password" placeholder="Password" required />
+                    <input value={password} onChange={(e) => setPassword(e.target.value)} className="border border-gray-500 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-blue-500" type="password" id="password" placeholder="Password" required />
                 </div>
 
                 <button className="bg-[#004953] text-white mt-2 py-2 px-4 rounded-lg hover:bg-black transition duration-200">Sign Up</button>
@@ -61,7 +59,7 @@ const RightSection_signUp = () => {
                     </button>
                 </div>
                 <div className="signup-link flex justify-center mt-2">
-                    <p className="text-gray-600 justify-center">Already have an account? <span onClick={()=>navigate(PATH.AUTH.LOGIN)} className="text-[#004953] cursor-pointer">Log in</span></p>
+                    <p className="text-gray-600 justify-center">Already have an account? <span onClick={() => navigate(PATH.AUTH.LOGIN)} className="text-[#004953] cursor-pointer">Log in</span></p>
                 </div>
             </form>
         </div>

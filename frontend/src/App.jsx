@@ -24,6 +24,7 @@ import HomePage from './pages/user_page/HomePage.jsx';
 import AllFoodPage from './pages/user_page/AllFoodPage.jsx';
 import Profile from './pages/user_page/UserProfile.jsx'
 import RestaurantPage from './pages/user_page/RestaurantPage.jsx';
+import AllRestaurantsPage from './pages/user_page/AllRestaurantsPage.jsx';
 import CheckoutPage from './pages/user_page/CheckoutPage.jsx';
 import AddAdressPage from './pages/user_page/AddAdressPage.jsx';
 import SucessPaymentPage from './pages/user_page/SucessPaymentPage.jsx';
@@ -63,11 +64,12 @@ function App() {
       <Route path={PATH.USER.HOME} element={<ProtectedRoute role="customer"> <HomePage/> </ProtectedRoute>}/>
       <Route path={PATH.USER.Profile} element={<ProtectedRoute role="customer"> <Profile/> </ProtectedRoute>}/>
       <Route path={PATH.USER.AllFood} element={<ProtectedRoute role="customer"> <AllFoodPage/> </ProtectedRoute>}/>
-      <Route path={PATH.USER.Restaurant} element={<ProtectedRoute role="customer"> <RestaurantPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.AllRestaurants} element={<ProtectedRoute role="customer"> <AllRestaurantsPage/> </ProtectedRoute>}/>
+      <Route path="/restaurant/:id" element={<ProtectedRoute role="customer"> <RestaurantPage/> </ProtectedRoute>}/>
       <Route path={PATH.USER.Checkout} element={<ProtectedRoute role="customer"> <CheckoutPage/> </ProtectedRoute>}/>
       <Route path={PATH.USER.AddAdress} element={<ProtectedRoute role="customer"> <AddAdressPage/> </ProtectedRoute>}/>
-      <Route path={PATH.USER.SucessPayment} element={<ProtectedRoute role="customer"> <SucessPaymentPage/> </ProtectedRoute>}/>
-      <Route path={PATH.USER.Trackorder} element={<ProtectedRoute role="customer"> <TrackOrderPage/> </ProtectedRoute>}/>
+      <Route path={`${PATH.USER.SucessPayment}/:id`}element={<ProtectedRoute role="customer"><SucessPaymentPage /></ProtectedRoute>}/>
+      <Route path={`${PATH.USER.Trackorder}/:id`}element={<ProtectedRoute role="customer"><TrackOrderPage /></ProtectedRoute>}/>
       <Route path={PATH.USER.Payment} element={<ProtectedRoute role="customer"> <PaymentPage/> </ProtectedRoute>}/>
 
     </Routes>

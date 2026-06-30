@@ -1,10 +1,11 @@
 import express from 'express';
-import { getAllRestaurants } from '../controller/sellerController.js';
+import { getAllRestaurants,getRestaurantById } from '../controller/sellerController.js';
 
 
 const route = express.Router();
 
-route.get('/allrestaurants',getAllRestaurants);
+route.get('/restaurants',getAllRestaurants);
+route.get('/restaurants/:id',getRestaurantById);
 
 
 export default route;

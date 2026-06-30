@@ -1,45 +1,275 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+﻿import { useEffect, useRef, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCartShopping,
   faUser,
   faLocationDot,
-  faChevronDown
-  
-} from '@fortawesome/free-solid-svg-icons'
-import logo from '../../../assets/image copy 28.png'
-import { useNavigate } from 'react-router-dom'
-import {PATH} from '../../../path.js'
-const Navbar = () => {
-  const navigate =useNavigate()
-  return (
-    <div className="navbar flex justify-between px-12 rounded-2xl py-3 items-center bg-[#FFF8EF] text-black sahadow-lg">
-        <div className='flex items-center'>
-          <img className='w-10' src={logo} alt="" />
-          <div className="text-[#004953] text-2xl font-bold">C24h</div>
-        </div>
-        <div className="nav-links">
-            <ul className="flex gap-6">
-                <li onClick={()=>navigate(PATH.USER.HOME)} className='hover:cursor-pointer hover:underline text-gray-600'>Home</li>
-                <li onClick={()=>navigate(PATH.USER.AllFood)} className='hover:cursor-pointer hover:underline text-gray-600'>All Food</li>
-                <li className='hover:cursor-pointer hover:underline text-gray-600'>Restaurant</li>
-            </ul>
-        </div>
-        <div className="list-none nav-icons flex gap-4 items-center">
-          <div className='border flex gap-2 items-center border-[#004953] rounded-2xl p-1 text-sm text-[#004953]'>
-            <FontAwesomeIcon icon={faLocationDot}/>
-            Location
-            <li className='hover:cursor-pointer'><FontAwesomeIcon icon={faChevronDown} /></li>
-          </div>
-            <div className='list-none nav-icons flex gap-4 items-center'>
-              <li onClick={()=>navigate(PATH.USER.Checkout)} className='hover:cursor-pointer'><FontAwesomeIcon icon={faCartShopping} /></li>
-              <div className='bg-[#004953] p-2 rounded-xl'>
-                <li onClick={()=>navigate(PATH.USER.Profile)} className='hover:cursor-pointer text-white'><FontAwesomeIcon icon={faUser} /></li>
-              </div>
-            </div>
-        </div>
-      
-    </div>
-  )
-}
+  faChevronDown,
+  faRightFromBracket,
+  faIdCard,
+  faLocationCrosshairs,
+  faXmark,
+} from "@fortawesome/free-solid-svg-icons";
 
-export default Navbar
+import logo from "../../../assets/image copy 28.png";
+import { useNavigate, useLocation } from "react-router-dom";
+import { PATH } from "../../../path.js";
+import { getCart } from "../../../service/cartService";
+
+const NAV_LINKS = [
+  { label: "Home", path: PATH.USER.HOME },
+  { label: "All Food", path: PATH.USER.AllFood },
+  { label: "Restaurants", path: PATH.USER.AllRestaurants },
+];
+
+const Navbar = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const [cartCount, setCartCount] = useState(0);
+  const [profileOpen, setProfileOpen] = useState(false);
+  const [locationOpen, setLocationOpen] = useState(false);
+  const [locationLabel, setLocationLabel] = useState(
+    () => localStorage.getItem("userLocation") || ""
+  );
+  const [locationLoading, setLocationLoading] = useState(false);
+  const [locationError, setLocationError] = useState("");
+  const [isLoggedIn] = useState(!!localStorage.getItem("token"));
+
+  const profileRef = useRef(null);
+  const locationRef = useRef(null);
+
+  const fetchCart = async () => {
+    try {
+      const res = await getCart();
+      setCartCount(res.data.cart?.CartItems?.length || 0);
+    } catch {
+      setCartCount(0);
+    }
+  };
+
+  useEffect(() => {
+    const handler = () => fetchCart();
+    if (localStorage.getItem("token")) handler();
+    window.addEventListener("cartUpdated", handler);
+    window.addEventListener("focus", handler);
+    return () => {
+      window.removeEventListener("cartUpdated", handler);
+      window.removeEventListener("focus", handler);
+    };
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (profileRef.current && !profileRef.current.contains(e.target))
+        setProfileOpen(false);
+      if (locationRef.current && !locationRef.current.contains(e.target))
+        setLocationOpen(false);
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleDetectLocation = () => {
+    if (!navigator.geolocation) {
+      setLocationError("Geolocation is not supported by your browser.");
+      return;
+    }
+    setLocationLoading(true);
+    setLocationError("");
+    navigator.geolocation.getCurrentPosition(
+      async ({ coords }) => {
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${coords.latitude}&lon=${coords.longitude}&format=json`
+          );
+          const data = await res.json();
+          const addr = data.address;
+          const label =
+            addr.city || addr.town || addr.village || addr.county || "Unknown";
+          setLocationLabel(label);
+          localStorage.setItem("userLocation", label);
+          setLocationOpen(false);
+        } catch {
+          setLocationError("Could not fetch address. Try again.");
+        } finally {
+          setLocationLoading(false);
+        }
+      },
+      () => {
+        setLocationError("Location access denied.");
+        setLocationLoading(false);
+      }
+    );
+  };
+
+  const handleClearLocation = () => {
+    setLocationLabel("");
+    localStorage.removeItem("userLocation");
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    setProfileOpen(false);
+    navigate(PATH.AUTH.LOGIN);
+  };
+
+  const isActive = (path) => location.pathname === path;
+
+  return (
+    <nav className="sticky top-0 z-50 bg-[#FFF8EF] rounded-xl shadow-sm">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+
+        <button
+          onClick={() => navigate(PATH.USER.HOME)}
+          className="flex items-center gap-2 cursor-pointer"
+        >
+          <img className="w-9 h-9 object-contain" src={logo} alt="C24h logo" />
+          <span className="text-[#004953] text-xl font-bold tracking-tight">C24h</span>
+        </button>
+        <ul className="flex items-center gap-1">
+          {NAV_LINKS.map(({ label, path }) => (
+            <li key={path}>
+              <button
+                onClick={() => navigate(path)}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  isActive(path)
+                    ? "bg-[#004953] text-white shadow-sm"
+                    : "text-gray-600 hover:bg-[#004953] hover:text-white"
+                }`}
+              >
+                {label}
+              </button>
+            </li>
+          ))}
+        </ul>
+
+        {/* RIGHT SIDE */}
+        <div className="flex items-center gap-3">
+
+          {/* LOCATION */}
+          <div className="relative" ref={locationRef}>
+            <button
+              onClick={() => { setLocationOpen((o) => !o); setLocationError(""); }}
+              className="flex items-center gap-1.5 border border-[#004953] hover:border-[#004953] rounded-full px-3 py-1.5 text-sm text-[#004953] font-medium transition-colors cursor-pointer max-w-40"
+            >
+              <FontAwesomeIcon icon={faLocationDot} className="text-xs shrink-0" />
+              <span className="truncate">
+                {locationLabel || "Set Location"}
+              </span>
+              {locationLabel ? (
+                <span
+                  onClick={(e) => { e.stopPropagation(); handleClearLocation(); }}
+                  className="ml-0.5 hover:text-red-500 transition-colors"
+                >
+                  <FontAwesomeIcon icon={faXmark} className="text-xs" />
+                </span>
+              ) : (
+                <FontAwesomeIcon icon={faChevronDown} className={`text-xs transition-transform shrink-0 ${locationOpen ? "rotate-180" : ""}`} />
+              )}
+            </button>
+
+            {locationOpen && (
+              <div className="absolute left-0 mt-2 w-64 bg-white rounded-2xl shadow-lg border border-gray-100 p-4 z-50">
+                <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
+                  Your Delivery Location
+                </p>
+
+                {locationLabel && (
+                  <div className="flex items-center gap-2 bg-[#004953] rounded-xl px-3 py-2.5 mb-3">
+                    <FontAwesomeIcon icon={faLocationDot} className="text-[#004953] text-sm" />
+                    <span className="text-sm font-medium text-[#004953] truncate">{locationLabel}</span>
+                  </div>
+                )}
+
+                <button
+                  onClick={handleDetectLocation}
+                  disabled={locationLoading}
+                  className="w-full flex items-center justify-center gap-2 bg-[#004953] hover:bg-[#003940] disabled:opacity-60 text-white rounded-xl py-2.5 text-sm font-medium transition-colors cursor-pointer"
+                >
+                  <FontAwesomeIcon
+                    icon={faLocationCrosshairs}
+                    className={locationLoading ? "animate-spin" : ""}
+                  />
+                  {locationLoading ? "Detecting…" : "Use My Location"}
+                </button>
+
+                {locationError && (
+                  <p className="text-xs text-red-500 mt-2 text-center">{locationError}</p>
+                )}
+              </div>
+            )}
+          </div>
+
+          {isLoggedIn ? (
+            <>
+              {/* CART */}
+              <button
+                onClick={() => navigate(PATH.USER.Checkout)}
+                className="relative p-2.5 rounded-xl text-gray-600 hover:bg-[#004953] hover:text-white transition-colors cursor-pointer"
+              >
+                <FontAwesomeIcon icon={faCartShopping} className="text-lg" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold min-w-4.5 min-h-4.5 flex items-center justify-center rounded-full leading-none px-1">
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
+              </button>
+
+              {/* PROFILE DROPDOWN */}
+              <div className="relative" ref={profileRef}>
+                <button
+                  onClick={() => setProfileOpen((o) => !o)}
+                  className="flex items-center gap-2 bg-[#004953] hover:bg-[#003940] text-white px-3 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer"
+                >
+                  <FontAwesomeIcon icon={faUser} />
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
+                    className={`text-xs transition-transform ${profileOpen ? "rotate-180" : ""}`}
+                  />
+                </button>
+
+                {profileOpen && (
+                  <div className="absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden py-1 z-50">
+                    <button
+                      onClick={() => { navigate(PATH.USER.Profile); setProfileOpen(false); }}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-[#004953] hover:text-white transition-colors cursor-pointer"
+                    >
+                      <FontAwesomeIcon icon={faIdCard} className=" hover:text-white w-4" />
+                      My Profile
+                    </button>
+                    <hr className="border-gray-100 mx-3" />
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                    >
+                      <FontAwesomeIcon icon={faRightFromBracket} className="w-4" />
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => navigate(PATH.AUTH.LOGIN)}
+                className="px-4 py-2 text-sm font-medium text-[#004953] hover:bg-[#004953] rounded-xl transition-colors cursor-pointer"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => navigate(PATH.AUTH.SIGNUP)}
+                className="px-4 py-2 text-sm font-medium bg-[#004953] text-white hover:bg-[#003940] rounded-xl transition-colors cursor-pointer"
+              >
+                Sign Up
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;

@@ -1,5 +1,4 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Profile from '../../../assets/image copy 27.png'
 import {
   faUser,
   faBell,
@@ -8,320 +7,299 @@ import {
   faSliders,
   faChevronDown,
   faChevronUp,
+  faFloppyDisk,
+  faKey,
+  faTrashCan,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const Setting = () => {
-  const [open, setopen] = useState([])
-  const [notificationSettings, setNotificationSettings] = useState({
-      orderUpdates: true,
-      promotions: true,
-      newRestaurants: false,
-      reviewReminders: false,
-      appAnnouncements: true,
-    });
-  const [PreferenceSettings, setPreferenceSettings] = useState({
-      Darkmode: true,
-      PrivateOrderHistory: true,
-    });
+import { updateProfile } from "../../../service/profileService";
+
+// reusable toggle switch
+const Toggle = ({ on, onClick }) => (
+  <button
+    onClick={onClick}
+    className={`relative w-12 h-6 rounded-full transition-colors duration-200 shrink-0 ${
+      on ? "bg-[#004953]" : "bg-gray-300"
+    }`}
+  >
+    <span
+      className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform duration-200 ${
+        on ? "translate-x-6" : "translate-x-0"
+      }`}
+    />
+  </button>
+);
+
+const Setting = ({ userData }) => {
+  const [open, setOpen] = useState([]);
+
+  const [profile, setProfile] = useState({
+    fullName: "",
+    phone: "",
+    email: "",
+  });
+
+  const [notificationSettings, setNotificationSettings] = useState({});
+  const [preferenceSettings, setPreferenceSettings] = useState({});
+
   const sections = [
-    {
-      name: "My Profile",
-      icon: faUser,
-    },
-    {
-      name: "Notifications",
-      icon: faBell,
-    },
-    {
-      name: "Preferences",
-      icon: faSliders,
-    },
-    {
-      name: "Security",
-      icon: faShield,
-    },
-    {
-      name: "Danger Zone",
-      icon: faTriangleExclamation,
-    },
+    { name: "My Profile", icon: faUser, dsc: "Your personal information" },
+    { name: "Notifications", icon: faBell, dsc: "Choose what we notify you about" },
+    { name: "Preferences", icon: faSliders, dsc: "Customize your experience" },
+    { name: "Security", icon: faShield, dsc: "Password and account safety" },
+    { name: "Danger Zone", icon: faTriangleExclamation, dsc: "Irreversible actions" },
   ];
-    const notifications = [
-    {
-      key: "orderUpdates",
-      title: "Order Updates",
-      dsc: "Real-time status of your food deliveries.",
-    },
-    {
-      key: "promotions",
-      title: "Promotions & deals",
-      dsc: "Exclusive discounts and seasonal offers.",
-    },
-    {
-      key: "newRestaurants",
-      title: "New restaurants",
-      dsc: "Be the first to know about local launches.",
-    },
-    {
-      key: "reviewReminders",
-      title: "Review reminders",
-      dsc: "A gentle nudge to share your experience.",
-    },
-    {
-      key: "appAnnouncements",
-      title: "App announcements",
-      dsc: "Stay informed about new features and updates.",
-    },
+
+  const notifications = [
+    { key: "orderUpdates", title: "Order Updates", dsc: "Real-time updates" },
+    { key: "promotions", title: "Promotions", dsc: "Deals & discounts" },
+    { key: "newRestaurants", title: "New Restaurants", dsc: "New openings" },
+    { key: "reviewReminders", title: "Review Reminders", dsc: "Rate orders" },
+    { key: "appAnnouncements", title: "App Announcements", dsc: "Updates" },
   ];
-    const Preference = [
-    {
-      key: "Darkmode",
-      title: "Dark mode",
-      dsc: "Real-time status of your food deliveries.",
-    },
-    {
-      key: "PrivateOrderHistory",
-      title: "Private Order History",
-      dsc: "Exclusive discounts and seasonal offers.",
-    }
+
+  const preferences = [
+    { key: "darkMode", title: "Dark Mode", dsc: "Enable dark theme" },
+    { key: "privateOrderHistory", title: "Private Order History", dsc: "Hide orders" },
   ];
-  const toggleSection = (sectionName) => {
-    setopen((prev) => prev.includes(sectionName)
-      ? prev.filter((item) => item !== sectionName) : [...prev, sectionName]
+  useEffect(() => {
+    if (!userData) return;
+
+    setProfile({
+      fullName: userData.fullName || "",
+      phone: userData.phone || "",
+      email: userData.email || "",
+    });
+
+    setNotificationSettings(userData.notifications || {});
+    setPreferenceSettings(userData.preferences || {});
+  }, [userData]);
+
+  const toggleSection = (name) => {
+    setOpen((prev) =>
+      prev.includes(name) ? prev.filter((i) => i !== name) : [...prev, name]
     );
   };
+
   const toggleNotification = (key) => {
-    setNotificationSettings((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+    setNotificationSettings((prev) => ({ ...prev, [key]: !prev[key] }));
   };
 
   const togglePreference = (key) => {
-    setPreferenceSettings((prev) => ({
-      ...prev,
-      [key]: !prev[key],
-    }));
+    setPreferenceSettings((prev) => ({ ...prev, [key]: !prev[key] }));
   };
+
+  const handleSave = async () => {
+    try {
+      await updateProfile({
+        ...profile,
+        notifications: notificationSettings,
+        preferences: preferenceSettings,
+      });
+
+      alert("Settings updated!");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const SaveButton = () => (
+    <button
+      onClick={handleSave}
+      className="mt-4 inline-flex items-center gap-2 bg-[#004953] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-black transition"
+    >
+      <FontAwesomeIcon icon={faFloppyDisk} />
+      Save Changes
+    </button>
+  );
+
   return (
-    <div className='p-5'>
-      <h1 className='font-semibold text-[#004953] text-2xl'>Account Setting</h1>
-      <p className='text-[#004953]'>Manage your profile, preferences, and security settings.</p>
-      <div>
+    <div>
+
+      {/* Page header */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-[#004953]">Account Settings</h1>
+        <p className="text-gray-500 mt-1">
+          Manage your profile and preferences
+        </p>
+      </div>
+
+      <div className="space-y-4">
         {sections.map((s) => {
           const isOpen = open.includes(s.name);
+          const danger = s.name === "Danger Zone";
 
           return (
             <div
               key={s.name}
-              className="bg-white rounded-xl shadow-sm mt-4 mb-4 overflow-hidden"
+              className={`bg-white rounded-2xl shadow-sm border overflow-hidden transition ${
+                danger ? "border-red-100" : "border-gray-100"
+              }`}
             >
+              {/* HEADER */}
               <button
                 onClick={() => toggleSection(s.name)}
-                className={`w-full flex items-center justify-between p-4 border-l-4 ${s.name === "Danger Zone" ? "border-red-500" : "border-teal-600"}`}>
-                <div
-                  className={`flex items-center gap-3 ${s.name === "Danger Zone" ? "text-red-600" : "text-gray-800"}`}>
-                  <FontAwesomeIcon icon={s.icon} />
-                  <span className="font-medium">{s.name}</span>
+                className="w-full flex items-center justify-between p-5 hover:bg-gray-50 transition"
+              >
+                <div className="flex items-center gap-4">
+                  <div
+                    className={`flex h-11 w-11 items-center justify-center rounded-xl ${
+                      danger
+                        ? "bg-red-50 text-red-500"
+                        : "bg-emerald-50 text-[#004953]"
+                    }`}
+                  >
+                    <FontAwesomeIcon icon={s.icon} />
+                  </div>
+                  <div className="text-left">
+                    <h3
+                      className={`font-semibold ${
+                        danger ? "text-red-600" : "text-gray-800"
+                      }`}
+                    >
+                      {s.name}
+                    </h3>
+                    <p className="text-sm text-gray-400">{s.dsc}</p>
+                  </div>
                 </div>
-                <FontAwesomeIcon icon={isOpen ? faChevronUp : faChevronDown} />
+
+                <FontAwesomeIcon
+                  icon={isOpen ? faChevronUp : faChevronDown}
+                  className="text-gray-400"
+                />
               </button>
+
+              {/* BODY */}
               {isOpen && (
-                <div className="border-l-4 p-5 border-teal-600 bg-gray-50">
+                <div className="px-5 pb-6 pt-1 border-t border-gray-100">
+
+                  {/* PROFILE */}
                   {s.name === "My Profile" && (
-                    <div>
-                      <div className="flex gap-4 items-start">
-                        <img
-                          src={Profile}
-                          alt="profile"
-                          className="w-20 h-20 rounded-full border"
+                    <div className="space-y-4 mt-4">
+                      <div>
+                        <label className="text-sm font-semibold text-gray-600">
+                          Full Name
+                        </label>
+                        <input
+                          className="mt-1.5 w-full border border-gray-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-[#004953]"
+                          value={profile.fullName}
+                          placeholder="Your full name"
+                          onChange={(e) =>
+                            setProfile({ ...profile, fullName: e.target.value })
+                          }
                         />
-
-                        <div className="flex-1 grid md:grid-cols-2 gap-4">
-                          <div>
-                            <label className="text-sm text-gray-500">
-                              Full Name
-                            </label>
-                            <input
-                              type="text"
-                              className="w-full border rounded-lg p-2"
-                              defaultValue="Daro Chhum"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="text-sm text-gray-500">
-                              Phone Number
-                            </label>
-                            <input
-                              type="text"
-                              className="w-full border rounded-lg p-2"
-                              defaultValue="+855 12345678"
-                            />
-                          </div>
-
-                          <div className="md:col-span-2">
-                            <label className="text-sm text-gray-500">
-                              Email Address
-                            </label>
-                            <input
-                              type="email"
-                              className="w-full border rounded-lg p-2"
-                              defaultValue="daro@example.com"
-                            />
-                          </div>
-                        </div>
                       </div>
 
-                      <div className="mt-5">
-                        <div className="flex justify-between text-sm mb-2">
-                          <span>Loyalty Points Progress</span>
-                          <span>1,250 / 2,000 pts</span>
-                        </div>
+                      <div>
+                        <label className="text-sm font-semibold text-gray-600">
+                          Phone Number
+                        </label>
+                        <input
+                          className="mt-1.5 w-full border border-gray-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-[#004953]"
+                          value={profile.phone}
+                          placeholder="012345678"
+                          onChange={(e) =>
+                            setProfile({ ...profile, phone: e.target.value })
+                          }
+                        />
+                      </div>
 
-                        <div className="w-full bg-gray-200 h-3 rounded-full">
-                          <div className="bg-teal-700 h-3 rounded-full w-[62%]"></div>
-                        </div>
+                      <div>
+                        <label className="text-sm font-semibold text-gray-600">
+                          Email
+                        </label>
+                        <input
+                          className="mt-1.5 w-full border border-gray-200 p-3 rounded-xl outline-none focus:ring-2 focus:ring-[#004953]"
+                          value={profile.email}
+                          placeholder="you@example.com"
+                          onChange={(e) =>
+                            setProfile({ ...profile, email: e.target.value })
+                          }
+                        />
                       </div>
-                      <div className="flex gap-8 mt-8">
-                            <button className="p-2 rounded-2xl bg-[#004953] text-white hover:cursor-pointer">Save Change</button>
-                            <button className="hover:cursor-pointer">Cancel</button>
-                      </div>
+
+                      <SaveButton />
                     </div>
                   )}
 
+                  {/* NOTIFICATIONS */}
                   {s.name === "Notifications" && (
-                    <div className="flex flex-col gap-4">
-                      {notifications.map((i)=>(
-                        <div
-                        key={i.key}
-                        className="flex items-center border-b border-gray-400 justify-between w-full"
-                        > 
-                            <div className="flex flex-col">
-                                <h2>{i.title}</h2>
-                                <p className="text-gray-600">{i.dsc}</p>
-                            </div>
-                            <button
-                              onClick={() => toggleNotification(i.key)}
-                              className={`w-12 h-7 rounded-full p-1 transition-all ${ notificationSettings[i.key] ? "bg-teal-700" : "bg-gray-300"}`}
-                            >
-                              <div
-                                className={`w-5 h-5 bg-white rounded-full transition-all ${ notificationSettings[i.key] ? "translate-x-5" : ""}`}
-                              />
-                            </button>
-                        </div>
-
-                      ))}
-                    </div>
-                  )}
-
-                  {s.name === "Preferences" && (
-                    <div>
-                      <h3 className="font-semibold mb-2">
-                        Preferences
-                      </h3>
-
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="gap-1 flex flex-col rounded-md ">
-                          <label htmlFor="">Language</label>
-                          <select  className="rounded-md p-2 border" >
-                              <option>English(EN)</option>
-                              <option>Khmer</option>
-                         </select>
-                        </div>
-                        <div className=" gap-1 flex flex-col">
-                            <label htmlFor="Currancy">Currancy</label>
-                          <select className="rounded-md border p-2" >
-                              <option>USD</option>
-                              <option>Reil</option>
-                          </select>
-                        </div>
-                      </div>
-                      <div className="flex flex-col mt-2 gap-4">
-                        {Preference.map((i)=>(
+                    <div className="mt-4">
+                      <div className="divide-y divide-gray-100">
+                        {notifications.map((n) => (
                           <div
-                          key={i.key}
-                          className="flex items-center border-b border-gray-400 justify-between w-full"
-                          > 
-                              <div className="flex flex-col">
-                                  <h2>{i.title}</h2>
-                                  <p className="text-gray-600">{i.dsc}</p>
-                              </div>
-                              <button
-                                onClick={() => togglePreference(i.key)}
-                                className={`w-12 h-7 rounded-full p-1 transition-all ${ PreferenceSettings[i.key] ? "bg-teal-700" : "bg-gray-300"}`}
-                              >
-                                <div
-                                  className={`w-5 h-5 bg-white rounded-full transition-all ${ PreferenceSettings[i.key] ? "translate-x-5" : ""}`}
-                                />
-                              </button>
+                            key={n.key}
+                            className="flex items-center justify-between py-3"
+                          >
+                            <div>
+                              <h4 className="font-medium text-gray-800">
+                                {n.title}
+                              </h4>
+                              <p className="text-sm text-gray-400">{n.dsc}</p>
+                            </div>
+                            <Toggle
+                              on={!!notificationSettings[n.key]}
+                              onClick={() => toggleNotification(n.key)}
+                            />
                           </div>
-
                         ))}
                       </div>
+                      <SaveButton />
                     </div>
                   )}
 
-                  {s.name === "Security" && (
-                    <div>
-                      <h3 className="font-semibold mb-2">
-                        Security Settings
-                      </h3>
+                  {/* PREFERENCES */}
+                  {s.name === "Preferences" && (
+                    <div className="mt-4">
+                      <div className="divide-y divide-gray-100">
+                        {preferences.map((p) => (
+                          <div
+                            key={p.key}
+                            className="flex items-center justify-between py-3"
+                          >
+                            <div>
+                              <h4 className="font-medium text-gray-800">
+                                {p.title}
+                              </h4>
+                              <p className="text-sm text-gray-400">{p.dsc}</p>
+                            </div>
+                            <Toggle
+                              on={!!preferenceSettings[p.key]}
+                              onClick={() => togglePreference(p.key)}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                      <SaveButton />
+                    </div>
+                  )}
 
-                      <button className="bg-teal-600 text-white px-4 py-2 rounded-lg">
+                  {/* SECURITY */}
+                  {s.name === "Security" && (
+                    <div className="mt-4">
+                      <p className="text-sm text-gray-500 mb-4">
+                        Keep your account secure by updating your password
+                        regularly.
+                      </p>
+                      <button className="inline-flex items-center gap-2 bg-[#004953] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-black transition">
+                        <FontAwesomeIcon icon={faKey} />
                         Change Password
                       </button>
                     </div>
                   )}
-
                   {s.name === "Danger Zone" && (
-                    <div>
-                      <h3 className="font-semibold text-gray-600">
-                        <p>
-                          The following actions are permanent and cannot be undone. Please proceed with
-                          extreme caution. Once confirmed, your data will be queued for removal according to our
-                          privacy policy.
-                        </p>
-                      </h3>
-
-                     <div className="flex gap-5 mt-4">
-                         <div className="border p-3 rounded-2xl">
-                            <div>
-                              <h1 className="font-bold text-xl">
-                                Deactivate Account
-                              </h1>
-                              <p className="text-gray-500">
-                                Temporarily disable your profile. You can reactivate it
-                                anytime by logging back in. Your content will be hidden
-                                from other users.
-                              </p>
-                            </div>
-                            <div className="mt-4">
-                              <button className="text-red-600 px-4 py-2 cursor-pointer rounded-lg">
-                                Delete Account
-                              </button>
-                            </div>
-                      </div>
-                      <div className=" p-3 rounded-2xl border">
-                            <div>
-                              <h1 className="font-bold text-red-500 text-xl">
-                                Delete Account Permanently
-                              </h1>
-                              <p className="text-gray-500">
-                                This will permanently delete your account, orders, and
-                                saved data. This action is final and your information cannot
-                                be recovered.
-                              </p>
-                            </div>
-                            <div>
-                              <button className="bg-red-600 text-white mt-4 px-4 py-2 hover:cursor-pointer rounded-lg">
-                                Delete Account
-                              </button>
-                            </div>
-                      </div>
-                     </div>
+                    <div className="mt-4 rounded-xl bg-red-50 border border-red-100 p-4">
+                      <p className="text-sm text-red-600 mb-3">
+                        Deleting your account is permanent and cannot be undone.
+                      </p>
+                      <button className="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-red-700 transition">
+                        <FontAwesomeIcon icon={faTrashCan} />
+                        Delete Account
+                      </button>
                     </div>
                   )}
+
                 </div>
               )}
             </div>

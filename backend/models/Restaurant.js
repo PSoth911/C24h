@@ -13,7 +13,6 @@ const Restaurant = sequelize.define(
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
     },
 
     restaurant_name: {
@@ -45,6 +44,10 @@ const Restaurant = sequelize.define(
       type: DataTypes.STRING(255),
     },
 
+    image: {
+      type: DataTypes.STRING(255),
+    },
+
     status: {
       type: DataTypes.ENUM("open", "closed"),
       defaultValue: "open",
@@ -53,6 +56,15 @@ const Restaurant = sequelize.define(
     average_rating: {
       type: DataTypes.DECIMAL(2, 1),
       defaultValue: 0.0,
+    },
+
+    fee: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
+    },
+
+    category_id: {
+      type: DataTypes.INTEGER,
     },
   },
   {

@@ -1,78 +1,49 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFire,
-  faStar,
-  faBurger,
-  faMartiniGlass,
-  faLeaf,
-} from "@fortawesome/free-solid-svg-icons";
-import Card from '../../userComponent/RestaurantComponent/Card'
 
-const LeftSection = ({ activeCategory,cartitems,setcartitems  }) => {
-  const categories = [
-    {
-      name: "Popular Items",
-      icon: faFire,
-    },
-    {
-      name: "Signatures",
-      icon: faStar,
-    },
-    {
-      name: "Side",
-      icon: faBurger,
-    },
-    {
-      name: "Drink",
-      icon: faMartiniGlass,
-    },
-    {
-      name: "Vegan",
-      icon: faLeaf,
-    },
-  ];
+import Card from "../../userComponent/RestaurantComponent/Card";
+
+const LeftSection = ({ activeCategory, cartitems, setcartitems, categories = [] }) => {
 
   const handleScroll = (category) => {
-  const element = document.getElementById(category);
+    const element = document.getElementById(category);
 
-  if (element) {
-    element.scrollIntoView({
-      behavior: "smooth",
-      block: "start",
-    });
-  }
-};
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
 
   return (
     <div className="w-full sticky top-3 flex flex-col gap-6">
+      
+      {/* CATEGORY LIST */}
       <div className="bg-white rounded-xl shadow-lg p-2">
-        <h2 className="text-xl font-bold mb-5">
-          Categories
-        </h2>
+        <h2 className="text-xl font-bold mb-5">Categories</h2>
 
         <div className="space-y-1.5">
-          {categories.map((item) => (
+          {categories.map((name) => (
             <button
-              key={item.name}
-              onClick={() => handleScroll(item.name)}
+              key={name}
+              onClick={() => handleScroll(name)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg duration-200
                 ${
-                  activeCategory === item.name
+                  activeCategory === name
                     ? "bg-[#004953] text-white"
                     : "bg-gray-100 hover:bg-[#004953] hover:text-white"
                 }
               `}
             >
-              <FontAwesomeIcon icon={item.icon} />
-              <span>{item.name}</span>
+              <span>{name}</span>
             </button>
           ))}
         </div>
       </div>
+
+      {/* CART */}
       <div>
-        <Card setcartitems={setcartitems} cartitems={cartitems}/>
+        <Card setcartitems={setcartitems} cartitems={cartitems} />
       </div>
-      
     </div>
   );
 };
