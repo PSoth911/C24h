@@ -3,22 +3,26 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { PATH } from "../../path.js";
 
+const TEAL = "#004953";
+
 export default function AuthLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
+
   const handleLogin = async (e) => {
     e.preventDefault();
-
+    setError("");
+    setLoading(true);
 
     try {
       const response = await axios.post(
         "http://localhost:5000/api/auth/login",
-        {
-          email,
-          password,
-        }
+        { email, password }
       );
       const { token, user } = response.data;
       const role = user.role;
@@ -26,7 +30,6 @@ export default function AuthLogin() {
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("role", role);
       sessionStorage.setItem("user", JSON.stringify(user));
-   
 
       switch (role) {
         case "admin":
@@ -35,179 +38,216 @@ export default function AuthLogin() {
         case "driver":
           navigate(PATH.DELIVERY.DASHBOARD);
           break;
-
         case "customer":
           navigate(PATH.USER.HOME);
           break;
         case "restaurant_owner":
           navigate(PATH.SELLER.DASHBOARD);
           break;
-
         default:
           navigate("/");
       }
-    } catch (error) {
-      alert("Invalid email or password",error);
+    } catch (err) {
+      setError(err?.response?.data?.message || "Invalid email or password.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-100">
-      {/* Mobile Layout */}
-      <div className="lg:hidden flex items-center justify-center min-h-screen p-6">
-        <div className="w-full max-w-md bg-white rounded-3xl shadow-xl p-8">
-          <div className="flex flex-col items-center mb-8">
-            <div className="w-16 h-16 rounded-2xl bg-[#004953] flex items-center justify-center text-white text-2xl font-bold">
-              A
-            </div>
-            <h1 className="mt-4 text-2xl font-bold text-gray-800">
-              Admin Login
-            </h1>
-            <p className="text-gray-500 text-sm mt-1">
-              Sign in to access the dashboard
-            </p>
-          </div>
+    <div className="auth-root min-h-screen w-full bg-[#F6FAFA] text-slate-900">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        .auth-root { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+        .auth-input:focus { outline:none; border-color:${TEAL}; box-shadow:0 0 0 4px rgba(0,73,83,.12); }
+      `}</style>
 
-          <form className="space-y-5" onSubmit={handleLogin}>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email
-              </label>
-              <input
-                type="email"
-                placeholder="admin@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#004953]"
+      <div className="flex min-h-screen">
+        {/* ───────── Illustration panel (left, desktop only) ───────── */}
+        <div className="hidden lg:flex lg:w-1/2 flex-col items-center justify-center px-16 bg-[#003f4948]">
+          <svg viewBox="0 0 360 260" className="w-full max-w-sm" fill="none" aria-hidden="true">
+            <circle cx="180" cy="120" r="110" fill="#fff" />
+            <circle cx="180" cy="120" r="110" stroke="#E6EEEE" strokeWidth="1.5" />
+
+            <path
+              d="M70 200 C 120 150, 150 150, 185 120 S 250 70, 295 78"
+              stroke={TEAL}
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeDasharray="2 10"
+            />
+            <circle cx="70" cy="200" r="5" fill="#CBD5E1" />
+
+            <g>
+              <path
+                d="M295 50c-11 0-20 9-20 20 0 14 20 30 20 30s20-16 20-30c0-11-9-20-20-20Z"
+                fill={TEAL}
               />
-            </div>
+              <circle cx="295" cy="70" r="7" fill="#fff" />
+            </g>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#004953]"
-              />
-            </div>
+            <g stroke="#334155" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none">
+              <circle cx="120" cy="200" r="20" fill="#fff" />
+              <circle cx="210" cy="200" r="20" fill="#fff" />
+              <path d="M120 200l22-46h24" />
+              <path d="M166 154l16 34h28" />
+              <rect x="150" y="120" width="40" height="34" rx="6" fill="#fff" stroke={TEAL} />
+              <path d="M150 134h40" stroke={TEAL} />
+              <path d="M186 154l24 0" />
+              <path d="M210 188v-30h14" />
+            </g>
+            <circle cx="120" cy="200" r="5" fill="#334155" />
+            <circle cx="210" cy="200" r="5" fill="#334155" />
 
-            <button
-              type="submit"
-              className="w-full bg-[#004953] text-white py-3 rounded-xl font-semibold hover:opacity-90 transition"
-            >
-              Login
-            </button>
-          </form>
-        </div>
-      </div>
+            <g stroke={TEAL} strokeWidth="2.5" strokeLinecap="round" opacity="0.6">
+              <path d="M64 150h22" />
+              <path d="M54 168h32" />
+            </g>
+          </svg>
 
-      {/* Desktop Layout */}
-      <div className="hidden lg:flex min-h-screen">
-        {/* Left Side */}
-        <div className="w-1/2 bg-[#004953] flex flex-col justify-center px-20 text-white">
-          <h1 className="text-5xl font-bold mb-6">
-            Food Delivery Admin
-          </h1>
-
-          <p className="text-lg text-gray-200 max-w-md">
-            Manage restaurants, users, orders, delivery drivers,
-            analytics, and system settings from one dashboard.
+          <h2 className="mt-10 max-w-sm text-center text-2xl font-bold tracking-tight text-slate-900">
+            From kitchen to doorstep, fully in view
+          </h2>
+          <p className="mt-3 max-w-sm text-center text-[15px] leading-relaxed text-slate-500">
+            Track every order and driver in real time — sign in to pick up where
+            the floor left off.
           </p>
 
-          <div className="mt-10 flex gap-4">
-            <div className="bg-white/10 p-5 rounded-2xl">
-              <h3 className="text-2xl font-bold">10K+</h3>
-              <p className="text-gray-300">Orders</p>
-            </div>
-
-            <div className="bg-white/10 p-5 rounded-2xl">
-              <h3 className="text-2xl font-bold">500+</h3>
-              <p className="text-gray-300">Restaurants</p>
-            </div>
-
-            <div className="bg-white/10 p-5 rounded-2xl">
-              <h3 className="text-2xl font-bold">20K+</h3>
-              <p className="text-gray-300">Customers</p>
-            </div>
+          <div className="mt-8 flex items-center gap-6 text-sm text-slate-500">
+            {["Live tracking", "Fast dispatch", "One dashboard"].map((t) => (
+              <span key={t} className="flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <circle cx="12" cy="12" r="10" fill="rgba(0,73,83,.1)" />
+                  <path d="M8 12.5l2.5 2.5L16 9.5" stroke={TEAL} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                {t}
+              </span>
+            ))}
           </div>
         </div>
 
-        {/* Right Side */}
-        <div className="w-1/2 flex items-center justify-center bg-slate-50">
-          <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10">
-            <div className="text-center mb-8">
-              <div className="mx-auto w-20 h-20 bg-[#004953] rounded-2xl flex items-center justify-center text-white text-3xl font-bold">
+        {/* ───────── Form card (right) ───────── */}
+        <div className="flex w-full items-center justify-center px-6 py-10 lg:w-1/2 lg:px-16">
+          <div className="w-full max-w-md rounded-3xl border border-slate-100 bg-white p-8 shadow-xl shadow-slate-200/50 lg:p-10">
+            {/* brand */}
+            <div className="mb-8 flex items-center gap-2.5">
+              <span
+                className="grid h-9 w-9 place-items-center rounded-xl text-sm font-bold text-white"
+                style={{ background: TEAL }}
+              >
                 A
-              </div>
-
-              <h2 className="mt-5 text-3xl font-bold text-gray-800">
-                Welcome Back
-              </h2>
-
-              <p className="text-gray-500 mt-2">
-                Login to your admin account
-              </p>
+              </span>
+              <span className="text-[15px] font-semibold tracking-tight text-slate-900">
+                FoodAdmin
+              </span>
             </div>
 
-            <form className="space-y-4" onSubmit={handleLogin}>
-              <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
-                  Email Address
-                </label>
+            <h1 className="text-2xl font-bold tracking-tight text-slate-900">
+              Welcome back
+            </h1>
+            <p className="mt-1.5 text-sm text-slate-500">
+              Sign in to manage your dashboard
+            </p>
 
+            {error && (
+              <div
+                role="alert"
+                className="mt-6 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-600"
+              >
+                {error}
+              </div>
+            )}
+
+            <form className="mt-7 space-y-4" onSubmit={handleLogin}>
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-slate-700">
+                  Email
+                </label>
                 <input
                   type="email"
+                  autoComplete="email"
                   placeholder="admin@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#004953]"
+                  className="auth-input w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-900 placeholder:text-slate-400 transition"
                 />
               </div>
 
               <div>
-                <label className="block mb-2 text-sm font-medium text-gray-700">
+                <label className="mb-1.5 block text-sm font-medium text-slate-700">
                   Password
                 </label>
-
-                <input
-                  type="password"
-                  placeholder="Enter your password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#004953]"
-                />
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    autoComplete="current-password"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="auth-input w-full rounded-xl border border-slate-200 bg-white px-4 py-3 pr-11 text-[15px] text-slate-900 placeholder:text-slate-400 transition"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((v) => !v)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute inset-y-0 right-0 grid w-11 place-items-center text-slate-400 hover:text-slate-600"
+                  >
+                    {showPassword ? (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M3 3l18 18M10.6 5.2A9.6 9.6 0 0112 5c5 0 9 4.5 9 7 0 .9-.7 2.2-1.9 3.4M6.5 6.6C3.9 8 2 10.4 2 12c0 2.5 4 7 10 7 1.6 0 3-.3 4.3-.9" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                        <path d="M9.9 9.9a3 3 0 004.2 4.2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+                      </svg>
+                    ) : (
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+                        <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="1.7" />
+                      </svg>
+                    )}
+                  </button>
+                </div>
               </div>
 
-              <div className="flex items-center justify-between text-sm">
-                <label className="flex items-center gap-2">
-                  <input type="checkbox" />
+              <div className="flex items-center justify-between pt-0.5 text-sm">
+                <label className="flex cursor-pointer items-center gap-2 text-slate-600">
+                  <input type="checkbox" className="h-4 w-4 rounded accent-[#004953]" />
                   Remember me
                 </label>
-
-                <button
-                  type="button"
-                  className="text-[#004953] font-semibold"
-                >
+                <button type="button" className="font-semibold hover:underline" style={{ color: TEAL }}>
                   Forgot Password?
                 </button>
               </div>
 
               <button
                 type="submit"
-                className="w-full bg-[#004953] text-white mt-3 py-3 rounded-xl font-semibold hover:opacity-90 transition-all"
+                disabled={loading}
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-[15px] font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                style={{ background: TEAL }}
               >
-                Sign In
+                {loading ? (
+                  <>
+                    <svg className="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                      <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="3" opacity="0.3" />
+                      <path d="M21 12a9 9 0 00-9-9" stroke="currentColor" strokeWidth="3" strokeLinecap="round" />
+                    </svg>
+                    Signing in
+                  </>
+                ) : (
+                  "Sign In"
+                )}
               </button>
-
             </form>
-              <div className="flex gap-2 mt-2 w-full text-right  text-slate-600">
-                  <p className="flex">Don't has account yet?</p>
-                  <p className="cursor-pointer text-[#004953] font-semibold hover:underline" onClick={()=>navigate(PATH.AUTH.SIGNUP)}>Sign Up</p>
-              </div>
+
+            <p className="mt-8 text-center text-sm text-slate-500">
+              Don&apos;t have an account yet?{" "}
+              <button
+                type="button"
+                onClick={() => navigate(PATH.AUTH.SIGNUP)}
+                className="font-semibold hover:underline"
+                style={{ color: TEAL }}
+              >
+                Sign Up
+              </button>
+            </p>
           </div>
         </div>
       </div>

@@ -120,7 +120,9 @@ export const getActiveDelivery = async (req, res) => {
     const active = await Delivery.findOne({
       where: {
         driver_id,
-        delivery_status: { [Op.in]: ["pending", "picked_up", "on_the_way"] },
+        delivery_status: {
+          [Op.in]: ["accepted", "picked_up", "on_the_way"],
+        },
       },
       include: [
         {
@@ -143,21 +145,49 @@ export const getActiveDelivery = async (req, res) => {
 ───────────────────────────────────────── */
 export const updateDeliveryStatus = async (req, res) => {
   try {
-    const { delivery_id } = req.params;
-    const { status } = req.body;
-
-    const delivery = await Delivery.findByPk(delivery_id);
+    const delivery = await Delivery.findByPk(req.params.delivery_id);
 
     if (!delivery) {
-      return res.status(404).json({ message: "Delivery not found" });
+      return res.status(404).json({
+        success: false,
+        message: "Delivery not found",
+      });
     }
 
-    delivery.delivery_status = status;
+    delivery.delivery_status = req.body.status;
+
+    if (req.body.status === "picked_up") {
+      delivery.pickup_time = new Date();
+
+      const order = await Order.findByPk(delivery.order_id);
+      order.order_status = "out_for_delivery";
+      await order.save();
+    }
+
+    if (req.body.status === "delivered") {
+      delivery.delivery_time = new Date();
+
+      const order = await Order.findByPk(delivery.order_id);
+      order.order_status = "delivered";
+      await order.save();
+
+      const driver = await Driver.findByPk(delivery.driver_id);
+      driver.current_status = "available";
+      await driver.save();
+    }
+
     await delivery.save();
 
-    return res.json({ success: true, data: delivery });
-  } catch (error) {
-    return res.status(500).json({ message: error.message });
+    res.json({
+      success: true,
+      data: delivery,
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
 };
 

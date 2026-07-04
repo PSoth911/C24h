@@ -8,19 +8,30 @@ import DeliveryNav from "../../components/delivery/DeliveryNav";
 import DeliverySideNav from "../../components/delivery/DeliverySideNav";
 
 const BASE    = "http://localhost:5000/api";
-const STEPS   = ["pending", "picked_up", "on_the_way", "delivered"];
-const LABELS  = ["Heading to Restaurant", "Picking Up", "On the Way", "Delivered"];
+const STEPS = [
+  "accepted",
+  "picked_up",
+  "on_the_way",
+  "delivered",
+];
+const LABELS = [
+  "Accepted",
+  "Picked Up",
+  "On the Way",
+  "Delivered",
+];
 const ICONS   = [Check, Utensils, Bike, CircleCheckBig];
 const BUTTONS = [
-  "I've arrived at restaurant",
-  "Order picked up",
-  "Order delivered",
+  "Pick Up Order",
+  "Start Delivery",
+  "Mark as Delivered",
   null,
 ];
-
 export default function DeliveryMap() {
   const user     = JSON.parse(sessionStorage.getItem("user"));
-  const driverId = user?.Driver?.driver_id ?? user?.driver_id;
+  console.log(user);
+  const driverId = user?.driver_id;
+  console.log(driverId);
 
   const [delivery, setDelivery] = useState(null);
   const [loading,  setLoading]  = useState(true);

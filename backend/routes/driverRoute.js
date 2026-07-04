@@ -5,7 +5,8 @@ import {
   pickupOrder,
   deliverOrder,
   getAvailableDeliveries,
-  acceptDelivery
+  acceptDelivery,
+  declineDelivery
 } from "../controller/driverController.js";
 
 const router = express.Router();
@@ -28,5 +29,6 @@ router.put(
 router.get("/available", getAvailableDeliveries);
 
 router.patch("/accept/:delivery_id", acceptDelivery);
+router.patch("/decline/:delivery_id", declineDelivery); 
 
 export default router;

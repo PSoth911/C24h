@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
+import Driver from "../models/Driver.js";
 
 export const register = async (req, res) => {
   try {
@@ -96,6 +97,14 @@ export const login = async (req, res) => {
       });
     }
 
+    let driver = null;
+
+    if (user.role === "driver") {
+      driver = await Driver.findOne({
+        where: { user_id: user.user_id },
+      });
+    }
+
     // Generate token
     const token = jwt.sign(
       {
@@ -117,6 +126,7 @@ export const login = async (req, res) => {
         full_name: user.full_name,
         email: user.email,
         role: user.role,
+        driver_id: driver?.driver_id ?? null,
       },
     });
   } catch (error) {
