@@ -19,9 +19,10 @@ import NotificationBell from "./NotificationBell";
 
 const NAV_LINKS = [
   { label: "Home", path: PATH.USER.HOME },
-  { label: "Monthly Meals", path: PATH.USER.AllRestaurants },
   { label: "All Food", path: PATH.USER.AllFood },
   { label: "Restaurants", path: PATH.USER.AllRestaurants },
+  { label: "Monthly Meal", path: PATH.USER.MonthlyMeal },
+  { label: "My Subscription", path: PATH.USER.MySubscription },
 ];
 
 const Navbar = () => {
@@ -116,7 +117,10 @@ const Navbar = () => {
     navigate(PATH.AUTH.LOGIN);
   };
 
-  const isActive = (path) => location.pathname === path;
+  const isActive = (path) =>
+    path === PATH.USER.MonthlyMeal || path === PATH.USER.MySubscription
+      ? location.pathname.startsWith(path)
+      : location.pathname === path;
 
   return (
     <nav className="sticky top-0 z-50 bg-[#FFF8EF] rounded-xl shadow-sm">
