@@ -59,6 +59,21 @@ const Restaurant = sequelize.define(
       type: DataTypes.DECIMAL(2, 1),
       defaultValue: 0.0,
     },
+
+    accepting_orders: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
+
+    auto_accept: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
+
+    sound_alerts: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+    },
   },
   {
     tableName: "restaurants",

@@ -1,40 +1,64 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import OrderFilters from '../../components/Seller/OrderFilters';
 import OrderCard from '../../components/Seller/OrderCard';
-
-const initialOrders = [
-  { id: '#ORD-8831', status: 'pending', customer: 'Sokha Mean', type: 'Delivery', timeAgo: '2 mins ago', items: [{ qty: 2, name: 'Classic Glazed' }, { qty: 1, name: 'Cold Brew' }], total: 12.50 },
-  { id: '#ORD-8830', status: 'preparing', customer: 'Bora Chem', type: 'Pickup', timeAgo: '12 mins ago', items: [{ qty: 1, name: 'Maple Bacon' }, { qty: 1, name: 'Matcha Latte' }], total: 9.75 },
-  { id: '#ORD-8829', status: 'ready', customer: 'Dara Roth', type: 'Delivery', timeAgo: '22 mins ago', items: [{ qty: 6, name: 'Party Assortment Box' }], total: 24.00 }
-];
+import { getOrders, acceptOrder, prepareOrder, sendOrderForDelivery, cancelOrder } from '../../api/sellerApi';
 
 const Orders = () => {
-  const [orders, setOrders] = useState(initialOrders);
+  const [orders, setOrders] = useState([]);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Runtime State Upgrades
-  const handleStatusChange = (orderId, nextStatus) => {
-    setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: nextStatus } : o));
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await getOrders();
+        if (!res.success) {
+          setError(res.message || "Failed to load orders.");
+          return;
+        }
+        setOrders(res.data);
+      } catch {
+        setError("Server unreachable. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, []);
+
+  const applyUpdatedOrder = (res) => {
+    if (res.success) {
+      setOrders((prev) => prev.map((o) => (o.order_id === res.data.order_id ? res.data : o)));
+    } else {
+      alert(res.message || "That action isn't available right now.");
+    }
   };
 
-  // Metrics Array Math Tally
+  const handleAccept = async (id) => applyUpdatedOrder(await acceptOrder(id));
+  const handlePrepare = async (id) => applyUpdatedOrder(await prepareOrder(id));
+  const handleSendForDelivery = async (id) => applyUpdatedOrder(await sendOrderForDelivery(id));
+  const handleCancel = async (id) => applyUpdatedOrder(await cancelOrder(id));
+
   const counts = {
-    all: orders.filter(o => o.status !== 'completed').length,
-    pending: orders.filter(o => o.status === 'pending').length,
-    preparing: orders.filter(o => o.status === 'preparing').length,
-    ready: orders.filter(o => o.status === 'ready').length
+    all: orders.filter((o) => !['delivered', 'cancelled'].includes(o.order_status)).length,
+    pending: orders.filter((o) => o.order_status === 'pending').length,
+    accepted: orders.filter((o) => o.order_status === 'accepted').length,
+    preparing: orders.filter((o) => o.order_status === 'preparing').length,
+    out_for_delivery: orders.filter((o) => o.order_status === 'out_for_delivery').length,
   };
 
-  // Data Filtering Filter Constraint Node
-  const filteredOrders = orders.filter(order => {
-    if (activeFilter === 'all') return order.status !== 'completed';
-    return order.status === activeFilter;
+  const filteredOrders = orders.filter((order) => {
+    if (activeFilter === 'all') return !['delivered', 'cancelled'].includes(order.order_status);
+    return order.order_status === activeFilter;
   });
+
+  if (loading) return <p className="text-center text-gray-400 py-12 text-sm">Loading orders...</p>;
+  if (error) return <p className="text-center text-red-500 py-12 text-sm">{error}</p>;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-12 px-4 sm:px-6">
-      
-      {/* View Header Core Elements */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h2 className="text-2xl font-black text-gray-800 tracking-tight">Kitchen Orders</h2>
@@ -42,14 +66,19 @@ const Orders = () => {
         </div>
       </div>
 
-      {/* Filter Segment Element */}
       <OrderFilters activeFilter={activeFilter} setActiveFilter={setActiveFilter} counts={counts} />
 
-      {/* Grid Iteration Loop Node */}
       {filteredOrders.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredOrders.map(order => (
-            <OrderCard key={order.id} order={order} onStatusChange={handleStatusChange} />
+            <OrderCard
+              key={order.order_id}
+              order={order}
+              onAccept={handleAccept}
+              onPrepare={handlePrepare}
+              onSendForDelivery={handleSendForDelivery}
+              onCancel={handleCancel}
+            />
           ))}
         </div>
       ) : (
@@ -58,7 +87,6 @@ const Orders = () => {
           <p className="text-xs text-gray-400 mt-1">There are no orders current flagged under this processing matrix.</p>
         </div>
       )}
-
     </div>
   );
 };

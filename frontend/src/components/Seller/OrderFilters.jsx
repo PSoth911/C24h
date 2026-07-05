@@ -3,9 +3,10 @@ import React from 'react';
 const OrderFilters = ({ activeFilter, setActiveFilter, counts }) => {
   const filters = [
     { id: 'all', label: 'All Orders', count: counts.all },
-    { id: 'pending', label: 'Pending Approval', count: counts.pending, color: 'bg-amber-500 text-white' },
-    { id: 'preparing', label: 'In Kitchen', count: counts.preparing, color: 'bg-blue-600 text-white' },
-    { id: 'ready', label: 'Ready for Pickup', count: counts.ready, color: 'bg-emerald-600 text-white' }
+    { id: 'pending', label: 'Pending Approval', count: counts.pending },
+    { id: 'accepted', label: 'Accepted', count: counts.accepted },
+    { id: 'preparing', label: 'In Kitchen', count: counts.preparing },
+    { id: 'out_for_delivery', label: 'Out for Delivery', count: counts.out_for_delivery },
   ];
 
   return (

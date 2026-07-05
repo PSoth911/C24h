@@ -1,53 +1,89 @@
-import React, { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import CategoryTabs from '../../components/Seller/CategoryTabs';
 import MenuItemCard from '../../components/Seller/MenuItemCard';
 import MenuModal from '../../components/Seller/MenuModal';
-
-const initialCategories = [
-  { id: 'all', label: 'Full Menu' },
-  { id: 'donuts', label: 'Premium Donuts' },
-  { id: 'drinks', label: 'Beverages' }
-];
-
-const initialItems = [
-  { id: 1, name: 'Classic Glazed Donut', description: 'Our signature melt-in-your-mouth yeast donut with a crisp honey glaze layer.', price: 2.25, category: 'donuts', isAvailable: true },
-  { id: 2, name: 'Maple Bacon Bar', description: 'Fluffy long-john donut coated in rich maple glaze and topped with smoky bacon chunks.', price: 3.75, category: 'donuts', isAvailable: true },
-  { id: 3, name: 'Cold Brew Coffee', description: 'Slow-steeped specialty arabica beans served over ice for optimal smooth profiles.', price: 3.50, category: 'drinks', isAvailable: false }
-];
+import {
+  getProducts,
+  getCategories,
+  createProduct,
+  toggleProductStatus,
+  deleteProduct,
+} from '../../api/sellerApi';
 
 const MenuManagement = () => {
-  const [items, setItems] = useState(initialItems);
+  const [items, setItems] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [activeCategory, setActiveCategory] = useState('all');
   const [isModalOpen, setIsModalOpen] = useState(false);
-  
-  const [formData, setFormData] = useState({ name: '', price: '', category: 'donuts', description: '' });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  const handleToggleStatus = (id) => {
-    setItems(prev => prev.map(item => item.id === id ? { ...item, isAvailable: !item.isAvailable } : item));
-  };
+  const [formData, setFormData] = useState({ name: '', price: '', category: '', description: '' });
 
-  const handleDeleteItem = (id) => {
-    setItems(prev => prev.filter(item => item.id !== id));
-  };
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [productsRes, categoriesRes] = await Promise.all([getProducts(), getCategories()]);
 
-  const handleAddItem = (e) => {
-    e.preventDefault();
-    const newItem = {
-      id: Date.now(),
-      name: formData.name,
-      description: formData.description || 'No description provided.',
-      price: parseFloat(formData.price) || 0.00,
-      category: formData.category,
-      isAvailable: true
+        if (!productsRes.success) {
+          setError(productsRes.message || "Failed to load menu.");
+          return;
+        }
+
+        setItems(productsRes.data);
+        setCategories(categoriesRes.data ?? []);
+        setFormData((prev) => ({ ...prev, category: categoriesRes.data?.[0]?.category_id ?? '' }));
+      } catch {
+        setError("Server unreachable. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setItems([newItem, ...items]);
-    setIsModalOpen(false);
-    setFormData({ name: '', price: '', category: 'donuts', description: '' });
+    load();
+  }, []);
+
+  const categoryTabs = [
+    { id: 'all', label: 'Full Menu' },
+    ...categories.map((c) => ({ id: c.category_id, label: c.category_name })),
+  ];
+
+  const handleToggleStatus = async (id) => {
+    const res = await toggleProductStatus(id);
+    if (res.success) {
+      setItems((prev) => prev.map((item) => (item.product_id === id ? res.data : item)));
+    }
   };
 
-  const filteredItems = items.filter(item => activeCategory === 'all' || item.category === activeCategory);
+  const handleDeleteItem = async (id) => {
+    const res = await deleteProduct(id);
+    if (res.success) {
+      setItems((prev) => prev.filter((item) => item.product_id !== id));
+    }
+  };
+
+  const handleAddItem = async (e) => {
+    e.preventDefault();
+
+    const res = await createProduct({
+      product_name: formData.name,
+      description: formData.description || 'No description provided.',
+      price: parseFloat(formData.price) || 0.0,
+      category_id: formData.category,
+    });
+
+    if (res.success) {
+      setItems((prev) => [res.data, ...prev]);
+      setIsModalOpen(false);
+      setFormData({ name: '', price: '', category: categories[0]?.category_id ?? '', description: '' });
+    }
+  };
+
+  const filteredItems = items.filter((item) => activeCategory === 'all' || item.category_id === activeCategory);
+
+  if (loading) return <p className="text-center text-gray-400 py-12 text-sm">Loading menu...</p>;
+  if (error) return <p className="text-center text-red-500 py-12 text-sm">{error}</p>;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-12 px-4 sm:px-6">
@@ -64,12 +100,12 @@ const MenuManagement = () => {
         </button>
       </div>
 
-      <CategoryTabs activeCategory={activeCategory} setActiveCategory={setActiveCategory} categories={initialCategories} />
+      <CategoryTabs activeCategory={activeCategory} setActiveCategory={setActiveCategory} categories={categoryTabs} />
 
       {filteredItems.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map(item => (
-            <MenuItemCard key={item.id} item={item} onToggleStatus={handleToggleStatus} onDeleteItem={handleDeleteItem} />
+            <MenuItemCard key={item.product_id} item={item} onToggleStatus={handleToggleStatus} onDeleteItem={handleDeleteItem} />
           ))}
         </div>
       ) : (
@@ -79,13 +115,13 @@ const MenuManagement = () => {
         </div>
       )}
 
-      <MenuModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSubmit={handleAddItem} 
-        formData={formData} 
-        setFormData={setFormData} 
-        categories={initialCategories} 
+      <MenuModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleAddItem}
+        formData={formData}
+        setFormData={setFormData}
+        categories={categoryTabs}
       />
     </div>
   );

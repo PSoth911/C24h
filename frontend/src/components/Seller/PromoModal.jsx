@@ -20,11 +20,17 @@ const PromoModal = ({ isOpen, onClose, onSubmit, formData, setFormData }) => {
             <input type="text" required placeholder="e.g., Weekend Free Delivery" className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#004D40]" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
           </div>
 
-          <div>
-            <label className="block text-xs font-bold text-teal-900 mb-1.5 uppercase tracking-wider">Promo Code</label>
-            <div className="relative">
-              <Tag className="absolute left-3 top-2.5 text-gray-400" size={14} />
-              <input type="text" required placeholder="FREESHIP50" className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-xl text-sm font-mono uppercase outline-none focus:ring-2 focus:ring-[#004D40]" value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value })} />
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-teal-900 mb-1.5 uppercase tracking-wider">Promo Code</label>
+              <div className="relative">
+                <Tag className="absolute left-3 top-2.5 text-gray-400" size={14} />
+                <input type="text" required placeholder="FREESHIP50" className="w-full pl-8 pr-3 py-2 border border-gray-200 rounded-xl text-sm font-mono uppercase outline-none focus:ring-2 focus:ring-[#004D40]" value={formData.code} onChange={(e) => setFormData({ ...formData, code: e.target.value })} />
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs font-bold text-teal-900 mb-1.5 uppercase tracking-wider">Discount %</label>
+              <input type="number" min="1" max="100" required placeholder="15" className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#004D40]" value={formData.discountPercent} onChange={(e) => setFormData({ ...formData, discountPercent: e.target.value })} />
             </div>
           </div>
 

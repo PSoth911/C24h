@@ -1,15 +1,44 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Bell } from 'lucide-react';
+import { getProfile } from '../../api/sellerApi';
 
 const PortalHeader = () => {
+  const [restaurant, setRestaurant] = useState({ restaurant_name: '', status: 'open' });
+  const user = JSON.parse(sessionStorage.getItem('user') ?? 'null');
+
+  useEffect(() => {
+    const load = async () => {
+      const res = await getProfile();
+      if (res.success) {
+        setRestaurant({ restaurant_name: res.data.restaurant_name, status: res.data.status });
+      }
+    };
+    load();
+  }, []);
+
+  const isOpen = restaurant.status === 'open';
+  const fullName = user?.full_name ?? 'Store Manager';
+  const initials = fullName
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <header className="h-16 bg-white border-b border-gray-100 px-8 flex items-center justify-between sticky top-0 z-40">
-      
+
       <div className="flex items-center gap-3">
-        <h2 className="text-lg font-bold text-slate-800">Big Apple Donuts</h2>
-        <span className="text-xs font-bold text-teal-700 bg-teal-50 px-2.5 py-0.5 rounded-full flex items-center gap-1.5 border border-teal-100">
-          <span className="w-1.5 h-1.5 rounded-full bg-teal-500"></span>
-          Open
+        <h2 className="text-lg font-bold text-slate-800">{restaurant.restaurant_name}</h2>
+        <span
+          className={`text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 border ${
+            isOpen
+              ? 'text-teal-700 bg-teal-50 border-teal-100'
+              : 'text-rose-700 bg-rose-50 border-rose-100'
+          }`}
+        >
+          <span className={`w-1.5 h-1.5 rounded-full ${isOpen ? 'bg-teal-500' : 'bg-rose-500'}`}></span>
+          {isOpen ? 'Open' : 'Closed'}
         </span>
       </div>
 
@@ -24,16 +53,17 @@ const PortalHeader = () => {
 
         <div className="flex items-center gap-3">
           <div className="text-right hidden sm:block">
-            <span className="text-sm font-bold text-slate-800 block leading-none">Alex Manager</span>
+            <span className="text-sm font-bold text-slate-800 block leading-none">{fullName}</span>
             <span className="text-[9px] text-gray-400 font-extrabold uppercase tracking-wider block mt-1">
               Store Manager
             </span>
           </div>
-          <img 
-            src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=100&q=80" 
-            alt="Alex Manager Profile Avatar" 
-            className="w-9 h-9 rounded-full object-cover border border-gray-100 shadow-sm"
-          />
+          <div
+            className="w-9 h-9 rounded-full border border-gray-100 shadow-sm bg-teal-50 text-teal-700 text-xs font-bold flex items-center justify-center shrink-0"
+            aria-label={`${fullName} Profile Avatar`}
+          >
+            {initials}
+          </div>
         </div>
 
       </div>

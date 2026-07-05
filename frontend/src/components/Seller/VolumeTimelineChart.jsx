@@ -1,21 +1,11 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
-const data = [
-  { day: 'Mon', revenue: 3400 },
-  { day: 'Tue', revenue: 4200 },
-  { day: 'Wed', revenue: 4900 },
-  { day: 'Thu', revenue: 4100 },
-  { day: 'Fri', revenue: 7800 },
-  { day: 'Sat', revenue: 9100 },
-  { day: 'Sun', revenue: 6400 },
-];
-
-const VolumeTimelineChart = () => (
+const VolumeTimelineChart = ({ data = [] }) => (
   <div className="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-sm space-y-4 flex-1">
     <div>
       <h4 className="text-sm font-bold text-gray-800">Weekly Revenue Volume</h4>
-      <p className="text-xs text-gray-400 mt-0.5">Gross financial distribution mapping operational sales peaks.</p>
+      <p className="text-xs text-gray-400 mt-0.5">Daily gross revenue over the last 7 days.</p>
     </div>
     <div className="h-64 w-full pt-2">
       <ResponsiveContainer width="100%" height="100%">

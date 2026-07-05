@@ -1,11 +1,44 @@
 import { Bell, Search } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardMetrics from '../../components/Seller/DashboardMetrics';
 import RevenueChart from '../../components/Seller/RevenueChart';
 import OrdersStream from '../../components/Seller/OrdersStream';
+import { getDashboardMetrics, getRevenueChart, getOrdersStream } from '../../api/sellerApi';
 
 const Dashboard = () => {
   const [search, setSearch] = useState("");
+  const [metrics, setMetrics] = useState(null);
+  const [revenue, setRevenue] = useState([]);
+  const [stream, setStream] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const [metricsRes, revenueRes, streamRes] = await Promise.all([
+          getDashboardMetrics(),
+          getRevenueChart(),
+          getOrdersStream(),
+        ]);
+
+        if (!metricsRes.success) {
+          setError(metricsRes.message || "Failed to load dashboard data.");
+          return;
+        }
+
+        setMetrics(metricsRes.data);
+        setRevenue(revenueRes.data ?? []);
+        setStream(streamRes.data ?? []);
+      } catch {
+        setError("Server unreachable. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200">
@@ -38,16 +71,24 @@ const Dashboard = () => {
         </header>
 
         <div className="p-8 space-y-8 max-w-7xl mx-auto">
-          <DashboardMetrics />
+          {loading ? (
+            <p className="text-center text-slate-400 py-12 text-sm">Loading dashboard...</p>
+          ) : error ? (
+            <p className="text-center text-red-500 py-12 text-sm">{error}</p>
+          ) : (
+            <>
+              <DashboardMetrics metrics={metrics} />
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-            <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl rounded-3xl shadow-sm border border-white/40 p-6">
-              <RevenueChart />
-            </div>
-            <div className="lg:col-span-1 bg-white/70 backdrop-blur-xl rounded-3xl shadow-sm border border-white/40 p-6">
-              <OrdersStream />
-            </div>
-          </div>
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+                <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl rounded-3xl shadow-sm border border-white/40 p-6">
+                  <RevenueChart data={revenue} />
+                </div>
+                <div className="lg:col-span-1 bg-white/70 backdrop-blur-xl rounded-3xl shadow-sm border border-white/40 p-6">
+                  <OrdersStream orders={stream} />
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </main>
     </div>

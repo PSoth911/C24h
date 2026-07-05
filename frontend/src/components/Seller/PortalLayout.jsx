@@ -1,4 +1,3 @@
-import React from "react";
 import PortalSidebar from "./PortalSidebar";
 import PortalHeader from "./PortalHeader";
 

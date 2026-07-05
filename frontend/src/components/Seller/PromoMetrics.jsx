@@ -1,11 +1,11 @@
 import React from 'react';
 import { Megaphone, Percent, Ticket } from 'lucide-react';
 
-const PromoMetrics = () => {
+const PromoMetrics = ({ summary }) => {
   const metrics = [
-    { title: "Active Campaigns", value: "3 Live Offers", subtext: "Reaching ~4.2k local foodies", icon: Megaphone, bg: "bg-teal-50 text-[#004D40]" },
-    { title: "Total Redemptions", value: "342 Claims", subtext: "+18.4% growth this week", icon: Ticket, bg: "bg-emerald-50 text-emerald-700" },
-    { title: "Avg. Discount Applied", value: "15% Off", subtext: "Target threshold protected", icon: Percent, bg: "bg-amber-50 text-amber-700" }
+    { title: "Active Campaigns", value: `${summary?.activeCampaigns ?? 0} Live Offers`, subtext: "Currently running", icon: Megaphone, bg: "bg-teal-50 text-[#004D40]" },
+    { title: "Total Redemptions", value: `${summary?.totalRedemptions ?? 0} Claims`, subtext: "Across all campaigns", icon: Ticket, bg: "bg-emerald-50 text-emerald-700" },
+    { title: "Avg. Discount Applied", value: `${summary?.avgDiscount ?? 0}% Off`, subtext: "Across all campaigns", icon: Percent, bg: "bg-amber-50 text-amber-700" }
   ];
 
   return (

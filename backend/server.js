@@ -10,6 +10,7 @@ import deliverRoutes from "./routes/deliverRoutes.js"
 import orderRoute from "./routes/orderRoute.js";
 import restaurantRoute from "./routes/restaurantRoute.js";
 import driverRoute from "./routes/driverRoute.js";
+import sellerRoutes from "./routes/sellerRoutes.js";
 
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
@@ -38,6 +39,7 @@ app.use("/api/deliver", deliverRoutes);
 app.use("/api/orders", orderRoute);
 app.use("/api/restaurant",restaurantRoute);
 app.use("/api/driver", driverRoute);
+app.use("/api/seller", sellerRoutes);
 
 
 async function startServer() {

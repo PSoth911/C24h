@@ -12,6 +12,7 @@ import Payment from "./Payment.js";
 import Delivery from "./Delivery.js";
 import Review from "./Review.js";
 import Notification from "./Notification.js";
+import Promotion from "./Promotion.js";
 
 // user
 User.hasOne(Customer, {
@@ -167,6 +168,15 @@ Restaurant.belongsTo(Category, {
   foreignKey: "category_id",
 });
 
+//promotions
+Restaurant.hasMany(Promotion, {
+  foreignKey: "restaurant_id",
+  onDelete: "CASCADE",
+});
+Promotion.belongsTo(Restaurant, {
+  foreignKey: "restaurant_id",
+});
+
 export {
   User,
   Customer,
@@ -182,4 +192,5 @@ export {
   Delivery,
   Review,
   Notification,
+  Promotion,
 };

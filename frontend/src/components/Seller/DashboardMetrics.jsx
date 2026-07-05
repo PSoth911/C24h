@@ -1,16 +1,34 @@
 import React from 'react';
-import { DollarSign, ShoppingBag, TrendingUp } from 'lucide-react';
+import { DollarSign, ShoppingBag, Clock } from 'lucide-react';
 
-const DashboardMetrics = () => {
-  const metrics = [
-    { title: "Today's Gross Sales", value: "$1,482.50", subtext: "+12.4% from yesterday", icon: DollarSign, bg: "bg-emerald-50 text-emerald-700" },
-    { title: "Active Prep Queue", value: "6 Orders", subtext: 2 + " pending manual acceptance", icon: ShoppingBag, bg: "bg-amber-50 text-amber-700" },
-    { title: "Fulfillment Velocity", value: "14.2 min", subtext: "Within target threshold", icon: TrendingUp, bg: "bg-teal-50 text-[#004D40]" }
+const DashboardMetrics = ({ metrics }) => {
+  const items = [
+    {
+      title: "Today's Gross Sales",
+      value: `$${(metrics?.todayRevenue ?? 0).toFixed(2)}`,
+      subtext: `${metrics?.todayOrdersCount ?? 0} orders today`,
+      icon: DollarSign,
+      bg: "bg-emerald-50 text-emerald-700",
+    },
+    {
+      title: "Active Prep Queue",
+      value: `${metrics?.activeQueue ?? 0} Orders`,
+      subtext: `${metrics?.pendingCount ?? 0} pending manual acceptance`,
+      icon: ShoppingBag,
+      bg: "bg-amber-50 text-amber-700",
+    },
+    {
+      title: "Orders Today",
+      value: `${metrics?.todayOrdersCount ?? 0}`,
+      subtext: "Across all statuses",
+      icon: Clock,
+      bg: "bg-teal-50 text-[#004D40]",
+    },
   ];
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {metrics.map((item, index) => {
+      {items.map((item, index) => {
         const Icon = item.icon;
         return (
           <div key={index} className="bg-white border border-gray-200/80 p-6 rounded-2xl shadow-sm flex items-center gap-4">

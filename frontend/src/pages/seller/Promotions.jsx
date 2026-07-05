@@ -1,39 +1,58 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Plus } from 'lucide-react';
 import PromoMetrics from '../../components/Seller/PromoMetrics';
 import PromoTable from '../../components/Seller/PromoTable';
 import PromoModal from '../../components/Seller/PromoModal';
-
-const initialCampaigns = [
-  { name: 'Buy 1 Get 1 Glazed Classic', code: 'BOGODONUT', status: 'Active', conversions: '184 Redemptions', duration: 'Jun 12 - Jun 24' },
-  { name: 'Midnight Caffeine Boost', code: 'NIGHTOWL', status: 'Scheduled', conversions: 'Starts Soon', duration: 'Jul 01 - Jul 05' }
-];
+import { getPromotions, createPromotion } from '../../api/sellerApi';
 
 const Promotions = () => {
-  const [campaigns, setCampaigns] = useState(initialCampaigns);
+  const [campaigns, setCampaigns] = useState([]);
+  const [summary, setSummary] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [formData, setFormData] = useState({ name: '', code: '', startDate: '', endDate: '' });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [formData, setFormData] = useState({ name: '', code: '', discountPercent: '15', startDate: '', endDate: '' });
 
-  const formatDateRange = (start, end) => {
-    if (!start || !end) return 'Ongoing';
-    const options = { month: 'short', day: 'numeric', timeZone: 'UTC' };
-    return `${new Date(start).toLocaleDateString('en-US', options)} - ${new Date(end).toLocaleDateString('en-US', options)}`;
-  };
-
-  const handleCreatePromo = (e) => {
-    e.preventDefault();
-    const newPromo = {
-      name: formData.name,
-      code: formData.code.toUpperCase(),
-      status: 'Active',
-      conversions: '0 Redemptions',
-      duration: formatDateRange(formData.startDate, formData.endDate)
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await getPromotions();
+        if (!res.success) {
+          setError(res.message || "Failed to load promotions.");
+          return;
+        }
+        setCampaigns(res.data);
+        setSummary(res.summary);
+      } catch {
+        setError("Server unreachable. Please try again.");
+      } finally {
+        setLoading(false);
+      }
     };
 
-    setCampaigns([newPromo, ...campaigns]);
-    setIsModalOpen(false);
-    setFormData({ name: '', code: '', startDate: '', endDate: '' });
+    load();
+  }, []);
+
+  const handleCreatePromo = async (e) => {
+    e.preventDefault();
+
+    const res = await createPromotion({
+      name: formData.name,
+      code: formData.code,
+      discount_percent: parseInt(formData.discountPercent, 10) || 10,
+      start_date: formData.startDate,
+      end_date: formData.endDate,
+    });
+
+    if (res.success) {
+      setCampaigns((prev) => [res.data, ...prev]);
+      setIsModalOpen(false);
+      setFormData({ name: '', code: '', discountPercent: '15', startDate: '', endDate: '' });
+    }
   };
+
+  if (loading) return <p className="text-center text-gray-400 py-12 text-sm">Loading promotions...</p>;
+  if (error) return <p className="text-center text-red-500 py-12 text-sm">{error}</p>;
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-12 px-4 sm:px-6">
@@ -50,15 +69,15 @@ const Promotions = () => {
         </button>
       </div>
 
-      <PromoMetrics />
+      <PromoMetrics summary={summary} />
       <PromoTable campaigns={campaigns} />
 
-      <PromoModal 
-        isOpen={isModalOpen} 
-        onClose={() => setIsModalOpen(false)} 
-        onSubmit={handleCreatePromo} 
-        formData={formData} 
-        setFormData={setFormData} 
+      <PromoModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSubmit={handleCreatePromo}
+        formData={formData}
+        setFormData={setFormData}
       />
     </div>
   );
