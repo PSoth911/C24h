@@ -1,5 +1,4 @@
-import { useState,useEffect } from 'react'
-import { ArrowDownRight } from 'lucide-react'
+
 import AuthLogin from './pages/auth/AuthLogin.jsx'
 import AuthSignUp from './pages/auth/AuthSignUp.jsx'
 
@@ -30,6 +29,7 @@ import AddAdressPage from './pages/user_page/AddAdressPage.jsx';
 import SucessPaymentPage from './pages/user_page/SucessPaymentPage.jsx';
 import TrackOrderPage from './pages/user_page/TrackOrderPage.jsx';
 import PaymentPage from './pages/user_page/Payment.jsx';
+import MonthlyMealPage from './pages/user_page/MonthlyMealPage.jsx';
 
 import PortalLayout from './components/Seller/PortalLayout';
 import Dashboard from './pages/seller/Dashboard';
@@ -79,6 +79,7 @@ function App() {
       <Route path={`${PATH.USER.SucessPayment}/:id`}element={<ProtectedRoute role="customer"><SucessPaymentPage /></ProtectedRoute>}/>
       <Route path={`${PATH.USER.Trackorder}/:id`}element={<ProtectedRoute role="customer"><TrackOrderPage /></ProtectedRoute>}/>
       <Route path={PATH.USER.Payment} element={<ProtectedRoute role="customer"> <PaymentPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.MonthlyMeal} element={<ProtectedRoute role="customer"> <MonthlyMealPage/> </ProtectedRoute>}/>
 
       
       <Route path={PATH.SELLER.DASHBOARD} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><Dashboard /></PortalLayout></ProtectedRoute>} />

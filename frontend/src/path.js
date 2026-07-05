@@ -35,6 +35,7 @@ export const PATH = {
         AddAdress : "/user/restaurant/checkout/addadress",
         SucessPayment : "/user/restaurant/checkout/addadress/payment/sucesspayment",
         Trackorder : "/user/restaurant/checkout/addadress/payment/sucesspayment/trackorder",
-        Payment : "/user/restaurant/checkout/addadress/payment"
+        Payment : "/user/restaurant/checkout/addadress/payment",
+        MonthlyMeal : "/user/monthlymeal"
     },
 }
