@@ -18,7 +18,6 @@ import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
 
 import CustomerRoutes from "./routes/Customer_route.js"
-import RestaurantRoute from "./routes/sellerRoutes.js"
 import CartRoutes from "./routes/cart_route.js";
 import OrderRoute from "./routes/Order_route.js"
 import ReviewRoute from "./routes/Review_route.js"
@@ -56,7 +55,6 @@ app.use("/api/driver", driverRoute);
 app.use("/api/seller", sellerRoutes);
 
 app.use("/api",CustomerRoutes);
-app.use("/api",RestaurantRoute);
 app.use("/api",CartRoutes)
 app.use("/api/orders",OrderRoute)
 app.use("/api",ReviewRoute)
