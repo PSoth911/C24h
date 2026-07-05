@@ -24,7 +24,7 @@ export async function seedAll() {
     await sequelize.sync({ force: true });
     await sequelize.query("SET FOREIGN_KEY_CHECKS = 1");
 
-    console.log("✅ Database synced (reset complete)");
+    console.log(" Database synced (reset complete)");
     const categories = await Category.bulkCreate([
       { category_name: "Pizza" },
       { category_name: "Burger" },
@@ -32,7 +32,7 @@ export async function seedAll() {
       { category_name: "Khmer Food" },
     ]);
 
-    console.log("✅ Categories created");
+    console.log(" Categories created");
 
     // 3. Seed users
     const users = [
@@ -98,7 +98,7 @@ export async function seedAll() {
       createdUsers.push(user);
     }
 
-    console.log(`✅ Created ${createdUsers.length} users`);
+    console.log(` Created ${createdUsers.length} users`);
 
     // 6. Create related tables
     for (const user of createdUsers) {

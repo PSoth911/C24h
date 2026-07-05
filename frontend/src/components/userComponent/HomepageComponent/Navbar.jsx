@@ -15,9 +15,11 @@ import logo from "../../../assets/image copy 28.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import { PATH } from "../../../path.js";
 import { getCart } from "../../../service/cartService";
+import NotificationBell from "./NotificationBell";
 
 const NAV_LINKS = [
   { label: "Home", path: PATH.USER.HOME },
+  { label: "Monthly Meals", path: PATH.USER.AllRestaurants },
   { label: "All Food", path: PATH.USER.AllFood },
   { label: "Restaurants", path: PATH.USER.AllRestaurants },
 ];
@@ -203,6 +205,9 @@ const Navbar = () => {
 
           {isLoggedIn ? (
             <>
+              {/* NOTIFICATIONS */}
+              <NotificationBell />
+
               {/* CART */}
               <button
                 onClick={() => navigate(PATH.USER.Checkout)}

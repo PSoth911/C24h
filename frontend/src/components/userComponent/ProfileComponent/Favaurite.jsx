@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faUtensils, faStore, faStar } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -9,8 +10,10 @@ import {
 } from "../../../service/favouriteService";
 import placeholderImg from "../../../assets/image copy 2.png";
 import Loading from "../../../pages/user_page/LoadingPage";
+import { PATH } from "../../../path";
 
 const Favaurite = () => {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("restaurants");
   const [restaurants, setRestaurants] = useState([]);
   const [products, setProducts] = useState([]);
@@ -123,17 +126,18 @@ const Favaurite = () => {
                 return (
                   <div
                     key={item.favourite_id}
+                    onClick={() => navigate(PATH.USER.Restaurant(r.restaurant_id))}
                     className="bg-white rounded-3xl overflow-hidden border border-[#004953] shadow-sm hover:scale-[1.03] transition-all duration-300 hover:cursor-pointer"
                   >
                     <div className="relative">
                       <img
-                        src={r.logo || placeholderImg}
+                        src={r.logo ? `http://localhost:5000/uploads/${r.logo}` : placeholderImg}
                         alt={r.restaurant_name}
                         className="w-full h-40 object-cover"
                         onError={(e) => { e.target.src = placeholderImg; }}
                       />
                       <button
-                        onClick={() => handleRemoveRestaurant(r.restaurant_id)}
+                        onClick={(e) => { e.stopPropagation(); handleRemoveRestaurant(r.restaurant_id); }}
                         disabled={removingId === r.restaurant_id}
                         className="absolute top-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow hover:scale-110 transition-transform disabled:opacity-50"
                         title="Remove from favourites"
@@ -191,17 +195,18 @@ const Favaurite = () => {
                 return (
                   <div
                     key={item.favourite_id}
+                    onClick={() => navigate(PATH.USER.Restaurant(p.restaurant_id))}
                     className="bg-white rounded-3xl overflow-hidden border border-pink-200 shadow-sm hover:scale-[1.03] transition-all duration-300 hover:cursor-pointer"
                   >
                     <div className="relative">
                       <img
-                        src={p.image || placeholderImg}
+                        src={p.image ? `http://localhost:5000/uploads/${p.image}` : placeholderImg}
                         alt={p.product_name}
                         className="w-full h-40 object-cover"
                         onError={(e) => { e.target.src = placeholderImg; }}
                       />
                       <button
-                        onClick={() => handleRemoveProduct(p.product_id)}
+                        onClick={(e) => { e.stopPropagation(); handleRemoveProduct(p.product_id); }}
                         disabled={removingId === p.product_id}
                         className="absolute top-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow hover:scale-110 transition-transform disabled:opacity-50"
                         title="Remove from favourites"

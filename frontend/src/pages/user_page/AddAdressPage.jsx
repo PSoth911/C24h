@@ -9,9 +9,7 @@ import Loading from "../user_page/LoadingPage";
 
 import { getProfile } from "../../service/profileService";
 import { getCart } from "../../service/cartService";
-
-const DELIVERY_FEE = 1.5;
-const SERVICE_FEE = 0.99;
+import { revalidateAppliedCoupon } from "../../service/couponService";
 
 const AddAdressPage = () => {
   const [loading, setLoading] = useState(true);
@@ -20,8 +18,9 @@ const AddAdressPage = () => {
 
   const [summary, setSummary] = useState({
     subtotal: 0,
-    deliveryFee: DELIVERY_FEE,
-    serviceFee: SERVICE_FEE,
+    deliveryFee: 0,
+    discount: 0,
+    couponCode: null,
     total: 0,
   });
 
@@ -35,12 +34,16 @@ const AddAdressPage = () => {
       setCustomer(profileRes);
 
       const subtotal = Number(cartRes.data.total || 0);
+      const deliveryFee = Number(cartRes.data.deliveryFee || 0);
+      const coupon = await revalidateAppliedCoupon(subtotal);
+      const discount = coupon?.discount || 0;
 
       setSummary({
         subtotal,
-        deliveryFee: DELIVERY_FEE,
-        serviceFee: SERVICE_FEE,
-        total: subtotal + DELIVERY_FEE + SERVICE_FEE,
+        deliveryFee,
+        discount,
+        couponCode: coupon?.code || null,
+        total: Math.max(subtotal + deliveryFee - discount, 0),
       });
     } catch (err) {
       console.log(err);

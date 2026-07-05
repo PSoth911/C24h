@@ -1,5 +1,4 @@
 import sequelize from "../database/db.js";
-
 import Customer from "../models/customer.js";
 import Cart from "../models/Cart.js";
 import CartItem from "../models/CartItem.js";
@@ -8,11 +7,14 @@ import Order from "../models/Order.js";
 import OrderItem from "../models/OrderItem.js";
 import Payment from "../models/Payment.js";
 import Restaurant from "../models/Restaurant.js";
+import Notification from "../models/Notification.js";
+import Coupon from "../models/Coupon.js";
+import { checkCouponEligibility, calculateDiscount } from "../utils/couponHelper.js";
 export const createOrder = async (req, res) => {
     const transaction = await sequelize.transaction();
 
     try {
-        const { payment_method, delivery_address } = req.body;
+        const { payment_method, delivery_address, coupon_code } = req.body;
 
         // Validate input
         if (!payment_method || !delivery_address) {
@@ -79,8 +81,12 @@ export const createOrder = async (req, res) => {
         // Get restaurant
         const restaurant_id = cart.CartItems[0].Product.restaurant_id;
 
-        // Calculate total and validate stock
-        let total = 0;
+        const restaurant = await Restaurant.findByPk(restaurant_id, {
+            transaction,
+        });
+
+        // Calculate subtotal and validate stock
+        let subtotal = 0;
 
         for (const item of cart.CartItems) {
             if (item.quantity > item.Product.stock) {
@@ -91,14 +97,49 @@ export const createOrder = async (req, res) => {
                 });
             }
 
-            total += Number(item.subtotal);
+            subtotal += Number(item.subtotal);
         }
+
+        const delivery_fee = Number(restaurant?.fee || 0);
+
+        // Validate and apply coupon (if provided)
+        let discount_amount = 0;
+        let appliedCouponCode = null;
+
+        if (coupon_code) {
+            const coupon = await Coupon.findOne({
+                where: { code: coupon_code },
+                transaction,
+                lock: transaction.LOCK.UPDATE,
+            });
+
+            const eligibilityError = checkCouponEligibility(coupon, subtotal);
+
+            if (eligibilityError) {
+                await transaction.rollback();
+
+                return res.status(400).json({
+                    message: eligibilityError,
+                });
+            }
+
+            discount_amount = calculateDiscount(coupon, subtotal);
+            appliedCouponCode = coupon.code;
+
+            await coupon.increment("used_count", { by: 1, transaction });
+        }
+
+        const total = Math.max(subtotal + delivery_fee - discount_amount, 0);
 
         // Create order
         const order = await Order.create(
             {
                 customer_id: customer.customer_id,
                 restaurant_id,
+                subtotal,
+                delivery_fee,
+                discount_amount,
+                coupon_code: appliedCouponCode,
                 total_amount: total,
                 delivery_address,
                 order_status: "pending",
@@ -160,6 +201,13 @@ export const createOrder = async (req, res) => {
 
         // Commit transaction
         await transaction.commit();
+        // notify user about order creation
+        await Notification.create({
+            user_id: req.user.id,
+            type: "order",
+            title: "Order Created",
+            message: `Your order #${order.order_id} has been created successfully.`,
+        });
 
         return res.status(201).json({
             message: "Order created successfully",

@@ -3,6 +3,7 @@ import { faMinus, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "../../../path";
 import { addToCart } from "../../../service/cartService";
+import placeholderFood from "../../../assets/image copy 2.png";
 
 const Card = ({ cartitems, setcartitems }) => {
   const navigate = useNavigate();
@@ -14,24 +15,23 @@ const Card = ({ cartitems, setcartitems }) => {
   }, 0);
 
   const deliveryFee = 1.5;
-  const serviceFee = 0.99;
-  const total = subtotal + deliveryFee + serviceFee;
+  const total = subtotal + deliveryFee;
 
-  const increaseQuantity = (id) => {
+  const increaseQuantity = (productId) => {
     setcartitems((prev) =>
       prev.map((item) =>
-        item.id === id
+        item.product_id === productId
           ? { ...item, quantity: Number(item.quantity) + 1 }
           : item
       )
     );
   };
 
-  const decreaseQuantity = (id) => {
+  const decreaseQuantity = (productId) => {
     setcartitems((prev) =>
       prev
         .map((item) =>
-          item.id === id
+          item.product_id === productId
             ? { ...item, quantity: Number(item.quantity) - 1 }
             : item
         )
@@ -74,20 +74,21 @@ const handleCheckout = async () => {
 
       <div className="mt-3 space-y-3">
         {cartitems.map((item) => (
-          <div key={item.id} className="border-b pb-3">
+          <div key={item.product_id} className="border-b pb-3">
 
             <div className="flex justify-between items-center gap-4">
 
               <div className="flex gap-4 items-center flex-1">
                 <img
-                  src={item.image}
-                  alt={item.name}
+                  src={item.image ? `http://localhost:5000/uploads/${item.image}` : placeholderFood}
+                  alt={item.product_name}
                   className="w-16 h-16 rounded-xl object-cover"
+                  onError={(e) => { e.target.src = placeholderFood; }}
                 />
 
                 <div>
                   <h4 className="font-semibold">
-                    {item.name}
+                    {item.product_name}
                   </h4>
 
                   <p className="font-bold text-[#004953] mt-1">
@@ -99,7 +100,7 @@ const handleCheckout = async () => {
               <div className="flex items-center bg-gray-100 rounded-full p-1">
 
                 <button
-                  onClick={() => decreaseQuantity(item.id)}
+                  onClick={() => decreaseQuantity(item.product_id)}
                   className="w-8 h-8 flex items-center justify-center bg-white rounded-full"
                 >
                   <FontAwesomeIcon icon={faMinus} />
@@ -110,7 +111,7 @@ const handleCheckout = async () => {
                 </span>
 
                 <button
-                  onClick={() => increaseQuantity(item.id)}
+                  onClick={() => increaseQuantity(item.product_id)}
                   className="w-8 h-8 flex items-center justify-center bg-[#004953] text-white rounded-full"
                 >
                   <FontAwesomeIcon icon={faPlus} />
@@ -133,11 +134,6 @@ const handleCheckout = async () => {
         <div className="flex justify-between text-gray-600">
           <span>Delivery Fee</span>
           <span>${deliveryFee.toFixed(2)}</span>
-        </div>
-
-        <div className="flex justify-between text-gray-600">
-          <span>Service Fee</span>
-          <span>${serviceFee.toFixed(2)}</span>
         </div>
 
         <div className="border-t pt-3 flex justify-between font-bold text-lg">

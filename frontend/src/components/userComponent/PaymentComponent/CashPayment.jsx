@@ -8,17 +8,12 @@
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const CashPayment = ({cart}) => {
+const CashPayment = ({ total = 0 }) => {
   const steps = [
     { icon: faReceipt, label: "ORDERED" },
     { icon: faMotorcycle, label: "ON THE WAY" },
     { icon: faHandHoldingDollar, label: "PAY ON DELIVERY" },
   ];
-  const items = cart?.CartItems || [];
-
-  const subtotal = items.reduce((sum, item) => {
-    return sum + Number(item.subtotal);
-  }, 0);
   const notes = [
     "Please have your phone reachable so the rider can contact you.",
     "Unpaid orders may be cancelled automatically.",
@@ -33,7 +28,7 @@ const CashPayment = ({cart}) => {
         <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-[#004953]">
           <FontAwesomeIcon
             icon={faMoneyBillWave}
-            className="text-3xl text-[#004953]"
+            className="text-3xl text-white"
           />
         </div>
       </div>
@@ -48,8 +43,8 @@ const CashPayment = ({cart}) => {
 
       {/* Amount */}
       <div className="mt-6 rounded-2xl border border-[#004953] bg-[#004953] p-6 text-center">
-        <p className="text-sm text-[#004953]">Please prepare the exact amount</p>
-        <h1 className="mt-2 text-4xl font-bold text-[#004953]">${subtotal.toFixed(2)}</h1>
+        <p className="text-sm text-white">Please prepare the exact amount</p>
+        <h1 className="mt-2 text-4xl font-bold text-white">${total.toFixed(2)}</h1>
         <p className="mt-1 text-xs text-gray-500">
           Exact change helps speed up handover
         </p>
@@ -61,15 +56,15 @@ const CashPayment = ({cart}) => {
           {steps.map((step, i) => (
             <div key={step.label} className="contents">
               <div className="flex flex-col items-center w-20">
-                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#004953] text-white">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white text-[#004953]">
                   <FontAwesomeIcon icon={step.icon} />
                 </div>
-                <span className="mt-2 text-[11px] font-semibold text-center text-[#004953]">
+                <span className="mt-2 text-[11px] font-semibold text-center text-white">
                   {step.label}
                 </span>
               </div>
               {i < steps.length - 1 && (
-                <div className="mt-5 h-0.5 flex-1 border-t-2 border-dashed border-[#004953]" />
+                <div className="mt-5 h-0.5 flex-1 border-t-2 border-dashed border-white" />
               )}
             </div>
           ))}

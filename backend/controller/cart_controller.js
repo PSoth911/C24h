@@ -2,6 +2,7 @@ import Cart from "../models/Cart.js";
 import Customer from "../models/customer.js";
 import Product from "../models/Product.js";
 import CartItem from "../models/CartItem.js";
+import Restaurant from "../models/Restaurant.js";
 
 export const addToCart = async (req, res) => {
   try {
@@ -157,7 +158,13 @@ export const getCart = async (req, res) => {
                 "image",
                 "stock",
                 "restaurant_id",
-                "description",  
+                "description",
+              ],
+              include: [
+                {
+                  model: Restaurant,
+                  attributes: ["restaurant_id", "restaurant_name", "fee"],
+                },
               ],
             },
           ],
@@ -175,9 +182,12 @@ export const getCart = async (req, res) => {
       return sum + Number(item.subtotal);
     }, 0);
 
+    const deliveryFee = Number(cart.CartItems[0]?.Product?.Restaurant?.fee || 0);
+
     return res.status(200).json({
       cart,
       total,
+      deliveryFee,
     });
   } catch (error) {
     console.error(error);

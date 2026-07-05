@@ -9,13 +9,12 @@ import authRoutes from "./routes/auth_route.js";
 import adminRoutes from "./routes/adminRoute.js"
 import deliverRoutes from "./routes/deliverRoutes.js"
 
-import orderRoute from "./routes/orderRoute.js";
 import restaurantRoute from "./routes/restaurantRoute.js";
 import driverRoute from "./routes/driverRoute.js";
 import sellerRoutes from "./routes/sellerRoutes.js";
 
-import swaggerUi from "swagger-ui-express";
-import swaggerSpec from "./config/swagger.js";
+// import swaggerUi from "swagger-ui-express";
+// import swaggerSpec from "./config/swagger.js";
 
 import CustomerRoutes from "./routes/Customer_route.js"
 import CartRoutes from "./routes/cart_route.js";
@@ -24,6 +23,9 @@ import ReviewRoute from "./routes/Review_route.js"
 import ProductRoute from "./routes/Product_route.js"
 import CategoryRoute from "./routes/categoryroute.js"
 import FavauriteRoute from "./routes/favourithroute.js"
+import NotificationRoute from "./routes/notification_route.js"
+import CouponRoute from "./routes/couponRoute.js"
+import PublicRestaurantRoute from "./routes/publicRestaurantRoute.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -37,20 +39,14 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
-app.use(
-  "/api-docs",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec)
-);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/deliver", deliverRoutes);
 
-app.use("/api/orders", orderRoute);
 app.use("/api/restaurant",restaurantRoute);
+app.use("/api",PublicRestaurantRoute);
 app.use("/api/driver", driverRoute);
 app.use("/api/seller", sellerRoutes);
 
@@ -61,6 +57,8 @@ app.use("/api",ReviewRoute)
 app.use("/api",ProductRoute)
 app.use("/api",CategoryRoute)
 app.use("/api",FavauriteRoute)
+app.use("/api",NotificationRoute)
+app.use("/api",CouponRoute)
 
 async function startServer() {
   try {

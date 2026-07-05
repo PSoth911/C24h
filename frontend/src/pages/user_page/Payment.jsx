@@ -12,11 +12,13 @@ import CashPayment from "../../components/userComponent/PaymentComponent/CashPay
 
 import { getCart } from "../../service/cartService";
 import { createOrder } from "../../service/orderService";
+import {
+  getAppliedCouponCode,
+  revalidateAppliedCoupon,
+  clearAppliedCoupon,
+} from "../../service/couponService";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "../../path";
-
-const DELIVERY_FEE = 1.5;
-const SERVICE_FEE = 0.99;
 
 const paymentMethods = [
   { id: "KHQR", label: "KHQR Pay", component: KHQRPayment },
@@ -26,6 +28,9 @@ const paymentMethods = [
 const Payment = () => {
   const [selectedMethod, setSelectedMethod] = useState("KHQR");
   const [cart, setCart] = useState(null);
+  const [subtotal, setSubtotal] = useState(0);
+  const [deliveryFee, setDeliveryFee] = useState(0);
+  const [discount, setDiscount] = useState(0);
   const [loading, setLoading] = useState(false);
   const [address, setAddress] = useState("");
 
@@ -37,14 +42,18 @@ const Payment = () => {
 
   const PaymentComponent = selectedPayment?.component;
 
-  // derived totals from the cart
-
-
   useEffect(() => {
     const fetchCart = async () => {
       try {
         const res = await getCart();
+        const cartSubtotal = Number(res.data.total) || 0;
+
         setCart(res.data.cart);
+        setSubtotal(cartSubtotal);
+        setDeliveryFee(Number(res.data.deliveryFee) || 0);
+
+        const coupon = await revalidateAppliedCoupon(cartSubtotal);
+        setDiscount(coupon?.discount || 0);
       } catch (err) {
         console.log(err);
       }
@@ -60,7 +69,9 @@ const Payment = () => {
       const res = await createOrder({
         payment_method: selectedMethod,
         delivery_address: address || "Phnom Penh",
+        coupon_code: getAppliedCouponCode() || undefined,
       });
+      clearAppliedCoupon();
       window.dispatchEvent(new Event("cartUpdated"));
     alert("Order created successfully!");
     navigate(`${PATH.USER.SucessPayment}/${res.data.order_id}`);
@@ -71,8 +82,7 @@ const Payment = () => {
       setLoading(false);
     }
   };
-    const subtotal = Number(cart?.total || 0);
-    const total = subtotal + DELIVERY_FEE + SERVICE_FEE;
+    const total = Math.max(subtotal + deliveryFee - discount, 0);
 
   return (
     <div>
@@ -103,6 +113,8 @@ const Payment = () => {
             onPlaceOrder={handlePlaceOrder}
             loading={loading}
             total={total}
+            deliveryFee={deliveryFee}
+            discount={discount}
             cart={cart}
           />
         </div>

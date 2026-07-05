@@ -51,7 +51,7 @@ const pillActions = {
                 <p className="text-[#004953]">Discover the best flavors in your city, delivered fresh and hot in under 20 minutes.</p>
                 <div className="buttons flex gap-4 py-4">
                     <button onClick={() => navigate('/user/allfood')} className="bg-[#004953] text-lg text-white border-2 border-[#004953] px-16 py-3.5 rounded-3xl transition-all duration-300 hover:bg-black hover:text-white">Order Now</button>
-                    <button onClick={() => navigate('/user/allfood?sort=popular')} className="bg-transparent text-lg text-[#004953] border-2 border-[#004953] px-16 py-3.5 rounded-3xl transition-all duration-300 hover:bg-[#004953] hover:text-white">Suggested</button>
+                    <button onClick={() => navigate('/user/allfood?sort=popular')} className="bg-transparent text-lg text-[#004953] border-2 border-[#004953] px-16 py-3.5 rounded-3xl transition-all duration-300 hover:bg-[#004953] hover:text-white">Monthly Specials</button>
                 </div>
                 <div className="">
                     <ul className="flex gap-4 text-sm text-[#004953] overflow-x-auto">
