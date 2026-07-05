@@ -1,30 +1,102 @@
-
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHeart,
   faShareNodes,
+  faStar,
+  faPhone,
+  faUser,
+  faMotorcycle,
 } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import {
+  getFavouriteRestaurants,
+  addFavouriteRestaurant,
+  removeFavouriteRestaurant,
+} from "../../../service/favouriteService";
 
-const Title = ({ status, name, img, dsc, fee, distance, minOrder }) => {
-  const [like,setlike] =useState(false)
+
+const Title = ({
+  restaurantId,
+  status,
+  name,
+  img,
+  dsc,
+  logo,
+  rating,
+  phone,
+  owner,
+  fee
+}) => {
+  const [like, setLike] = useState(false);
+  const [toggling, setToggling] = useState(false);
+  const [popped, setPopped] = useState(false);
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (!token || !restaurantId) return;
+    getFavouriteRestaurants()
+      .then((res) => {
+        const ids = new Set((res.data || []).map((f) => f.Restaurant?.restaurant_id));
+        setLike(ids.has(Number(restaurantId)) || ids.has(restaurantId));
+      })
+      .catch(() => {});
+  }, [restaurantId]);
+
+  const toggleFavourite = async () => {
+    const token = sessionStorage.getItem("token");
+    if (!token || toggling) return;
+    setToggling(true);
+    try {
+      if (like) {
+        await removeFavouriteRestaurant(restaurantId);
+        setLike(false);
+      } else {
+        await addFavouriteRestaurant(restaurantId);
+        setLike(true);
+        setPopped(true);
+        setTimeout(() => setPopped(false), 400);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setToggling(false);
+    }
+  };
+
   return (
     <div className="w-full p-8">
       <div className="relative">
         <div className="h-55 rounded-xl overflow-hidden relative">
-          <img src={img} alt="Restaurant" className="w-full h-full object-cover" />
+          <img
+            src={img}
+            alt="Restaurant"
+            className="w-full h-full object-cover"
+          />
+
           <div className="absolute inset-0 bg-black/50"></div>
 
           <div className="absolute inset-0 flex items-center justify-between px-12">
             <div className="flex items-center gap-8">
-              <div className="w-52 h-30 rounded-2xl overflow-hidden border-2 border-yellow-500 shadow-lg">
-                <img src={img} alt="logo" className="w-full h-full object-cover" />
+              <div className="w-52 h-30 rounded-2xl overflow-hidden border-2 border-yellow-500 shadow-lg bg-white">
+                <img
+                  src={logo}
+                  alt="Restaurant Logo"
+                  className="w-full h-full object-cover"
+                />
               </div>
+
               <div>
                 <div className="flex items-center gap-2 mb-2">
-                  <div className={`w-3 h-3 rounded-full ${status==="OPEN NOW" ? "bg-green-400" : "bg-red-400"}`} />
-                  <span className="text-white text-sm font-medium">
-                    {status === "OPEN NOW" ? "OPEN NOW" : "CLOSED"}
+                  <div
+                    className={`w-3 h-3 rounded-full ${
+                      status === "open"
+                        ? "bg-green-400"
+                        : "bg-red-400"
+                    }`}
+                  />
+
+                  <span className="text-white text-sm font-medium uppercase">
+                    {status === "open" ? "Open Now" : "Closed"}
                   </span>
                 </div>
 
@@ -32,55 +104,94 @@ const Title = ({ status, name, img, dsc, fee, distance, minOrder }) => {
                   {name}
                 </h1>
 
-                <span className="bg-indigo-700 text-white text-xs px-3 py-1 rounded">
+                <p className="bg-indigo-700 text-white text-sm px-4 py-2 rounded-lg inline-block max-w-2xl">
                   {dsc}
-                </span>
+                </p>
               </div>
             </div>
-          <div className="flex gap-4">
-                <button onClick={()=>setlike((pre)=>!pre)} className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30">
-                  <FontAwesomeIcon icon={faHeart} className={`w-7 h-7 ${like ? "text-red-600": "text-gray-600"}`} />
-                </button>
-                <button className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30">
-                  <FontAwesomeIcon icon={faShareNodes} className="w-7 h-7 text-white" />
-                </button>
+
+            <div className="flex gap-4">
+              <button
+                onClick={toggleFavourite}
+                disabled={toggling}
+                title={like ? "Remove from favourites" : "Save to favourites"}
+                className={`w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-transform duration-150 disabled:cursor-not-allowed ${popped ? "scale-125" : "scale-100"}`}
+              >
+                <FontAwesomeIcon
+                  icon={faHeart}
+                  className={`w-7 h-7 transition-all duration-200 ${
+                    like ? "text-red-500 drop-shadow-sm" : "text-gray-200"
+                  }`}
+                />
+              </button>
+
+              <button className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30">
+                <FontAwesomeIcon
+                  icon={faShareNodes}
+                  className="w-7 h-7 text-white"
+                />
+              </button>
             </div>
           </div>
         </div>
 
-        <div className="bg-white shadow-xl rounded-2xl py-4 mx-8 -mt-4 relative">
+        <div className="bg-white shadow-xl rounded-2xl py-2 mx-8 -mt-4 relative">
           <div className="grid grid-cols-4 text-center">
             <div>
-              <h3 className="uppercase text-gray-400 text-sm mb-2">
-                Min Delivery
+              <FontAwesomeIcon
+                icon={faStar}
+                className="text-teal-700 text-xl "
+              />
+
+              <h3 className="uppercase text-gray-400 text-sm ">
+                Rating
               </h3>
+
               <p className="text-teal-700 font-semibold text-lg">
+                {rating || "0.0"} / 5
+              </p>
+            </div>
+
+            <div className="border-l">
+              <FontAwesomeIcon
+                icon={faPhone}
+                className="text-[#004953] text-xl "
+              />
+
+              <h3 className="uppercase text-gray-400 text-sm">
+                Contact
+              </h3>
+
+              <p className="text-teal-700 font-semibold text-lg">
+                {phone}
+              </p>
+            </div>
+
+            <div className="border-l">
+              <FontAwesomeIcon
+                icon={faUser}
+                className="text-[#004953] text-xl "
+              />
+
+              <h3 className="uppercase text-gray-400 text-sm">
+                Owner
+              </h3>
+
+              <p className="text-teal-700 font-semibold text-lg truncate px-2">
+                {owner}
+              </p>
+            </div>
+
+            <div className="border-l flex flex-col items-center justify-center">
+              <FontAwesomeIcon
+                icon={faMotorcycle}
+                className="text-[#004953] text-xl"
+              />
+              <h3 className="uppercase text-gray-400 text-sm">
+                Fee
+              </h3>
+              <p className="text-[#004953] font-semibold text-lg">
                 ${fee}
-              </p>
-            </div>
-
-            <div className="border-l">
-              <h3 className="uppercase text-gray-400 text-sm mb-2">Fee</h3>
-              <p className="text-teal-700 font-semibold text-lg">
-                ${fee}
-              </p>
-            </div>
-
-            <div className="border-l">
-              <h3 className="uppercase text-gray-400 text-sm mb-2">
-                Distance
-              </h3>
-              <p className="text-teal-700 font-semibold text-lg">
-                {distance} KM
-              </p>
-            </div>
-
-            <div className="border-l">
-              <h3 className="uppercase text-gray-400 text-sm mb-2">
-                Min Order
-              </h3>
-              <p className="text-teal-700 font-semibold text-lg">
-                {minOrder}
               </p>
             </div>
           </div>
@@ -89,4 +200,5 @@ const Title = ({ status, name, img, dsc, fee, distance, minOrder }) => {
     </div>
   );
 };
-export default Title
+
+export default Title;

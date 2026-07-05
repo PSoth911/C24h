@@ -1,201 +1,319 @@
-import { useState } from "react";
+﻿import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHeart,
+  faStar,
+  faReceipt,
+  faCircleCheck,
+  faSpinner,
+  faMotorcycle,
+  faArrowRight,
+  faStore,
+  faLocationDot,
+} from "@fortawesome/free-solid-svg-icons";
+import { PATH } from "../../../path";
+import { getOrders } from "../../../service/orderService";
+import {
+  getFavouriteRestaurants,
+  removeFavouriteRestaurant,
+} from "../../../service/favouriteService";
+import placeholderRestaurant from "../../../assets/image copy 2.png";
+import Loading from "../../../pages/user_page/LoadingPage";
+
+const ACTIVE_STATUSES = ["pending", "confirmed", "preparing", "ready", "on_the_way", "out_for_delivery"];
+const PAST_STATUSES   = ["delivered", "completed", "cancelled"];
+
+const getStatusStyle = (status) => {
+  const s = (status || "").toLowerCase();
+  if (ACTIVE_STATUSES.includes(s)) return "bg-amber-50 text-amber-700 border border-amber-200";
+  if (s === "cancelled")           return "bg-red-50 text-red-600 border border-red-200";
+  if (PAST_STATUSES.includes(s))   return "bg-green-50 text-green-700 border border-green-200";
+  return "bg-gray-50 text-gray-500 border border-gray-200";
+};
+
 const Orders = ({ setactiveMenu }) => {
-  const orders = [
-    {
-      id: 1,
-      name: "Bella Napoli Pizzeria",
-      image:
-        "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=300",
-      orderId: "#CRV-9283",
-      NumberItem: 2,
-      price: 34.5,
-      status: "On its way",
-      orderDate: "Estimated delivery: 12 mins",
-      button: "Track Order",
-    },
-    {
-      id: 2,
-      name: "Burger Culture",
-      image:
-        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=300",
-      orderId: "#CRV-8142",
-      NumberItem: 3,
-      price: 42.2,
-      status: "Delivered",
-      orderDate: "Delivered on 14 Jan, 2025",
-      button: "Reorder",
-    },
-  ];
-  const Frestaurants =
-    [
-            {
-              name: "Miku Japanese",
-              image:
-                "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=400",
-              rating: "4.9",
-              reviews: "(1.2k+)",
-              time: "25 min",
-            },
-            {
-              name: "Green Leaf Salad",
-              image:
-                "https://exchangesquare.com.kh/wp-content/uploads/2024/07/brown.jpg",
-              rating: "4.7",
-              reviews: "(800+)",
-              time: "15 min",
-            },
-            {
-              name: "El Taco Loco",
-              image:
-                "https://kampot-cambodia.com/wp-content/uploads/2024/12/02-IMG20241111122730-1024x891.jpg",
-              rating: "4.5",
-              reviews: "(2.5k+)",
-              time: "20 min",
-            },
-          ]
+  const navigate = useNavigate();
 
-  const [select, setSelect] = useState("All");
+  const [orders,         setOrders]        = useState([]);
+  const [loading,        setLoading]       = useState(true);
+  const [select,         setSelect]        = useState("All");
+  const [favRestaurants, setFavRestaurants] = useState([]);
+  const [removingFavId,  setRemovingFavId] = useState(null);
 
-  const filters = ["All", "Active", "Past"];
-  const filteredOrders = orders.filter((order) => {
-  if (select === "All") return true;
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await getOrders();
+        setOrders(res.data.orders || res.data || []);
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    const fetchFavourites = async () => {
+      try {
+        const res = await getFavouriteRestaurants();
+        setFavRestaurants(res.data || []);
+      } catch { /* silent */ }
+    };
+    fetchOrders();
+    fetchFavourites();
+  }, []);
 
-  if (select === "Active") {
-    return order.status === "On its way";
+  const handleRemoveFav = async (e, restaurantId) => {
+    e.stopPropagation();
+    if (removingFavId === restaurantId) return;
+    setRemovingFavId(restaurantId);
+    try {
+      await removeFavouriteRestaurant(restaurantId);
+      setFavRestaurants(prev => prev.filter(f => f.Restaurant.restaurant_id !== restaurantId));
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setRemovingFavId(null);
+    }
+  };
+
+  const isActive = (status) => ACTIVE_STATUSES.includes((status || "").toLowerCase());
+
+  const activeCount = orders.filter(o => isActive(o.order_status)).length;
+  const pastCount   = orders.filter(o => PAST_STATUSES.includes((o.order_status || "").toLowerCase())).length;
+
+  const filteredOrders = orders.filter(order => {
+    const status = (order.order_status || "").toLowerCase();
+    if (select === "Active") return ACTIVE_STATUSES.includes(status);
+    if (select === "Past")   return PAST_STATUSES.includes(status);
+    return true;
+  });
+
+  if (loading) {
+    return (
+      <Loading/>
+    );
   }
-  if (select === "Past") {
-    return order.status === "Delivered";
-  }
-  return true;
-});
 
   return (
-    <div>
-      <div className="flex justify-between items-center">
-        <h2 className="text-3xl font-bold text-[#004953]">
-          My Orders
-        </h2>
+    <div className="space-y-6">
 
-        <div className="flex border border-[#004953] rounded-full p-1 w-72 bg-white">
-          {filters.map((filter) => (
-            <div
-              key={filter}
-              onClick={() => setSelect(filter)}
-              className={`flex-1 text-center py-0.5 rounded-full cursor-pointer transition-all duration-300
-              ${
-                select === filter
-                  ? "bg-[#004953] text-white"
-                  : "text-gray-600"
-              }`}
-            >
-              {filter}
-            </div>
-          ))}
-        </div>
+      <div className="grid grid-cols-3 gap-4">
+        <StatCard icon={faReceipt} color="bg-[#004953]/10" iconColor="text-[#004953]" value={orders.length} label="Total Orders" />
+        <StatCard icon={faSpinner} color="bg-amber-50" iconColor="text-amber-600" value={activeCount} label="Active"       />
+        <StatCard icon={faCircleCheck} color="bg-green-50" iconColor="text-green-600"  value={pastCount} label="Completed"    />
       </div>
-      <div className="mt-4 space-y-2">
-        {filteredOrders.map((order) => (
-          <div
-            key={order.id}
-            className="bg-white border border-[#004953] rounded-3xl p-1.5 flex justify-between hover:shadow-xl hover:scale-[1.01] transition-all duration-300 items-center"
-          >
-            <div className="flex items-center gap-5">
-              <img
-                src={order.image}
-                alt={order.name}
-                className="w-20 h-20 rounded-full object-cover"
-              />
 
-              <div>
-                <h3 className="text-2xl font-bold text-[#004953]">
-                  {order.name}
-                </h3>
+      {/* Orders section */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+          <h2 className="font-bold text-[#004953] text-lg">Order History</h2>
 
-                <p className="text-[#004953]">
-                  Order {order.orderId} • {order.NumberItem} items • $
-                  {order.price}
-                </p>
-
-                <p className="text-sm text-[#004953] mt-3">
-                  {order.orderDate}
-                </p>
-              </div>
-            </div>
-            <div className="flex flex-col items-end gap-4">
-              <span
-                className={`px-4 py-1 rounded-full text-xs font-semibold
-                ${
-                  order.status === "Delivered"
-                    ? "bg-purple-100 text-purple-700"
-                    : "bg-pink-100 text-[#004953]"
-                }`}
-              >
-                ● {order.status}
-              </span>
-
+          <div className="flex bg-gray-100 rounded-xl p-1 gap-1">
+            {[
+              { key: "All",    count: orders.length },
+              { key: "Active", count: activeCount   },
+              { key: "Past",   count: pastCount     },
+            ].map(({ key, count }) => (
               <button
-                className={`px-8 py-2 rounded-full font-medium transition-all hover:cursor-pointer
-                ${
-                  order.status === "Delivered"
-                    ? "bg-[#004953] text-white"
-                    : "border border-[#004953] text-[#004953] bg-white"
-                }`}
+                key={key}
+                onClick={() => setSelect(key)}
+                className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200
+                  ${select === key
+                    ? "bg-white text-[#004953] shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                  }`}
               >
-                {order.button}
+                {key}
+                <span className={`ml-1.5 text-xs px-1.5 py-0.5 rounded-full font-medium
+                  ${select === key ? "bg-[#004953]/10 text-[#004953]" : "bg-gray-200 text-gray-400"}`}>
+                  {count}
+                </span>
               </button>
-            </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div className="mt-2">
-        <div className="flex justify-between items-center mb-5">
-          <h2 className="text-2xl font-bold text-[#004953] ">
-            Favorite Restaurants
-          </h2>
-          <button onClick={() => setactiveMenu("Favourite")} className="text-[#004953] hover:underline hover:cursor-pointer  font-medium">
-            View all
-          </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-5">
-          {Frestaurants.map((restaurant, index) => (
-            <div
-              key={index}
-              className="bg-white rounded-3xl overflow-hidden border border-pink-200 shadow-sm hover:scale-[1.05] transition-all duration-300 hover:cursor-pointer"
-            >
-              <div className="relative">
-                <img
-                  src={restaurant.image}
-                  alt={restaurant.name}
-                  className="w-full h-40 object-cover "
-                />
-
-                <button className="absolute top-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow">
-                  <FontAwesomeIcon icon={faHeart} className="text-red-600"/>
-                </button>
+        <div className="divide-y divide-gray-50">
+          {filteredOrders.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
+                <FontAwesomeIcon icon={faReceipt} className="text-2xl text-gray-300" />
               </div>
-
-              <div className="p-2">
-                <h3 className="font-bold text-2xl text-[#22223B]">
-                  {restaurant.name}
-                </h3>
-
-                <div className="flex justify-between mt-3 text-sm text-[#004953]">
-                  <span>
-                     {restaurant.rating} {restaurant.reviews}
-                  </span>
-
-                  <span>{restaurant.time}</span>
-                </div>
-              </div>
+              <p className="font-semibold text-gray-400">No orders here yet</p>
+              <p className="text-sm text-gray-300 mt-1">Your {select.toLowerCase()} orders will appear here</p>
             </div>
-          ))}
+          ) : (
+            filteredOrders.map(order => {
+              const active    = isActive(order.order_status);
+              const itemCount = order.OrderItems?.reduce((t, i) => t + i.quantity, 0) ?? 0;
+              const items     = order.OrderItems?.slice(0, 2) || [];
+              const moreItems = (order.OrderItems?.length || 0) - 2;
+
+              return (
+                <div
+                  key={order.order_id}
+                  className="flex items-stretch group hover:bg-gray-50/70 transition-colors duration-150"
+                >
+                  <div className="w-28 shrink-0 overflow-hidden">
+                    <img
+                      src={order.Restaurant?.logo
+                        ? `http://localhost:5000/uploads/${order.Restaurant.logo}`
+                        : placeholderRestaurant}
+                      alt={order.Restaurant?.restaurant_name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={e => { e.target.src = placeholderRestaurant; }}
+                    />
+                  </div>
+
+                  <div className="flex-1 px-5 py-4 flex flex-col justify-between min-w-0">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="min-w-0">
+                        <h3 className="font-bold text-[#004953] text-base truncate">
+                          {order.Restaurant?.restaurant_name || "Restaurant"}
+                        </h3>
+                        <p className="text-gray-400 text-xs mt-0.5">
+                          Order #{order.order_id} · {itemCount} item{itemCount !== 1 ? "s" : ""}
+                        </p>
+                        {items.length > 0 && (
+                          <p className="text-gray-500 text-xs mt-1.5 truncate">
+                            {items.map(i => `${i.Product?.product_name || "Item"} ×${i.quantity}`).join(" · ")}
+                            {moreItems > 0 && ` +${moreItems} more`}
+                          </p>
+                        )}
+                      </div>
+
+                      <span className={`shrink-0 inline-flex items-center text-[11px] font-semibold px-2.5 py-1 rounded-full capitalize ${getStatusStyle(order.order_status)}`}>
+                        {(order.order_status || "unknown").replace(/_/g, " ")}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center justify-between mt-3">
+                      <div className="flex items-center gap-3">
+                        <span className="font-bold text-[#004953] text-lg">
+                          ${Number(order.total_amount || 0).toFixed(2)}
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={() =>
+                          active
+                            ? navigate(`${PATH.USER.Trackorder}/${order.order_id}`)
+                            : navigate(PATH.USER.HOME)
+                        }
+                        className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200
+                          ${active
+                            ? "bg-[#004953] text-white hover:bg-[#003940] shadow-sm"
+                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                          }`}
+                      >
+                        <FontAwesomeIcon icon={active ? faMotorcycle : faStore} className="text-xs" />
+                        {active ? "Track Order" : "Reorder"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
+
+      {/* Favourite Restaurants */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <div>
+            <h2 className="font-bold text-[#004953] text-lg">Favourite Restaurants</h2>
+            <p className="text-gray-400 text-xs mt-0.5">
+              {favRestaurants.length > 0
+                ? `${favRestaurants.length} saved restaurant${favRestaurants.length !== 1 ? "s" : ""}`
+                : "None saved yet"}
+            </p>
+          </div>
+          {favRestaurants.length > 0 && (
+            <button
+              onClick={() => setactiveMenu("Favourite")}
+              className="flex items-center gap-1.5 text-sm font-semibold text-[#004953] hover:text-[#002d33] transition-colors group"
+            >
+              View all
+              <FontAwesomeIcon icon={faArrowRight} className="text-xs group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          )}
+        </div>
+
+        {favRestaurants.length === 0 ? (
+          <div className="bg-white rounded-2xl border border-dashed border-gray-200 py-12 flex flex-col items-center text-center">
+            <div className="w-12 h-12 bg-rose-50 rounded-full flex items-center justify-center mb-3">
+              <FontAwesomeIcon icon={faHeart} className="text-rose-300 text-lg" />
+            </div>
+            <p className="font-semibold text-gray-400 text-sm">No favourites yet</p>
+            <p className="text-xs text-gray-300 mt-1">Tap the heart on any restaurant to save it here</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-4">
+            {favRestaurants.slice(0, 3).map(item => {
+              const r = item.Restaurant;
+              return (
+                <div
+                  key={item.favourite_id}
+                  onClick={() => navigate(`/restaurant/${r.restaurant_id}`)}
+                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group"
+                >
+                  <div className="relative h-36 overflow-hidden">
+                    <img
+                      src={r.logo ? `http://localhost:5000/uploads/${r.logo}` : placeholderRestaurant}
+                      alt={r.restaurant_name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={e => { e.target.src = placeholderRestaurant; }}
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent" />
+                    <button
+                      onClick={e => handleRemoveFav(e, r.restaurant_id)}
+                      disabled={removingFavId === r.restaurant_id}
+                      title="Remove from favourites"
+                      className="absolute top-2.5 right-2.5 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow hover:scale-110 active:scale-90 transition-transform disabled:opacity-50"
+                    >
+                      <FontAwesomeIcon icon={faHeart} className="text-red-500 text-sm" />
+                    </button>
+                    <span className={`absolute top-2.5 left-2.5 text-[10px] font-bold px-2 py-0.5 rounded-full
+                      ${r.status === "open" ? "bg-green-500 text-white" : "bg-gray-600 text-white"}`}>
+                      {r.status === "open" ? "Open" : "Closed"}
+                    </span>
+                    <div className="absolute bottom-0 left-0 right-0 px-3 pb-2.5">
+                      <h3 className="font-bold text-white text-sm truncate drop-shadow">{r.restaurant_name}</h3>
+                    </div>
+                  </div>
+
+                  <div className="px-3 py-2.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1 text-xs text-gray-500">
+                      <FontAwesomeIcon icon={faStar} className="text-amber-400 text-[10px]" />
+                      <span className="font-semibold text-[#004953]">{r.average_rating || "—"}</span>
+                    </span>
+                    <span className="flex items-center gap-1 text-xs text-gray-400">
+                      <FontAwesomeIcon icon={faLocationDot} className="text-[10px]" />
+                      ${r.fee || 0} delivery
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
     </div>
   );
 };
+
+const StatCard = ({ icon, color, iconColor, value, label }) => (
+  <div className="bg-white rounded-2xl px-5 py-4 flex items-center gap-4 shadow-sm border border-gray-100">
+    <div className={`w-11 h-11 ${color} rounded-xl flex items-center justify-center shrink-0`}>
+      <FontAwesomeIcon icon={icon} className={`${iconColor} text-base`} />
+    </div>
+    <div>
+      <p className="text-2xl font-black text-[#004953] leading-none">{value}</p>
+      <p className="text-xs text-gray-400 mt-0.5 font-medium">{label}</p>
+    </div>
+  </div>
+);
 
 export default Orders;

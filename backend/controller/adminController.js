@@ -221,13 +221,17 @@ export const createUser = async (req, res) => {
       status: "active",
     });
 
-    if (role === "driver") {
+    if (user.role === "driver") {
       await Driver.create({
         user_id: user.user_id,
         current_status: "offline",
       });
+    } else if (user.role === "customer") {
+      await Customer.create({
+        user_id: user.user_id,
+      });
     }
-  
+
     res.status(201).json({
       success: true,
       data: user,

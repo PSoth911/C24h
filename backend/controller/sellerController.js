@@ -18,7 +18,29 @@ export const getAllRestaurants = async (req, res) => {
       where: { role: "restaurant_owner" },
     });
 
-    res.status(200).json(restaurants);
+    res.json(restaurants);
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+export const getRestaurantById = async (req, res) => {
+  try {
+    const restaurant = await Restaurant.findByPk(req.params.id, {
+      include: [
+        {
+          model: User,
+          attributes: ["full_name", "email"],
+        },
+      ],
+    });
+
+    if (!restaurant) {
+      return res.status(404).json({ message: "Restaurant not found" });
+    }
+
+    res.json(restaurant);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

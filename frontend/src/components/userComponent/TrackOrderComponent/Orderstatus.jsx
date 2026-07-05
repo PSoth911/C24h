@@ -7,27 +7,19 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const steps = [
-  {
-    title: "Confirmed",
-    icon: faCheck,
-  },
-  {
-    title: "Preparing",
-    icon: faUtensils,
-  },
-  {
-    title: "On the way",
-    icon: faMotorcycle,
-  },
-  {
-    title: "Delivered",
-    icon: faBox,
-  },
+  { title: "Confirmed", icon: faCheck },
+  { title: "Preparing", icon: faUtensils },
+  { title: "On the way", icon: faMotorcycle },
+  { title: "Delivered", icon: faBox },
 ];
 
-const Orderstatus = ({ currentStep = 2 }) => {
+const STATUS_TO_STEP = {pending: 0,confirmed: 0,preparing: 1,ready: 1,on_the_way: 2,out_for_delivery: 2,delivered: 3,completed: 3,};
+const Orderstatus = ({ order }) => {
+  const status = (order?.order_status || "pending").toLowerCase();
+  const currentStep = STATUS_TO_STEP[status] ?? 0;
+
   return (
-    <div className=" rounded-2xl p-5 border-b">
+    <div className="rounded-2xl p-5 border-b">
       <div className="relative flex justify-between items-center">
         {/* Progress Line */}
         <div className="absolute top-5 left-0 w-full h-0.75 bg-gray-200" />
@@ -39,10 +31,7 @@ const Orderstatus = ({ currentStep = 2 }) => {
         />
 
         {steps.map((step, index) => (
-          <div
-            key={index}
-            className="relative z-10 flex flex-col items-center"
-          >
+          <div key={index} className="relative z-10 flex flex-col items-center">
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center border-2
                 ${
@@ -56,11 +45,7 @@ const Orderstatus = ({ currentStep = 2 }) => {
 
             <span
               className={`mt-3 text-sm font-medium
-                ${
-                  index <= currentStep
-                    ? "text-teal-700"
-                    : "text-gray-400"
-                }`}
+                ${index <= currentStep ? "text-teal-700" : "text-gray-400"}`}
             >
               {step.title}
             </span>

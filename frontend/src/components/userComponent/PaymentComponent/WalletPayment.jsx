@@ -1,4 +1,4 @@
-import {
+﻿import {
   faWallet,
   faCircleCheck,
   faChevronRight,
@@ -34,7 +34,7 @@ const WalletPayment = () => {
     <div className="rounded-2xl bg-white p-6 shadow-2xl">
       {/* Header */}
       <div className="flex justify-center">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#004953]/10">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-[#004953]">
           <FontAwesomeIcon
             icon={faWallet}
             className="text-3xl text-[#004953]"
@@ -51,7 +51,7 @@ const WalletPayment = () => {
           Choose your preferred wallet provider
         </p>
       </div>
-      <div className="mt-6 rounded-xl border border-[#004953]/20 bg-[#004953]/5 p-5 text-center">
+      <div className="mt-6 rounded-xl border border-[#004953] bg-[#004953] p-5 text-center">
         <p className="text-sm text-[#004953]">
           Total Payment
         </p>
@@ -70,13 +70,13 @@ const WalletPayment = () => {
             className={`flex w-full items-center justify-between rounded-xl border p-4 transition-all
               ${
                 selectedWallet === wallet.id
-                  ? "border-[#004953] bg-[#004953]/5"
-                  : "border-gray-200 hover:border-[#004953]/30"
+                  ? "border-[#004953] bg-[#004953]"
+                  : "border-gray-200 hover:border-[#004953]"
               }
             `}
           >
             <div className="flex items-center gap-4">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#004953]/10">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#004953]">
                     <FontAwesomeIcon icon={wallet.icon} className="text-xl text-[#004953]"/>
                 </div>
               <div className="text-left">
@@ -100,7 +100,7 @@ const WalletPayment = () => {
           </button>
         ))}
       </div>
-      <div className="mt-6 rounded-xl border border-[#004953]/10 bg-[#004953]/5 p-4">
+      <div className="mt-6 rounded-xl border border-[#004953] bg-[#004953] p-4">
         <div className="flex items-center gap-2 text-[#004953]">
           <FontAwesomeIcon icon={faCircleCheck} />
           <span className="font-medium">

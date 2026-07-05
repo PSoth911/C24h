@@ -1,73 +1,89 @@
-import { useNavigate } from "react-router-dom"
-import {PATH} from "../../../path.js";
-const RightSection = () => {
-     const navigate = useNavigate()
-    const order = {
-    items: [
-      {
-        id: 1,
-        name: "Truffle Burger",
-        quantity: 1,
-        price: 18.5,
-      },
-      {
-        id: 2,
-        name: "Pink Lemonade",
-        quantity: 2,
-        price: 5.5,
-      },
-      {
-        id: 3,
-        name: "Fries",
-        quantity: 1,
-        price: 4.5,
-      },
-    ],
-    subtotal: 34,
-    deliveryFee: 2.5,
-    tax: 1.75,
-    total: 38.25,
-  };
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faReceipt,
+  faTruck,
+  faTag,
+  faLock,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons";
+
+
+const RightSection = ({ cart ,onPlaceOrder, loading }) => {
+  const DELIVERY_FEE = 0;
+  const SERVICE_FEE = 0;
+  const items = cart?.CartItems || [];
+  const subtotal = items.reduce((sum, item) => {
+    return sum + Number(item.subtotal);
+  }, 0);
+
   return (
-    <div className="col-span-2 h-100 rounded-2xl p-5 shadow-2xl bg-gray-100">
-      <h2 className="text-2xl py-2 font-bold">Order Summary</h2>
-      <div>
-        {order.items.map((item) => (
-          <div
-            key={item.id}
-            className="flex justify-between mt-1"
-          >
-            <p>
-              {item.name} x {item.quantity}
-            </p>
-            <p>${item.price}</p>
-          </div>
-        ))}
-      </div>
-      <div className="border-y mt-4">
-        <div className="flex justify-between">
-          <p>Sub Total</p>
-          <p>${order.subtotal}</p>
+    <div className="col-span-2 h-fit rounded-3xl bg-gray-100 shadow-xl p-7 sticky top-28">
+      <div className="flex items-center gap-3 mb-7">
+        <div className="bg-emerald-50 text-[#004953] w-11 h-11 rounded-2xl flex items-center justify-center">
+          <FontAwesomeIcon icon={faReceipt} />
         </div>
-        <div className="flex justify-between">
-          <p>Delivery Fee</p>
-          <p>${order.deliveryFee}</p>
+        <h2 className="text-2xl font-bold text-[#004953]">Order Summary</h2>
+      </div>
+      <div className="space-y-4">
+        <div className="flex justify-between items-center">
         </div>
-        <div className="flex justify-between">
-          <p>Tax</p>
-          <p>${order.tax}</p>
+
+        <div className="flex justify-between items-center">
+          <span className="flex items-center gap-3 text-gray-600">
+            <span className="bg-emerald-50 text-[#004953] w-8 h-8 rounded-lg flex items-center justify-center">
+              <FontAwesomeIcon icon={faTruck} className="text-sm" />
+            </span>
+            Delivery Fee
+          </span>
+          <span className="font-bold text-gray-800">
+            ${DELIVERY_FEE.toFixed(2)}
+          </span>
+        </div>
+
+        <div className="flex justify-between items-center">
+          <span className="flex items-center gap-3 text-gray-600">
+            <span className="bg-amber-50 text-amber-500 w-8 h-8 rounded-lg flex items-center justify-center">
+              <FontAwesomeIcon icon={faTag} className="text-sm" />
+            </span>
+            Service Fee
+          </span>
+          <span className="font-bold text-gray-800">
+            ${SERVICE_FEE.toFixed(2)}
+          </span>
         </div>
       </div>
-      <div className="flex justify-between mt-4">
-        <p className="font-bold text-xl">Total</p>
-        <p>${order.total}</p>
+
+      <div className="my-5 border-t border-dashed border-gray-300" />
+
+      {/* Total */}
+      <div className="flex justify-between items-center bg-emerald-50 rounded-2xl p-5">
+        <span className="text-xl font-bold text-[#004953]">Total</span>
+        <span className="text-2xl font-bold text-[#004953]">
+          ${subtotal.toFixed(2)}
+        </span>
       </div>
-      <div>
-        <button onClick={()=>navigate(PATH.USER.SucessPayment)} className="p-2 border-2 bg-[#004953] text-white duration-200 hover:cursor-pointer rounded-2xl w-full mt-5 border-[#004953]">
-          Complete Payment
-        </button>
-      </div>
-      <p className="mt-5 text-center text-gray-500">Secure Encrypted Transaction</p>
+
+      {/* Button */}
+      <button
+        onClick={onPlaceOrder}
+        disabled={loading}
+        className="w-full mt-6 bg-[#004953] text-white py-4 rounded-2xl text-lg font-semibold hover:bg-black transition flex items-center justify-center gap-3 disabled:opacity-60 disabled:hover:bg-[#004953]"
+      >
+        {loading ? (
+          "Processing..."
+        ) : (
+          <>
+            Complete Payment
+            <FontAwesomeIcon icon={faChevronRight} />
+          </>
+        )}
+      </button>
+
+      <p className="mt-4 text-center text-gray-500 flex items-center justify-center gap-2 text-sm">
+        <FontAwesomeIcon icon={faLock} />
+        Secure Encrypted Transaction
+      </p>
+
     </div>
   );
 };

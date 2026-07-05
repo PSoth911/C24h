@@ -1,118 +1,180 @@
-import { faChevronUp } from "@fortawesome/free-solid-svg-icons";
-import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
-import { useState } from "react";
+﻿import { faChevronUp, faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { getAllCategories } from "../../../service/productService";
 
-const LeftSectionFilter = () => {
-    const [showAll, setShowAll] = useState(false);
-    const [price, setPrice] = useState(0);
-    const [selectRate, setSelectRate] = useState(null)
-    const [selecttype, setSelecttype] = useState("nearby");
-    const categories = [
-        "Pizza", "Burger", "Pasta", "Sushi", "Desserts", "Salads", "Seafood", "Vegan",
-        "Indian", "Chinese", "Mexican", "Thai", "Mediterranean", "Breakfast", "Brunch",
-        "Snacks", "Drinks", "Coffee", "Tea", "Juices", "Smoothies", "Ice Cream", "Baked Goods",
-        "Grilled", "Fried", "Healthy", "Comfort Food"
-    ];
-    const filter = [
-        {
-            id: 1,
-            name: "Nearby",
-            value: "nearby"
-        },
-        {
-            id: 2,
-            name: "Popular",
-            value: "popular"
-        },
-        {
-            id: 3,
-            name: "Lowest Price",
-            value: "lowest_price"
-        }
-    ]
-    const Rate = [
-        "3+",
-        "3.5+",
-        "4+",
-        "4.5+"
-    ]
-    return (
-        <div className="col-span-2 gap-2 sticky top-10">
-            <div>
-                <div className=" flex flex-col bg-[#F5F2FF] p-2 rounded-2xl">
-                    <div className=" bg-[#F5F2FF] overflow-y-auto w-full scrollbar-hide h-150 text-white py-4 px-3 ">
-                        <div className="flex justify-between w-full">
-                            <h2 className="text-[#004953] font-bold text-xl mb-2">Filters</h2>
-                            <div className=" text-[#004953] font-bold ">Reset Filters</div>
-                        </div>
-                        <div className="flex gap-4 flex-col">
-                            <p className="text-[#004953]">Categories</p>
-                            <div className="text-[#004953]">
-                                {(showAll ? categories : categories.slice(0, 5)).map(
-                                    (category, index) => (
-                                        <div key={index} className="flex items-center text-[#004953] gap-2 mb-2">
-                                            <input type="checkbox" className="form-checkbox h-4 w-4 " />
-                                            <label>{category}</label>
-                                        </div>
-                                    )
-                                )}
-                                <button
-                                    onClick={() => setShowAll(!showAll)} className="text-[#004953] cursor-pointer flex items-center gap-2 mt-2">
-                                    {showAll ? "Show Less" : "Show More"}
-                                    <FontAwesomeIcon icon={showAll ? faChevronUp : faChevronDown} />
-                                </button>
-                            </div>
-                        </div>
-                        <div>
-                            <div className="text-[#004953] mt-4">Price range</div>
-                            <input type="range" min="0" max="150" className="w-full text-[#004953] mt-2" value={price} onChange={(e) => setPrice(e.target.value)} />
-                            <div className="flex items-center justify-between text-[#004953]">
-                                <span>${price}</span>
-                                <span>$100+</span>
-                            </div>
-                        </div>
-                        <div>
-                            <div className="text-[#004953] mt-4">Min. Rate</div>
-                            <div className="flex items-center gap-4 mt-2">
-                                {Rate.map((r) => (
-                                    <span
-                                        key={r}
-                                        onClick={() => setSelectRate(r)}
-                                        className={`px-5 py-1 border-2 border-[#004953] rounded-2xl cursor-pointer transition-all
-                                        ${selectRate === r
-                                                ? "bg-[#004953] text-white"
-                                                : "bg-white text-black"
-                                            }`}
-                                    >
-                                        {r}
-                                    </span>
-                                ))}
-                            </div>
-                        </div>
-                        <div>
-                            <div className="text-[#004953] mt-4">Filters by</div>
-                            <div className="flex flex-col gap-2 mt-2 text-[#004953]">
-                                {filter.map((item) => (
-                                    <label key={item.id} className="flex items-center gap-3 cursor-pointer">
-                                        <input type="radio" name="filter" value={item.value} checked={selecttype === item.value} onChange={(e) => setSelecttype(e.target.value)} className="hidden" />
-                                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center ${selecttype === item.value ? "border-[#004953]" : "border-[#004953]"}`}>
-                                            {selecttype === item.value && (
-                                                <div className="w-4 h-4 rounded-full bg-[#004953]"></div>
-                                            )}
-                                        </div>
-                                        <span className="text-[#004953]">{item.name}</span>
-                                    </label>
-                                ))}
-                            </div>
-                        </div>
+const SORT_OPTIONS = [
+  { label: "Most Popular", value: "popular" },
+  { label: "Newest", value: "newest" },
+  { label: "Lowest Price", value: "lowest_price" },
+  { label: "Highest Price", value: "highest_price" },
+];
+
+const Divider = () => <hr className="border-gray-100" />;
+
+const LeftSectionFilter = ({ onApply }) => {
+  const [showAll, setShowAll] = useState(false);
+  const [maxPrice, setMaxPrice] = useState(30);
+  const [sort, setSort] = useState("popular");
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const res = await getAllCategories();
+        setCategories(res.data.categories || []);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    loadCategories();
+  }, []);
+
+  const toggleCategory = (name) => {
+    setSelectedCategories((prev) =>
+      prev.includes(name) ? prev.filter((c) => c !== name) : [...prev, name]
+    );
+  };
+
+  const handleReset = () => {
+    setMaxPrice(30);
+    setSort("popular");
+    setSelectedCategories([]);
+    onApply?.(null);
+  };
+
+  const handleApply = () => {
+    onApply?.({
+      categories: selectedCategories,
+      maxPrice: Number(maxPrice),
+      sort,
+    });
+  };
+
+  const displayedCategories = showAll ? categories : categories.slice(0, 5);
+
+  return (
+    <div className="col-span-2 sticky top-20">
+      <div className="flex flex-col bg-white border border-gray-100 shadow-md rounded-2xl overflow-hidden">
+
+        {/* Header */}
+        <div className="flex items-center justify-between px-5 py-2 border-b border-gray-100">
+          <h2 className="text-[#004953] font-bold text-lg">Filters</h2>
+          <button
+            onClick={handleReset}
+            className="text-sm text-[#004953] font-medium cursor-pointer hover:underline"
+          >
+            Reset all
+          </button>
+        </div>
+
+        <div className="overflow-y-auto scrollbar-hide px-5 py-4 flex flex-col gap-5 max-h-[70vh]">
+
+          {/* Categories */}
+          <div>
+            <p className="text-[#004953] font-semibold mb-2">Categories</p>
+            <div className="flex flex-col gap-2">
+              {displayedCategories.map((cat) => {
+                const checked = selectedCategories.includes(cat.category_name);
+                return (
+                  <label
+                    key={cat.category_id}
+                    onClick={() => toggleCategory(cat.category_name)}
+                    className="flex items-center gap-3 cursor-pointer group"
+                  >
+                    <div
+                      className={`w-5 h-5 rounded-md border-2 flex items-center justify-center transition-all shrink-0 ${
+                        checked
+                          ? "bg-[#004953] border-[#004953]"
+                          : "border-gray-300 group-hover:border-[#004953]"
+                      }`}
+                    >
+                      {checked && (
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
                     </div>
-                    <button className="w-full bg-[#004953] text-white p-2 mt-2 rounded-2xl hover:cursor-pointer hover:bg-black transition-all">Filter Now</button>
-                </div>
+                    <span className="text-gray-700 text-sm">{cat.category_name}</span>
+                  </label>
+                );
+              })}
             </div>
 
-        </div>
-    )
-}
+            {categories.length > 5 && (
+              <button
+                onClick={() => setShowAll(!showAll)}
+                className="text-[#004953] flex items-center gap-1 mt-2 text-sm font-medium cursor-pointer"
+              >
+                {showAll ? "Show Less" : `+${categories.length - 5} More`}
+                <FontAwesomeIcon icon={showAll ? faChevronUp : faChevronDown} className="text-xs" />
+              </button>
+            )}
+          </div>
 
-export default LeftSectionFilter
+          <Divider />
+
+          {/* Price Range */}
+          <div>
+            <div className="flex justify-between items-center mb-2">
+              <p className="text-[#004953] font-semibold">Max Price</p>
+              <span className="bg-[#004953] text-white text-xs px-2.5 py-1 rounded-full font-semibold">
+                ${maxPrice}
+              </span>
+            </div>
+            <input
+              type="range"
+              min="0"
+              max="30"
+              step="1"
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(e.target.value)}
+              className="w-full accent-[#004953]"
+            />
+            <div className="flex justify-between text-xs text-gray-400 mt-1">
+              <span>$0</span>
+              <span>$30</span>
+            </div>
+          </div>
+
+          <Divider />
+
+          {/* Sort By */}
+          <div>
+            <p className="text-[#004953] font-semibold mb-3">Sort By</p>
+            <div className="flex flex-col gap-2">
+              {SORT_OPTIONS.map((opt) => (
+                <button
+                  key={opt.value}
+                  onClick={() => setSort(opt.value)}
+                  className={`text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                    sort === opt.value
+                      ? "bg-[#004953] text-white shadow-sm"
+                      : "bg-gray-50 text-gray-700 hover:bg-[#004953] hover:text-[#004953]"
+                  }`}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+
+        </div>
+
+        <div className="px-5 pb-5 pt-1 border-t border-gray-100">
+          <button
+            onClick={handleApply}
+            className="w-full bg-[#004953] text-white py-3 rounded-2xl font-semibold hover:bg-black transition-all cursor-pointer"
+          >
+            Apply Filters
+          </button>
+        </div>
+
+      </div>
+    </div>
+  );
+};
+
+export default LeftSectionFilter;

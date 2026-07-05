@@ -8,8 +8,7 @@ const LeftSection = ({
       <h2 className="mb-3 text-2xl font-bold text-[#005566]">
         Select Payment Method
       </h2>
-
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 gap-4">
         {methods.map((method) => (
           <button
             key={method.id}

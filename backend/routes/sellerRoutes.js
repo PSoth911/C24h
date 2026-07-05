@@ -1,8 +1,10 @@
 import express from "express";
 import { verifyToken } from "../middleware/auth_middleware.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
+
 import {
   getAllRestaurants,
+  getRestaurantById,
   getProfile,
   updateProfile,
   updateSettings,
@@ -29,16 +31,19 @@ import {
 
 const route = express.Router();
 
-route.get("/allrestaurants", getAllRestaurants);
+// Public routes
+route.get("/restaurants", getAllRestaurants);
+route.get("/restaurants/:id", getRestaurantById);
 
+// Protected routes
 route.use(verifyToken, authorizeRoles("restaurant_owner"));
 
-// profile / settings
+// Profile
 route.get("/profile", getProfile);
 route.put("/profile", updateProfile);
 route.put("/settings", updateSettings);
 
-// menu
+// Menu
 route.get("/categories", getCategories);
 route.get("/products", getProducts);
 route.post("/products", createProduct);
@@ -46,24 +51,24 @@ route.put("/products/:id", updateProduct);
 route.patch("/products/:id/status", toggleProductStatus);
 route.delete("/products/:id", deleteProduct);
 
-// orders
+// Orders
 route.get("/orders", getOrders);
 route.put("/orders/:id/accept", acceptOrder);
 route.put("/orders/:id/prepare", prepareOrder);
 route.put("/orders/:id/send-for-delivery", sendForDelivery);
 route.put("/orders/:id/cancel", cancelOrder);
 
-// dashboard
+// Dashboard
 route.get("/dashboard/metrics", getDashboardMetrics);
 route.get("/dashboard/revenue-chart", getRevenueChart);
 route.get("/dashboard/orders-stream", getOrdersStream);
 
-// analytics
+// Analytics
 route.get("/analytics/summary", getAnalyticsSummary);
 route.get("/analytics/volume-timeline", getVolumeTimeline);
 route.get("/analytics/sales-mix", getSalesMix);
 
-// promotions
+// Promotions
 route.get("/promotions", getPromotions);
 route.post("/promotions", createPromotion);
 

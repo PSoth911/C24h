@@ -13,7 +13,6 @@ const Restaurant = sequelize.define(
     user_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true,
     },
 
     restaurant_name: {
@@ -25,7 +24,7 @@ const Restaurant = sequelize.define(
       type: DataTypes.INTEGER,
       allowNull: false,
     },
-    
+
     description: {
       type: DataTypes.TEXT,
     },
@@ -47,6 +46,10 @@ const Restaurant = sequelize.define(
     },
 
     logo: {
+      type: DataTypes.STRING(255),
+    },
+
+    image: {
       type: DataTypes.STRING(255),
     },
 
@@ -73,6 +76,11 @@ const Restaurant = sequelize.define(
     sound_alerts: {
       type: DataTypes.BOOLEAN,
       defaultValue: true,
+    },
+
+    fee: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0,
     },
   },
   {

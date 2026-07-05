@@ -13,6 +13,8 @@ import Delivery from "./Delivery.js";
 import Review from "./Review.js";
 import Notification from "./Notification.js";
 import Promotion from "./Promotion.js";
+import FavouriteProduct from "./FavouriteProduct.js";
+import FavouriteRestaurant from "./FavouriteRestaurant.js";
 
 // user
 User.hasOne(Customer, {
@@ -175,6 +177,41 @@ Restaurant.hasMany(Promotion, {
 });
 Promotion.belongsTo(Restaurant, {
   foreignKey: "restaurant_id",
+});
+
+//Favourite Restaurants
+
+Customer.hasMany(FavouriteRestaurant, {
+  foreignKey: "customer_id",
+});
+
+FavouriteRestaurant.belongsTo(Customer, {
+  foreignKey: "customer_id",
+});
+
+Restaurant.hasMany(FavouriteRestaurant, {
+  foreignKey: "restaurant_id",
+});
+
+FavouriteRestaurant.belongsTo(Restaurant, {
+  foreignKey: "restaurant_id",
+});
+
+// Favourite Products
+Customer.hasMany(FavouriteProduct, {
+  foreignKey: "customer_id",
+});
+
+FavouriteProduct.belongsTo(Customer, {
+  foreignKey: "customer_id",
+});
+
+Product.hasMany(FavouriteProduct, {
+  foreignKey: "product_id",
+});
+
+FavouriteProduct.belongsTo(Product, {
+  foreignKey: "product_id",
 });
 
 export {

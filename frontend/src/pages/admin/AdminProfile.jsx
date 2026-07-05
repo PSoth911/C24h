@@ -21,7 +21,9 @@ export default function AdminProfile() {
   const [toast,       setToast]       = useState(null);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/admin/dashboard")
+    fetch("http://localhost:5000/api/admin/dashboard", {
+      headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
+    })
       .then((r) => r.json())
       .then((d) => { if (d.success) setStats(d.data); })
       .catch(() => {})
@@ -34,7 +36,7 @@ export default function AdminProfile() {
   };
 
   const handleSave = async (formData) => {
-    const res = await updateProfile(null, formData);
+    const res = await updateProfile(formData);
 
     if (!res.success) {
       showToast("error", res.message || "Failed to update profile.");

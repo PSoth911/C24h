@@ -1,86 +1,92 @@
-const FeaturedRestaurants = () => {
-    const restaurants = [
-        {
-            name: "Damnak Mahob Khmer",
-            image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/29/bc/21/19/damnak-mahob-khmer-restaurant.jpg?w=900&h=500&s=1",
-            rating: 4.5,
-            cuisine: "Cambodian",
-            distance: "2.5 km away",
-        },
-        {
-            name: "Bakong Restaurant & Cafe",
-            image: "https://www.areacambodia.com/wp-content/uploads/2023/09/Bakong-Restaurant-Cafe-Simply-Delicious-Cambodian-Siem-Reap.jpg",
-            rating: 4.8,
-            cuisine: "Cambodian",
-            distance: "3.2 km away",
-        },
-        {
-            name: "Starbucks",
-            image: "https://about.starbucks.com/wp-content/uploads/2019/01/oQXDSBzJ-5000-2813.jpg",
-            rating: 4.6,
-            cuisine: "Cafe",
-            distance: "1.8 km away",
-        },
-        {
-            name: "Browns Restaurant",
-            image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/c4/aa/92/caption.jpg?w=900&h=500&s=1",
-            rating: 4.7,
-            cuisine: "Cafe",
-            distance: "2.1 km away",
-        },
-        {
-            name: "Browns Restaurant",
-            image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/c4/aa/92/caption.jpg?w=900&h=500&s=1",
-            rating: 4.7,
-            cuisine: "Cafe",
-            distance: "2.1 km away",
-        },
-        {
-            name: "Browns Restaurant",
-            image: "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/c4/aa/92/caption.jpg?w=900&h=500&s=1",
-            rating: 4.7,
-            cuisine: "Cafe",
-            distance: "2.1 km away",
-        }
-    ];
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faStar,
+    faLocationDot,
+    faStore,
+} from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
+import { PATH } from "../../../path";
+import placeholderRestaurant from "../../../assets/image copy 2.png";
 
+const FeaturedRestaurants = ({ restaurants }) => {
+    const navigate = useNavigate();
     return (
         <div>
-            <div className="px-10 mt-10 py-20 bg-[#FFF8EF] rounded-2xl">
-                <h2 className="text-2xl text-[#004953] font-bold mb-4">Featured Restaurants</h2>
-                <div className="flex gap-6 overflow-x-auto scrollbar-hide pb-4">
-                    {restaurants.map((restaurant, index) => (
+            <div className="px-10 mt-10 py-3 bg-gray-200 rounded-2xl">
+                <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-3xl font-bold text-[#004953]">
+                        Featured Restaurants
+                    </h2>
+
+                    <button onClick={() => navigate(PATH.USER.AllRestaurants)} className="px-5 py-2 rounded-2xl hover:cursor-pointer bg-[#004953] text-white hover:bg-black transition">
+                        View All
+                    </button>
+                </div>
+
+                <div className="flex gap-5 overflow-x-auto scrollbar-hide pb-3">
+                    {restaurants.map((restaurant) => (
                         <div
-                            key={index}
-                            className="bg-white rounded-lg shadow-md min-w-[24%] shrink-0 overflow-hidden"
+                            key={restaurant.restaurant_id}
+                            onClick={() => navigate(`/restaurant/${restaurant.restaurant_id}`)}
+                            className="bg-white rounded-3xl shadow-lg min-w-80 max-w-100 overflow-hidden hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex flex-col cursor-pointer"
                         >
-                            <img
-                                src={restaurant.image}
-                                alt={restaurant.name}
-                                className="w-full h-48 object-cover"
-                            />
+                            <div className="relative">
+                                <img
+                                    src={restaurant.logo ? `http://localhost:5000/uploads/${restaurant.logo}` : placeholderRestaurant}
+                                    alt={restaurant.restaurant_name}
+                                    className="w-full h-44 object-cover"
+                                    onError={(e) => { e.target.src = placeholderRestaurant; }}
+                                />
 
-                            <div className="p-4">
-                                <h3 className="text-lg font-semibold">
-                                    {restaurant.name}
-                                </h3>
-
-                                <div className="flex justify-between mt-2 text-[#004953]">
-                                    <p>{restaurant.cuisine}</p>
-                                    <p>{restaurant.distance}</p>
+                                <div className="absolute top-3 left-3 bg-[#004953] text-white px-3 py-1 rounded-full text-xs">
+                                    Featured
                                 </div>
 
-                                <p className="text-[#004953] mt-2">
-                                    Rating: {restaurant.rating} ⭐
+                                <div className="absolute top-3 right-3 bg-white px-2 py-1 rounded-full flex items-center gap-1 shadow">
+                                    <FontAwesomeIcon icon={faStar} className="text-yellow-500" />
+                                    {restaurant.average_rating}
+                                </div>
+                            </div>
+
+                            <div className="p-4 flex flex-col flex-1">
+
+                                <h3 className="text-xl font-bold text-[#004953] truncate">
+                                    {restaurant.restaurant_name}
+                                </h3>
+
+                                <div className="flex items-center gap-2 text-gray-500 text-sm mt-2">
+                                    <FontAwesomeIcon icon={faStore} />
+                                    Restaurant
+                                </div>
+
+                                <div className="flex gap-2 text-gray-500 text-sm ">
+                                    <FontAwesomeIcon
+                                        icon={faLocationDot}
+                                        className="text-[#004953] mt-1"
+                                    />
+                                    <p className="line-clamp-2 h-10">
+                                        {restaurant.address}
+                                    </p>
+                                </div>
+
+                                <p className="text-gray-600 text-sm line-clamp-2 h-10">
+                                    {restaurant.description}
                                 </p>
+
+                                {/* Push button to bottom */}
+                                <div className="mt-auto">
+                                    <button className="w-full py-2 rounded-xl bg-[#004953] text-white hover:bg-black transition">
+                                        View Restaurant
+                                    </button>
+                                </div>
+
                             </div>
                         </div>
                     ))}
                 </div>
             </div>
-
         </div>
-    )
-}
+    );
+};
 
-export default FeaturedRestaurants
+export default FeaturedRestaurants;

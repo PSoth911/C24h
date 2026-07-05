@@ -1,4 +1,6 @@
 import express from "express";
+import { verifyToken } from "../middleware/auth_middleware.js";
+import { authorizeRoles } from "../middleware/roleMiddleware.js";
 import {
   getAllUsers,
   getAllRestaurants,
@@ -22,6 +24,8 @@ import {
 } from "../controller/adminController.js";
 
 const router = express.Router();
+
+router.use(verifyToken, authorizeRoles("admin"));
 
 /**
  * @swagger

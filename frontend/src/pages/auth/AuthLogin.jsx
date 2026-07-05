@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { PATH } from "../../path.js";
+import {login} from "../../service/authService.js"
 
 const TEAL = "#004953";
 
@@ -20,21 +20,18 @@ export default function AuthLogin() {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { email, password }
-      );
+      const response = await login(email, password);
       const { token, user } = response.data;
-      const role = user.role;
 
       sessionStorage.setItem("token", token);
-      sessionStorage.setItem("role", role);
+      sessionStorage.setItem("role", user.role);
       sessionStorage.setItem("user", JSON.stringify(user));
 
-      switch (role) {
+      switch (user.role) {
         case "admin":
           navigate(PATH.ADMIN.DASHBOARD);
           break;
+
         case "driver":
           navigate(PATH.DELIVERY.DASHBOARD);
           break;

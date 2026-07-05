@@ -17,6 +17,7 @@ import AdminSidebar from "../../components/admin/AdminSidebar";
 import { PATH } from "../../path";
 
 import {
+  getUsers,
   deleteUser,
   toggleUserStatus,
   updateUser,
@@ -45,8 +46,7 @@ export default function AdminUserManagement() {
   /* ─────────────────── fetch ─────────────────── */
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/admin/users")
-      .then((res) => res.json())
+    getUsers()
       .then((data) => {
         if (data.success) setUsers(data.data);
         else showToast("error", "Failed to load users.");
@@ -367,7 +367,7 @@ function AddUserModal({ onClose, onSave }) {
     full_name: "",
     email: "",
     password: "",
-    role: "Customer",
+    role: "customer",
   });
   const [saving, setSaving] = useState(false);
 

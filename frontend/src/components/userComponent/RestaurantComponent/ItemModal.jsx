@@ -1,77 +1,159 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faXmark,
   faPlus,
-  faMinus
-} from "@fortawesome/free-solid-svg-icons"
-const ItemModal = ({ isOpen, onClose, food, qauntity,setqauntity,setcartitems }) => {
-    const increaseQuantity = () => {
-        setqauntity((i) =>i+1
-        );
-    };
-    const decreaseQuantity = () => {
-        setqauntity((i) =>(i>1 ? i-1 : 1)
-        );
-    };
-    if (!isOpen || !food) return null;
-    const Total = qauntity * parseFloat(food.price);
-    const addToCart = () => {
+  faMinus,
+} from "@fortawesome/free-solid-svg-icons";
+import placeholderFood from "../../../assets/image copy 2.png";
+
+const ItemModal = ({
+  isOpen,
+  onClose,
+  food,
+  qauntity,
+  setqauntity,
+  setcartitems,
+}) => {
+  if (!isOpen || !food) return null;
+
+  const increaseQuantity = () => {
+    setqauntity((prev) => prev + 1);
+  };
+
+  const decreaseQuantity = () => {
+    setqauntity((prev) => (prev > 1 ? prev - 1 : 1));
+  };
+
+  const total = qauntity * Number(food.price);
+
+  const addToCart = () => {
     setcartitems((prev) => {
-        const existing = prev.find((item) => item.id === food.id);
-        if (existing) {
-            return prev.map((item) =>
-                item.id === food.id
-                    ? { ...item, quantity: item.quantity + qauntity }
-                    : item
-            );
-        }
-        return [
-            ...prev,
-            {
-                id: food.id,
-                name: food.name,
-                image: food.image,
-                price: parseFloat(food.price),
-                quantity: qauntity,
-                option: "",
-            },
-        ];
+      const existing = prev.find(
+        (item) => item.product_id === food.product_id
+      );
+
+      if (existing) {
+        return prev.map((item) =>
+          item.product_id === food.product_id
+            ? {
+                ...item,
+                quantity: item.quantity + qauntity,
+              }
+            : item
+        );
+      }
+
+      return [
+        ...prev,
+        {
+          product_id: food.product_id,
+          product_name: food.product_name,
+          image: food.image,
+          price: Number(food.price),
+          quantity: qauntity,
+          note: "",
+        },
+      ];
     });
 
-    onClose(); 
-};
-    return (
-        <div className="fixed inset-0 bg-black/80 h-screen flex items-center justify-center ">
-            <div className="bg-white px-7 py-5 rounded-xl w-110 overflow-y-auto h-150 relative">
-                <button className="absolute right-1 top-0 hover:cursor-pointer" onClick={onClose}>
-                    <FontAwesomeIcon icon={faXmark}/>
-                </button>
-                <img src={food.image}
-                    alt={food.name}
-                    className="w-full h-60 object-cover rounded-lg"/>
-                <div className="flex items-center justify-between">
-                    <h2 className="text-xl font-bold mt-4">{food.name}</h2>
-                    <p className="font-bold text-[#004953] mt-3">${food.price}</p>
-                </div>
-                <p className="text-gray-500 mt-2">{food.dsc}</p>
+    setqauntity(1);
+    onClose();
+  };
 
-                <h2 className="">Specail Suggestion</h2>
-                <textarea rows={4} className="border w-full mt-2 rounded-md p-2" placeholder="Enter some Suggestion that you want"></textarea>
+  return (
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+      <div className="bg-white w-107 rounded-2xl overflow-hidden shadow-2xl relative">
 
-                <div className="flex justify-between items-center">
-                    <div className="flex gap-2 items-center mt-2">
-                        <div onClick={decreaseQuantity} className="p-0.5 hover:cursor-pointer border rounded-full"><FontAwesomeIcon icon={faMinus}/></div>
-                        <div>{qauntity}</div>
-                        <div onClick={increaseQuantity} className="p-0.5 hover:cursor-pointer border rounded-full"><FontAwesomeIcon icon={faPlus}/></div>
-                    </div>
-                    <div>
-                        Total:${Total.toFixed(2)}
-                    </div>
-                </div>
-                <button className=" mt-2 p-2 bg-white border rounded-xl hover:bg-[#004953] hover:text-white duration-200 w-full text-[#004953] hover:cursor-pointer" onClick={addToCart}>ADD To CARD</button>
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute right-4 top-4 text-xl hover:text-red-500"
+        >
+          <FontAwesomeIcon icon={faXmark} />
+        </button>
+
+        {/* Product Image */}
+        <img
+          src={food.image ? `http://localhost:5000/uploads/${food.image}` : placeholderFood}
+          alt={food.product_name}
+          className="w-full h-60 object-cover"
+          onError={(e) => { e.target.src = placeholderFood; }}
+        />
+
+        <div className="p-6">
+
+          {/* Name & Price */}
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold text-[#004953]">
+              {food.product_name}
+            </h2>
+
+            <p className="text-xl font-bold text-[#004953]">
+              ${Number(food.price).toFixed(2)}
+            </p>
+          </div>
+
+          {/* Description */}
+          <p className="text-gray-500 mt-3">
+            {food.description}
+          </p>
+
+          {/* Note */}
+          <div className="mt-5">
+            <label className="font-semibold text-[#004953]">
+              Special Request
+            </label>
+
+            <textarea
+              rows={4}
+              placeholder="Add a note for the restaurant..."
+              className="mt-2 w-full border rounded-xl p-3 outline-none focus:border-[#004953]"
+            />
+          </div>
+
+          {/* Quantity */}
+          <div className="flex justify-between items-center mt-6">
+
+            <div className="flex items-center gap-4">
+
+              <button
+                onClick={decreaseQuantity}
+                className="w-9 h-9 rounded-full border hover:bg-gray-100"
+              >
+                <FontAwesomeIcon icon={faMinus} />
+              </button>
+
+              <span className="font-bold text-lg">
+                {qauntity}
+              </span>
+
+              <button
+                onClick={increaseQuantity}
+                className="w-9 h-9 rounded-full border hover:bg-gray-100"
+              >
+                <FontAwesomeIcon icon={faPlus} />
+              </button>
+
             </div>
+
+            <div className="font-bold text-xl text-[#004953]">
+              Total: ${total.toFixed(2)}
+            </div>
+
+          </div>
+
+          {/* Add to Cart */}
+          <button
+            onClick={addToCart}
+            className="w-full mt-6 bg-[#004953] text-white py-3 rounded-xl hover:bg-black transition"
+          >
+            Add To Cart
+          </button>
+
         </div>
-    );
+      </div>
+    </div>
+  );
 };
 
 export default ItemModal;

@@ -1,6 +1,6 @@
 import image12 from '../../../assets/image copy 12.png'
 import image13 from '../../../assets/image copy 13.png'
-const ExploreCuisines = () => {
+const ExploreCuisines = ({products}) => {
     return (
         <div className="py-15 px-60 flex items-center">
             <div className="flex flex-col items-center gap-2">

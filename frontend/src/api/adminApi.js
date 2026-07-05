@@ -1,20 +1,27 @@
 const BASE_URL = "http://localhost:5000/api/admin";
 
+const authHeaders = () => ({
+  Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+});
+
+const jsonHeaders = () => ({
+  "Content-Type": "application/json",
+  ...authHeaders(),
+});
+
 /* ========================= */
 /* USERS */
 /* ========================= */
 
 export const getUsers = async () => {
-  const res = await fetch(`${BASE_URL}/users`);
+  const res = await fetch(`${BASE_URL}/users`, { headers: authHeaders() });
   return res.json();
 };
 
 export const createUser = async (data) => {
   const res = await fetch(`${BASE_URL}/users`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: jsonHeaders(),
     body: JSON.stringify(data),
   });
 
@@ -24,9 +31,7 @@ export const createUser = async (data) => {
 export const updateUser = async (id, data) => {
   const res = await fetch(`${BASE_URL}/users/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: jsonHeaders(),
     body: JSON.stringify(data),
   });
 
@@ -36,6 +41,7 @@ export const updateUser = async (id, data) => {
 export const deleteUser = async (id) => {
   const res = await fetch(`${BASE_URL}/users/${id}`, {
     method: "DELETE",
+    headers: authHeaders(),
   });
 
   return res.json();
@@ -44,6 +50,7 @@ export const deleteUser = async (id) => {
 export const toggleUserStatus = async (id) => {
   const res = await fetch(`${BASE_URL}/users/${id}/status`, {
     method: "PATCH",
+    headers: authHeaders(),
   });
 
   return res.json();
@@ -54,16 +61,14 @@ export const toggleUserStatus = async (id) => {
 /* ========================= */
 
 export const getRestaurants = async () => {
-  const res = await fetch(`${BASE_URL}/restaurants`);
+  const res = await fetch(`${BASE_URL}/restaurants`, { headers: authHeaders() });
   return res.json();
 };
 
 export const createRestaurant = async (data) => {
   const res = await fetch(`${BASE_URL}/restaurants`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: jsonHeaders(),
     body: JSON.stringify(data),
   });
 
@@ -73,9 +78,7 @@ export const createRestaurant = async (data) => {
 export const updateRestaurant = async (id, data) => {
   const res = await fetch(`${BASE_URL}/restaurants/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: jsonHeaders(),
     body: JSON.stringify(data),
   });
 
@@ -85,6 +88,7 @@ export const updateRestaurant = async (id, data) => {
 export const deleteRestaurant = async (id) => {
   const res = await fetch(`${BASE_URL}/restaurants/${id}`, {
     method: "DELETE",
+    headers: authHeaders(),
   });
 
   return res.json();
@@ -95,13 +99,14 @@ export const deleteRestaurant = async (id) => {
 /* ========================= */
 
 export const getDrivers = async () => {
-  const res = await fetch(`${BASE_URL}/deliveries`);
+  const res = await fetch(`${BASE_URL}/deliveries`, { headers: authHeaders() });
   return res.json();
 };
 
 export const toggleDriverStatus = async (id) => {
   const res = await fetch(`${BASE_URL}/deliveries/${id}/status`, {
     method: "PATCH",
+    headers: authHeaders(),
   });
 
   return res.json();
@@ -110,6 +115,7 @@ export const toggleDriverStatus = async (id) => {
 export const deleteDriver = async (id) => {
   const res = await fetch(`${BASE_URL}/deliveries/${id}`, {
     method: "DELETE",
+    headers: authHeaders(),
   });
 
   return res.json();
@@ -118,9 +124,7 @@ export const deleteDriver = async (id) => {
 export const updateDriver = async (id, data) => {
   const res = await fetch(`${BASE_URL}/deliveries/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-    },
+    headers: jsonHeaders(),
     body: JSON.stringify(data),
   });
 
@@ -132,7 +136,7 @@ export const updateDriver = async (id, data) => {
 /* ========================= */
 
 export const getDashboard = async () => {
-  const res = await fetch(`${BASE_URL}/dashboard`);
+  const res = await fetch(`${BASE_URL}/dashboard`, { headers: authHeaders() });
   return res.json();
 };
 
@@ -140,23 +144,15 @@ export const getDashboard = async () => {
 /* PROFILE */
 /* ========================= */
 
-export const getProfile = async (token) => {
-  const res = await fetch(`${BASE_URL}/profile`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-
+export const getProfile = async () => {
+  const res = await fetch(`${BASE_URL}/profile`, { headers: authHeaders() });
   return res.json();
 };
 
-export const updateProfile = async (token, data) => {
+export const updateProfile = async (data) => {
   const res = await fetch(`${BASE_URL}/profile`, {
     method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
+    headers: jsonHeaders(),
     body: JSON.stringify(data),
   });
 

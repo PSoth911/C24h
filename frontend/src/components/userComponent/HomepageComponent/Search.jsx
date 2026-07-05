@@ -1,45 +1,94 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons'
-import { useRef } from 'react'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faMagnifyingGlass,
+  faSliders,
+} from "@fortawesome/free-solid-svg-icons";
+import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { PATH } from "../../../path";
 
 const Search = () => {
-  const inputRef = useRef(null)
+  const inputRef = useRef(null);
+  const navigate = useNavigate();
+
+  const [keyword, setKeyword] = useState("");
+
+  const trending = [
+    "Pizza",
+    "Burger",
+    "Sushi",
+    "Noodles",
+    "Coffee",
+    "Dessert",
+  ];
+
+  const handleSearch = () => {
+    if (!keyword.trim()) return;
+
+    navigate(`${PATH.USER.AllFood}?search=${keyword}`);
+  };
+
+  const handleTrending = (item) => {
+    navigate(`${PATH.USER.AllFood}?search=${item}`);
+  };
 
   return (
-    <div className="search-section flex flex-col items-center py-4 px-[15%] gap-4">
-
+    <div className="flex flex-col items-center py-4 px-[15%] gap-6">
       <div
-        className="flex items-center w-full justify-center py-2 bg-white border border-gray-300 rounded-3xl px-2 gap-4"
-        onClick={() => {
-          if (inputRef.current) {
-            inputRef.current.focus()
-          }
-        }}
-      >        
-        <FontAwesomeIcon className='text-[#004953]' icon={faMagnifyingGlass} />
+        onClick={() => inputRef.current?.focus()}
+        className="w-full bg-white rounded-3xl shadow-xl border border-gray-200 flex items-center p-3 gap-4 transition-all hover:shadow-2xl"
+      >
+        <div className="w-12 h-12 rounded-full bg-[#004953] flex items-center justify-center">
+          <FontAwesomeIcon
+            icon={faMagnifyingGlass}
+            className="text-white text-lg"
+          />
+        </div>
 
         <input
           ref={inputRef}
           type="text"
-          placeholder="Search for dishes or restaurants..."
-          className="border-none outline-none w-full px-2 py-2 focus:outline-none focus:ring-0"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              handleSearch();
+            }
+          }}
+          placeholder="Search dishes, restaurants, cuisines..."
+          className="flex-1 outline-none text-lg placeholder:text-gray-400"
         />
 
-        <button className="bg-[#004953] text-white px-12 py-2 rounded-3xl transition-all duration-300 hover:bg-black">
-          Filters
+        <button className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 text-[#004953] px-6 py-3 rounded-2xl transition">
+          <FontAwesomeIcon icon={faSliders} />
+          Filter
         </button>
 
+        <button
+          onClick={handleSearch}
+          className="bg-[#004953] hover:bg-black text-white px-8 py-3 rounded-2xl font-semibold transition"
+        >
+          Search
+        </button>
       </div>
 
-        <ol className="list-none flex items-center text-[#004953] py-2 gap-4">
-            <li>Trending:</li>
-            <li className="px-3.5 rounded-3xl bg-[#8badb1] hover:cursor-pointer">Sushi</li>
-            <li className="px-3.5 rounded-3xl bg-[#8badb1] hover:cursor-pointer">Tacos</li>
-            <li className="px-3.5 rounded-3xl bg-[#8badb1] hover:cursor-pointer">Vagan Burgur</li>
-            <li className="px-3.5 rounded-3xl bg-[#8badb1] hover:cursor-pointer">Gelato</li>
-        </ol>
-    </div>
-  )
-}
+      <div className="flex flex-wrap items-center justify-center gap-3">
+        <span className="font-semibold text-[#004953]">
+          🔥 Trending Searches
+        </span>
 
-export default Search
+        {trending.map((item) => (
+          <button
+            key={item}
+            onClick={() => handleTrending(item)}
+            className="bg-[#d7e7e9] text-[#004953] px-5 py-2 rounded-full font-medium transition-all hover:bg-[#004953] hover:text-white hover:scale-105"
+          >
+            {item}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default Search;

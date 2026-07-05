@@ -6,6 +6,7 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "module": "^2.0.0",
+    "multer": "^2.2.0",
     "mysql2": "^3.22.5",
     "nodemon": "^3.1.14",
     "sequelize": "^6.37.8",

@@ -25,7 +25,11 @@ const CartItem = sequelize.define(
       allowNull: false,
       defaultValue: 1,
     },
-
+    price: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
     subtotal: {
       type: DataTypes.DECIMAL(10, 2),
     },

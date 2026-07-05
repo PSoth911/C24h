@@ -12,47 +12,77 @@ import SuperfastDelivery from '../../components/userComponent/HomepageComponent/
 import NewMenu from '../../components/userComponent/HomepageComponent/NewMenu'
 import GetApp from '../../components/userComponent/HomepageComponent/GetApp'
 import Footer from '../../components/userComponent/HomepageComponent/Footer'
+import { getProfile } from "../../service/profileService"
+import { getAllProducts } from '../../service/productService'
+import { getAllRestaurants } from '../../service/restaurantService'
 import { useEffect, useState } from "react";
-import axios from "axios";
-const HomePage = ()=>{
+
+
+const HomePage = () => {
     const [user, setUser] = useState(null);
+    const [restaurants, setRestaurants] = useState([]);
+    const [products, setProducts] = useState([])
+    const getGreeting = () => {
+        const hour = new Date().getHours();
+
+        if (hour < 12) return "Good Morning";
+        if (hour < 18) return "Good Afternoon";
+        return "Good Evening";
+    };
     useEffect(() => {
-        const token = sessionStorage.getItem("token");
+        const loadProfile = async () => {
+            try {
+                const response = await getProfile();
 
-        axios.get("http://localhost:5000/api/users/me", {
-        headers: {
-            Authorization: `Bearer ${token}`,
-        },
-        })
-        .then((res) => {
-        setUser(res.data);
-        })
-        .catch((err) => {
-        console.error(err);
-        });
+                console.log("Profile:", response);
+
+                setUser(response.User);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        const loadProducts = async () => {
+            try {
+                const res = await getAllProducts();
+                setProducts(res.data.products);
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        const loadRestaurants = async () => {
+            const res = await getAllRestaurants();
+            setRestaurants(res.data);
+        };
+
+        loadProfile();
+        loadProducts();
+        loadRestaurants()
     }, []);
-    return(
-    <div>
-        <div className='px-15 py-5'>
-            
-            <Navbar />
-            <div className='font-bold text-3xl px-2 text-[#004953] py-5'>Good morning Hello Ha Kak!!</div>
-            <ShowSection />
-            <Search />
-            <Menu />
-            <ExclusiveFood/>
-            <ExploreCuisines/>
-            <BrowAllfood/>
-            <Tredingfood/>
-            <FeaturedRestaurants/>
-            <TopRestaurants/>
-            <SuperfastDelivery/>
-            <NewMenu/>
+    return (
+        <div>
+            <div className='px-15 py-5'>
 
+                <Navbar />
+                <h1 className="font-bold text-3xl text-[#004953] py-5">
+                    {getGreeting()}, {user?.full_name}
+                </h1>
+                <ShowSection />
+                <Search />
+                <Menu />
+                <div id="section-discounts"><ExclusiveFood products={products} /></div>
+                <ExploreCuisines products={products} />
+                <BrowAllfood products={products} />
+                <div id="section-trending"><Tredingfood products={products} /></div>
+                <div id="section-restaurants"><FeaturedRestaurants restaurants={restaurants} /></div>
+                <div id="section-top-rate"><TopRestaurants restaurants={restaurants} /></div>
+                <div id="section-fast-delivery"><SuperfastDelivery restaurants={restaurants} /></div>
+                <div id="section-new-arrivals"><NewMenu products={products} /></div>
+
+            </div>
+            <GetApp />
+            <Footer />
         </div>
-            <GetApp/>
-            <Footer/>
- </div>
     )
 }
 export default HomePage

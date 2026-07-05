@@ -2,79 +2,86 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import Driver from "../models/Driver.js";
+import Customer from "../models/customer.js";
 
+import sequelize from "../database/db.js";
+// ========================
+// REGISTER
+// ========================
 export const register = async (req, res) => {
-  try {
-    const {
-      full_name,
-      email,
-      phone,
-      password,
-      address,
-    } = req.body;
+  const transaction = await sequelize.transaction();
 
-    // Validation
+  try {
+    const { full_name, email, phone, password, address } = req.body;
+
+    // 1. Validation
     if (!full_name || !email || !password) {
       return res.status(400).json({
-        message: "Full name, email and password are required",
+        message: "Full name, email, and password are required",
       });
     }
 
-    // Check existing email
-    const existingUser = await User.findOne({
-      where: { email },
-    });
-
+    // 2. Check duplicate email
+    const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      return res.status(400).json({
+      return res.status(409).json({
         message: "Email already exists",
       });
     }
-
-    // Hash password
-    const password_hash = await bcrypt.hash(
-      password,
-      10
-    );
-
-    // Create customer account
-    const user = await User.create({
-      full_name,
-      email,
-      phone,
-      password_hash,
-      address,
-      role: "customer",
-    });
-
-    res.status(201).json({
-      message: "Account created successfully",
-      user: {
-        id: user.user_id,
-        full_name: user.full_name,
-        email: user.email,
-        role: user.role,
+    // 3. Hash password
+    const password_hash = await bcrypt.hash(password, 10);
+    // 4. Create User
+    const user = await User.create(
+      {
+        full_name,
+        email,
+        phone,
+        password_hash,
+        role: "customer",
       },
+      { transaction }
+    );
+    // 5. Create Customer profile
+    await Customer.create(
+      {
+        user_id: user.user_id,
+        address,
+      },
+      { transaction }
+    );
+    // 6. Commit transaction
+    await transaction.commit();
+
+    return res.status(201).json({
+      message: "User registered successfully",
+      user_id: user.user_id,
     });
+
   } catch (error) {
-    res.status(500).json({
+    await transaction.rollback();
+
+    return res.status(500).json({
       message: error.message,
+      errors: error.errors,
     });
   }
 };
 
+// ========================
+// LOGIN
+// ========================
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validation
+    // 1. Validation
     if (!email || !password) {
       return res.status(400).json({
         message: "Email and password are required",
       });
     }
 
-    // Find user
+    // 2. Find user
     const user = await User.findOne({
       where: { email },
     });
@@ -85,11 +92,8 @@ export const login = async (req, res) => {
       });
     }
 
-    // Compare password
-    const isMatch = await bcrypt.compare(
-      password,
-      user.password_hash
-    );
+    // 3. Check password
+    const isMatch = await bcrypt.compare(password, user.password_hash);
 
     if (!isMatch) {
       return res.status(401).json({
@@ -106,6 +110,7 @@ export const login = async (req, res) => {
     }
 
     // Generate token
+    // 4. Generate JWT token
     const token = jwt.sign(
       {
         id: user.user_id,
@@ -118,7 +123,8 @@ export const login = async (req, res) => {
       }
     );
 
-    res.status(200).json({
+    // 5. Response
+    return res.status(200).json({
       message: "Login successful",
       token,
       user: {
@@ -129,8 +135,9 @@ export const login = async (req, res) => {
         driver_id: driver?.driver_id ?? null,
       },
     });
+
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       message: error.message,
     });
   }

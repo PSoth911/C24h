@@ -1,5 +1,7 @@
 import express from "express";
 import cors from "cors";
+import path from "path";
+import { fileURLToPath } from "url";
 import sequelize from "./database/db.js";
 import * as Model from "./models/associations.js";
 
@@ -15,6 +17,17 @@ import sellerRoutes from "./routes/sellerRoutes.js";
 import swaggerUi from "swagger-ui-express";
 import swaggerSpec from "./config/swagger.js";
 
+import CustomerRoutes from "./routes/Customer_route.js"
+import RestaurantRoute from "./routes/sellerRoutes.js"
+import CartRoutes from "./routes/cart_route.js";
+import OrderRoute from "./routes/Order_route.js"
+import ReviewRoute from "./routes/Review_route.js"
+import ProductRoute from "./routes/Product_route.js"
+import CategoryRoute from "./routes/categoryroute.js"
+import FavauriteRoute from "./routes/favourithroute.js"
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -25,6 +38,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use(
   "/api-docs",
@@ -41,6 +55,14 @@ app.use("/api/restaurant",restaurantRoute);
 app.use("/api/driver", driverRoute);
 app.use("/api/seller", sellerRoutes);
 
+app.use("/api",CustomerRoutes);
+app.use("/api",RestaurantRoute);
+app.use("/api",CartRoutes)
+app.use("/api/orders",OrderRoute)
+app.use("/api",ReviewRoute)
+app.use("/api",ProductRoute)
+app.use("/api",CategoryRoute)
+app.use("/api",FavauriteRoute)
 
 async function startServer() {
   try {
