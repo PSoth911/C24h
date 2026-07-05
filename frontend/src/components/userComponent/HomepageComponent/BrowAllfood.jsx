@@ -117,7 +117,7 @@ const BrowAllfood = ({ products }) => {
             )}
 
             <button className="mt-2 hover:cursor-pointer w-full py-3 rounded-xl border border-[#004953] text-[#004953] hover:bg-[#004953] hover:text-white transition">
-              Add to Cart
+              Order Now
             </button>
           </div>
         ))}

@@ -15,6 +15,20 @@ const Notification = sequelize.define(
       allowNull: false,
     },
 
+    type: {
+      type: DataTypes.ENUM(
+        "order",
+        "payment",
+        "coupon",
+        "promotion",
+        "subscription",
+        "group_order",
+        "system"
+      ),
+      allowNull: false,
+      defaultValue: "system",
+    },
+
     title: {
       type: DataTypes.STRING(255),
       allowNull: false,
@@ -22,10 +36,12 @@ const Notification = sequelize.define(
 
     message: {
       type: DataTypes.TEXT,
+      allowNull: false,
     },
 
     is_read: {
       type: DataTypes.BOOLEAN,
+      allowNull: false,
       defaultValue: false,
     },
   },

@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "avnadmin",
+    "password": "AVNS_mlSjV2bJOa1gFNgIj7x",
+    "database": "c24h",
+    "host": "mysql-1736afe0-puthpissoth-9e25.e.aivencloud.com",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "avnadmin",
+    "password": "AVNS_mlSjV2bJOa1gFNgIj7x",
+    "database": "c24h_test",
+    "host": "mysql-1736afe0-puthpissoth-9e25.e.aivencloud.com",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "avnadmin",
+    "password": "AVNS_mlSjV2bJOa1gFNgIj7x",
+    "database": "c24h_production",
+    "host": "mysql-1736afe0-puthpissoth-9e25.e.aivencloud.com",
+    "dialect": "mysql"
+  }
+}

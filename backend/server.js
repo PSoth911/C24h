@@ -14,6 +14,8 @@ import ReviewRoute from "./routes/Review_route.js"
 import ProductRoute from "./routes/Product_route.js"
 import CategoryRoute from "./routes/categoryroute.js"
 import FavauriteRoute from "./routes/favourithroute.js"
+import NotificationRoute from "./routes/notification_route.js"
+import CouponRoute from "./routes/couponRoute.js"
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,7 +25,7 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.use("/api/auth", authRoutes);
 app.use("/api",CustomerRoutes);
@@ -34,6 +36,8 @@ app.use("/api",ReviewRoute)
 app.use("/api",ProductRoute)
 app.use("/api",CategoryRoute)
 app.use("/api",FavauriteRoute)
+app.use("/api",NotificationRoute)
+app.use("/api",CouponRoute)
 
 async function startServer() {
   try {

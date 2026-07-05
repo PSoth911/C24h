@@ -3,23 +3,19 @@ import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 import Customer from "../models/customer.js";
 import sequelize from "../database/db.js";
-// ========================
 // REGISTER
-// ========================
 export const register = async (req, res) => {
   const transaction = await sequelize.transaction();
 
   try {
     const { full_name, email, phone, password, address } = req.body;
 
-    // 1. Validation
     if (!full_name || !email || !password) {
       return res.status(400).json({
         message: "Full name, email, and password are required",
       });
     }
 
-    // 2. Check duplicate email
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(409).json({
@@ -39,7 +35,8 @@ export const register = async (req, res) => {
       },
       { transaction }
     );
-    // 5. Create Customer profile
+
+
     await Customer.create(
       {
         user_id: user.user_id,
@@ -47,8 +44,8 @@ export const register = async (req, res) => {
       },
       { transaction }
     );
-    // 6. Commit transaction
     await transaction.commit();
+
 
     return res.status(201).json({
       message: "User registered successfully",
@@ -65,9 +62,7 @@ export const register = async (req, res) => {
   }
 };
 
-// ========================
 // LOGIN
-// ========================
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -99,7 +94,6 @@ export const login = async (req, res) => {
       });
     }
 
-    // 4. Generate JWT token
     const token = jwt.sign(
       {
         id: user.user_id,
@@ -112,7 +106,6 @@ export const login = async (req, res) => {
       }
     );
 
-    // 5. Response
     return res.status(200).json({
       message: "Login successful",
       token,

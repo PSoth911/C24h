@@ -3,6 +3,7 @@ import {
   faMinus,
   faPlus,
   faTrash,
+  faCartShopping,
 } from "@fortawesome/free-solid-svg-icons";
 import placeholderFood from "../../../assets/image copy 2.png";
 import { useEffect, useState } from "react";
@@ -115,8 +116,12 @@ const Leftsection = () => {
       <div className="bg-gray-100 rounded-3xl shadow-xl border border-gray-100 p-5 h-[500px] overflow-y-auto">
 
         {orderItems.length === 0 ? (
-          <div className="text-center py-10 text-gray-500">
-            Your cart is empty.
+          <div className="flex flex-col items-center justify-center h-full py-10 text-gray-500">
+            <FontAwesomeIcon icon={faCartShopping} className="text-4xl mb-3 text-gray-300" />
+            <p className="font-medium">Your cart is empty.</p>
+            <p className="text-sm text-gray-400 mt-1">
+              Browse restaurants and add items to get started.
+            </p>
           </div>
         ) : (
           <div className="flex flex-col gap-3">
@@ -124,7 +129,7 @@ const Leftsection = () => {
             {orderItems.map((item) => (
               <div
                 key={item.cart_item_id}
-                className="shadow-xl bg-white rounded-xl p-3"
+                className="shadow-md hover:shadow-lg bg-white rounded-xl p-3 transition"
               >
                 <div className="flex gap-4">
                   <img
@@ -144,10 +149,12 @@ const Leftsection = () => {
 
                       <button
                         onClick={() => removeItem(item)}
+                        className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-50 transition"
+                        title="Remove item"
                       >
                         <FontAwesomeIcon
                           icon={faTrash}
-                          className="text-gray-500 hover:text-red-500"
+                          className="text-gray-400 hover:text-red-500"
                         />
                       </button>
 
@@ -159,13 +166,13 @@ const Leftsection = () => {
 
                     <div className="flex justify-between items-center mt-4">
 
-                      <div className="flex items-center bg-gray-200 rounded-full px-2">
+                      <div className="flex items-center bg-gray-100 rounded-full px-1">
 
                         <button
                           onClick={() => decreaseQuantity(item)}
-                          className="w-7 h-7"
+                          className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white transition"
                         >
-                          <FontAwesomeIcon icon={faMinus} />
+                          <FontAwesomeIcon icon={faMinus} className="text-sm" />
                         </button>
 
                         <span className="px-4 font-semibold">
@@ -174,9 +181,9 @@ const Leftsection = () => {
 
                         <button
                           onClick={() => increaseQuantity(item)}
-                          className="w-7 h-7"
+                          className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white transition"
                         >
-                          <FontAwesomeIcon icon={faPlus} />
+                          <FontAwesomeIcon icon={faPlus} className="text-sm" />
                         </button>
 
                       </div>
@@ -203,13 +210,21 @@ const Leftsection = () => {
 
       <button
         onClick={() => navigate(`/restaurant/${restaurantId}`)}
-        className="mt-6 w-full bg-[#004953] text-white py-3 rounded-xl hover:bg-[#00343b] transition"
+        disabled={!restaurantId || orderItems.length === 0}
+        className={`mt-6 w-full py-3 rounded-xl font-medium transition flex items-center justify-center gap-2
+          ${
+            !restaurantId || orderItems.length === 0
+              ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-[#004953] text-white hover:bg-[#00343b]"
+          }`}
       >
-        <FontAwesomeIcon icon={faPlus} className="mr-2" />
+        <FontAwesomeIcon icon={faPlus} />
         Add More Items
       </button>
 
+      {suggestProducts.length > 0 && (
       <div className="mt-8">
+        <h3 className="font-semibold text-[#004953] mb-3">You might also like</h3>
         <div className="grid grid-cols-3 gap-4">
           {suggestProducts.map((product) => (
             <div
@@ -237,6 +252,7 @@ const Leftsection = () => {
           ))}
         </div>
       </div>
+      )}
     </div>
   );
 };

@@ -20,6 +20,28 @@ const Order = sequelize.define(
       allowNull: false,
     },
 
+    subtotal: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+    },
+
+    delivery_fee: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+
+    discount_amount: {
+      type: DataTypes.DECIMAL(10, 2),
+      allowNull: false,
+      defaultValue: 0,
+    },
+
+    coupon_code: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+
     total_amount: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false,

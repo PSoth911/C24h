@@ -98,7 +98,7 @@ export default function AuthLogin() {
         {/* Left Side */}
         <div className="w-1/2 bg-[#004953] flex flex-col justify-center px-20 text-white">
           <h1 className="text-5xl font-bold mb-6">
-            Food Delivery Admin
+            Food Delivery
           </h1>
 
           <p className="text-lg text-gray-200 max-w-md">

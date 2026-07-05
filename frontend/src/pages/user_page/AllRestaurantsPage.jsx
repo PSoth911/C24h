@@ -129,7 +129,7 @@ const AllRestaurantsPage = () => {
                 className={`px-5 py-3 rounded-2xl font-semibold transition ${
                   sort === option.value
                     ? "bg-[#004953] text-white shadow-md"
-                    : "bg-white text-[#004953] border border-gray-200 hover:bg-[#004953]"
+                    : "bg-white text-[#004953] border border-gray-400 hover:bg-white"
                 }`}
               >
                 {option.label}

@@ -2,21 +2,9 @@ import { useEffect, useState } from "react";
 import { faRotateRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const KHQRPayment = ({ cart }) => {
+const KHQRPayment = ({ total = 0 }) => {
   const [timeLeft, setTimeLeft] = useState(3 * 60);
   const [orderId, setOrderId] = useState(null);
-
-  // calculate total from cart
-  const items = cart?.CartItems || [];
-
-  const subtotal = items.reduce((sum, item) => {
-    return sum + Number(item.subtotal);
-  }, 0);
-
-  // const deliveryFee = 2;
-  // const serviceFee = 1;
-
-  // const total = subtotal + deliveryFee + serviceFee;
 
   // fake order id until backend creates real one
   useEffect(() => {
@@ -68,7 +56,7 @@ const KHQRPayment = ({ cart }) => {
         <p className="text-sm text-gray-500">Amount to Pay</p>
 
         <h1 className="mt-1 text-4xl font-bold text-[#005566]">
-          ${subtotal.toFixed(2)}
+          ${total.toFixed(2)}
         </h1>
       </div>
 
@@ -76,7 +64,7 @@ const KHQRPayment = ({ cart }) => {
       <div className="mt-6 flex justify-center">
         <div className="rounded-2xl border bg-white p-4">
           <img
-            src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=ORDER-${orderId}-AMOUNT-${subtotal}`}
+            src={`https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=ORDER-${orderId}-AMOUNT-${total}`}
             alt="KHQR"
             className="h-60 w-60"
           />

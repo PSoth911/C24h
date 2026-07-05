@@ -14,8 +14,7 @@ const Card = ({ cartitems, setcartitems }) => {
   }, 0);
 
   const deliveryFee = 1.5;
-  const serviceFee = 0.99;
-  const total = subtotal + deliveryFee + serviceFee;
+  const total = subtotal + deliveryFee;
 
   const increaseQuantity = (id) => {
     setcartitems((prev) =>
@@ -133,11 +132,6 @@ const handleCheckout = async () => {
         <div className="flex justify-between text-gray-600">
           <span>Delivery Fee</span>
           <span>${deliveryFee.toFixed(2)}</span>
-        </div>
-
-        <div className="flex justify-between text-gray-600">
-          <span>Service Fee</span>
-          <span>${serviceFee.toFixed(2)}</span>
         </div>
 
         <div className="border-t pt-3 flex justify-between font-bold text-lg">

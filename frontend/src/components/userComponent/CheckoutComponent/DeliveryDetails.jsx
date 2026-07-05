@@ -22,9 +22,6 @@ import { useNavigate } from "react-router-dom";
 import { PATH } from "../../../path";
 import { updateProfile } from "../../../service/profileService";
 
-const DELIVERY_FEE = 1.5;
-const SERVICE_FEE = 0.99;
-
 const DeliveryDetails = ({
   customer,
   summary,
@@ -298,18 +295,22 @@ const DeliveryDetails = ({
                 </span>
                 Delivery Fee
               </span>
-              <span className="font-bold">${DELIVERY_FEE.toFixed(2)}</span>
+              <span className="font-bold">${summary.deliveryFee.toFixed(2)}</span>
             </div>
 
-            <div className="flex justify-between items-center">
-              <span className="flex items-center gap-3 text-gray-600">
-                <span className="bg-amber-50 text-amber-500 w-8 h-8 rounded-lg flex items-center justify-center">
-                  <FontAwesomeIcon icon={faTag} className="text-sm" />
+            {summary.discount > 0 && (
+              <div className="flex justify-between items-center">
+                <span className="flex items-center gap-3 text-gray-600">
+                  <span className="bg-amber-50 text-amber-500 w-8 h-8 rounded-lg flex items-center justify-center">
+                    <FontAwesomeIcon icon={faTag} className="text-sm" />
+                  </span>
+                  Discount {summary.couponCode ? `(${summary.couponCode})` : ""}
                 </span>
-                Service Fee
-              </span>
-              <span className="font-bold">${SERVICE_FEE.toFixed(2)}</span>
-            </div>
+                <span className="font-bold text-green-700">
+                  -${summary.discount.toFixed(2)}
+                </span>
+              </div>
+            )}
 
             <div className="flex justify-between items-center bg-emerald-50 rounded-2xl p-5">
               <span className="text-xl font-bold text-[#004953]">Total</span>
