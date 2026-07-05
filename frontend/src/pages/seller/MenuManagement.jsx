@@ -8,6 +8,7 @@ import {
   getCategories,
   createProduct,
   toggleProductStatus,
+  restockProduct,
   deleteProduct,
 } from '../../api/sellerApi';
 
@@ -51,6 +52,13 @@ const MenuManagement = () => {
 
   const handleToggleStatus = async (id) => {
     const res = await toggleProductStatus(id);
+    if (res.success) {
+      setItems((prev) => prev.map((item) => (item.product_id === id ? res.data : item)));
+    }
+  };
+
+  const handleRestockItem = async (id) => {
+    const res = await restockProduct(id);
     if (res.success) {
       setItems((prev) => prev.map((item) => (item.product_id === id ? res.data : item)));
     }
@@ -105,7 +113,7 @@ const MenuManagement = () => {
       {filteredItems.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map(item => (
-            <MenuItemCard key={item.product_id} item={item} onToggleStatus={handleToggleStatus} onDeleteItem={handleDeleteItem} />
+            <MenuItemCard key={item.product_id} item={item} onToggleStatus={handleToggleStatus} onDeleteItem={handleDeleteItem} onRestockItem={handleRestockItem} />
           ))}
         </div>
       ) : (

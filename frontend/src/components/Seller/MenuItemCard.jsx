@@ -1,7 +1,7 @@
 import React from 'react';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Plus } from 'lucide-react';
 
-const MenuItemCard = ({ item, onToggleStatus, onDeleteItem }) => {
+const MenuItemCard = ({ item, onToggleStatus, onDeleteItem, onRestockItem }) => {
   const isAvailable = item.status === 'available';
 
   return (
@@ -17,6 +17,22 @@ const MenuItemCard = ({ item, onToggleStatus, onDeleteItem }) => {
           <span className="text-base font-black text-[#004D40] bg-teal-50/60 px-2.5 py-1 rounded-xl shrink-0">
             ${Number(item.price).toFixed(2)}
           </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className={`inline-block text-xs font-bold px-2.5 py-1 rounded-lg w-fit ${
+            item.stock > 0 ? 'text-gray-600 bg-gray-100' : 'text-red-600 bg-red-50'
+          }`}>
+            Stock: {item.stock ?? 0}
+          </span>
+          <button
+            type="button"
+            onClick={() => onRestockItem(item.product_id)}
+            title="Restock +10"
+            className="flex items-center gap-1 text-xs font-bold text-[#004D40] bg-teal-50/60 hover:bg-teal-100 px-2 py-1 rounded-lg transition-colors cursor-pointer"
+          >
+            <Plus size={12} /> 10
+          </button>
         </div>
       </div>
 

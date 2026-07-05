@@ -76,6 +76,15 @@ export const toggleProductStatus = async (id) => {
   return res.json();
 };
 
+export const restockProduct = async (id, amount = 10) => {
+  const res = await fetch(`${BASE_URL}/products/${id}/restock`, {
+    method: "PATCH",
+    headers: jsonHeaders(),
+    body: JSON.stringify({ amount }),
+  });
+  return res.json();
+};
+
 export const deleteProduct = async (id) => {
   const res = await fetch(`${BASE_URL}/products/${id}`, {
     method: "DELETE",

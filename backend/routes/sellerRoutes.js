@@ -13,6 +13,7 @@ import {
   createProduct,
   updateProduct,
   toggleProductStatus,
+  restockProduct,
   deleteProduct,
   getOrders,
   acceptOrder,
@@ -49,6 +50,7 @@ route.get("/products", getProducts);
 route.post("/products", createProduct);
 route.put("/products/:id", updateProduct);
 route.patch("/products/:id/status", toggleProductStatus);
+route.patch("/products/:id/restock", restockProduct);
 route.delete("/products/:id", deleteProduct);
 
 // Orders

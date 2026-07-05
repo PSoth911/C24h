@@ -219,6 +219,30 @@ export const toggleProductStatus = async (req, res) => {
   }
 };
 
+export const restockProduct = async (req, res) => {
+  try {
+    const restaurant = await resolveRestaurant(req);
+    if (!restaurant) return notFoundRestaurant(res);
+
+    const product = await Product.findOne({
+      where: {
+        product_id: req.params.id,
+        restaurant_id: restaurant.restaurant_id,
+      },
+    });
+
+    if (!product) return res.status(404).json({ message: "Product not found" });
+
+    const amount = Number(req.body.amount) || 10;
+    await product.increment("stock", { by: amount });
+    await product.reload();
+
+    res.status(200).json({ success: true, data: product });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const deleteProduct = async (req, res) => {
   try {
     const restaurant = await resolveRestaurant(req);
