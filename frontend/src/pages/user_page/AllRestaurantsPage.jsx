@@ -160,7 +160,7 @@ const AllRestaurantsPage = () => {
                   {/* Image */}
                   <div className="relative">
                     <img
-                      src={r.logo ? `http://localhost:5000/uploads/${r.logo}` : placeholderRestaurant}
+                      src={r.logo ? `http://localhost:5000/uploads/${r.image}` : placeholderRestaurant}
                       alt={r.restaurant_name}
                       className="w-full h-48 object-cover"
                       onError={(e) => { e.target.src = placeholderRestaurant; }}
