@@ -26,9 +26,10 @@ import FavauriteRoute from "./routes/favourithroute.js"
 import NotificationRoute from "./routes/notification_route.js"
 import CouponRoute from "./routes/couponRoute.js"
 import PublicRestaurantRoute from "./routes/publicRestaurantRoute.js"
+import SubscriptionRoute from "./routes/subscription_route.js"
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// const __filename = fileURLToPath(import.meta.url);
+// const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,7 +40,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
-
+app.use("/uploads", express.static("uploads"));
 
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
@@ -59,6 +60,7 @@ app.use("/api",CategoryRoute)
 app.use("/api",FavauriteRoute)
 app.use("/api",NotificationRoute)
 app.use("/api",CouponRoute)
+app.use("/api/subscription",SubscriptionRoute)
 
 async function startServer() {
   try {

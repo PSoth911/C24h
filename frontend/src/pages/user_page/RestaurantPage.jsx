@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 
 import { getRestaurantById } from "../../service/restaurantService";
 import Loading from "./LoadingPage";
+import placeholderRestaurant from "../../assets/image copy 2.png";
 
 const RestaurantPage = () => {
   const { id } = useParams();
@@ -60,8 +61,8 @@ const RestaurantPage = () => {
           restaurantId={id}
           status={restaurant.status}
           name={restaurant.restaurant_name}
-          img={restaurant.image}
-          logo={restaurant.logo}
+          img={restaurant.image ? `http://localhost:5000/uploads/${restaurant.image}` : placeholderRestaurant}
+          logo={restaurant.logo ? `http://localhost:5000/uploads/${restaurant.logo}` : placeholderRestaurant}
           dsc={restaurant.description}
           rating={restaurant.average_rating}
           phone={restaurant.phone}

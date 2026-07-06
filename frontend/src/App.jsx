@@ -30,6 +30,14 @@ import SucessPaymentPage from './pages/user_page/SucessPaymentPage.jsx';
 import TrackOrderPage from './pages/user_page/TrackOrderPage.jsx';
 import PaymentPage from './pages/user_page/Payment.jsx';
 import MonthlyMealPage from './pages/user_page/MonthlyMealPage.jsx';
+import MonthlyPlanPage from './pages/user_page/MonthlyPlanPage.jsx';
+import MonthlySubscriptionPayment from './pages/user_page/MonthlySubscriptionPayment.jsx';
+import MonthlyDeliveryTimePage from './pages/user_page/MonthlyDeliveryTimePage.jsx';
+import MonthlyConfirmPage from './pages/user_page/MonthlyConfirmPage.jsx';
+import MonthlySubscriptionActivePage from './pages/user_page/MonthlySubscriptionActivePage.jsx';
+import MySubscriptionPage from './pages/user_page/MySubscriptionPage.jsx';
+import DailyMealChoicePage from './pages/user_page/DailyMealChoicePage.jsx';
+import PauseSubscriptionPage from './pages/user_page/PauseSubscriptionPage.jsx';
 
 import PortalLayout from './components/Seller/PortalLayout';
 import Dashboard from './pages/seller/Dashboard';
@@ -80,6 +88,14 @@ function App() {
       <Route path={`${PATH.USER.Trackorder}/:id`}element={<ProtectedRoute role="customer"><TrackOrderPage /></ProtectedRoute>}/>
       <Route path={PATH.USER.Payment} element={<ProtectedRoute role="customer"> <PaymentPage/> </ProtectedRoute>}/>
       <Route path={PATH.USER.MonthlyMeal} element={<ProtectedRoute role="customer"> <MonthlyMealPage/> </ProtectedRoute>}/>
+      <Route path="/user/monthlymeal/:id" element={<ProtectedRoute role="customer"> <MonthlyPlanPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.MonthlyMealPayment} element={<ProtectedRoute role="customer"> <MonthlySubscriptionPayment/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.MonthlyMealDelivery} element={<ProtectedRoute role="customer"> <MonthlyDeliveryTimePage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.MonthlyMealConfirm} element={<ProtectedRoute role="customer"> <MonthlyConfirmPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.MonthlyMealActive} element={<ProtectedRoute role="customer"> <MonthlySubscriptionActivePage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.MySubscription} element={<ProtectedRoute role="customer"> <MySubscriptionPage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.DailyMealChoice} element={<ProtectedRoute role="customer"> <DailyMealChoicePage/> </ProtectedRoute>}/>
+      <Route path={PATH.USER.PauseSubscription} element={<ProtectedRoute role="customer"> <PauseSubscriptionPage/> </ProtectedRoute>}/>
 
       
       <Route path={PATH.SELLER.DASHBOARD} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><Dashboard /></PortalLayout></ProtectedRoute>} />

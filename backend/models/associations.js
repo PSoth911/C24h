@@ -15,6 +15,12 @@ import Notification from "./Notification.js";
 import Promotion from "./Promotion.js";
 import FavouriteProduct from "./FavouriteProduct.js";
 import FavouriteRestaurant from "./FavouriteRestaurant.js";
+import Subscription from "./subscriptions.js";
+import SubscriptionDeliveryDay from "./Subscription_delivery_days.js";
+import SubscriptionMealTime from "./Subscription_meal_times.js";
+import SubscriptionPause from "./subscription_pauses.js";
+import Refund from "./Refunds.js";
+import DailyMealChoice from "./Daily_meal_choices.js";
 
 // user
 User.hasOne(Customer, {
@@ -214,6 +220,53 @@ FavouriteProduct.belongsTo(Product, {
   foreignKey: "product_id",
 });
 
+// Subscriptions
+Customer.hasMany(Subscription, {
+  foreignKey: "customer_id",
+});
+Subscription.belongsTo(Customer, {
+  foreignKey: "customer_id",
+});
+
+Subscription.hasMany(SubscriptionDeliveryDay, {
+  foreignKey: "subscription_id",
+  onDelete: "CASCADE",
+});
+SubscriptionDeliveryDay.belongsTo(Subscription, {
+  foreignKey: "subscription_id",
+});
+
+Subscription.hasMany(SubscriptionMealTime, {
+  foreignKey: "subscription_id",
+  onDelete: "CASCADE",
+});
+SubscriptionMealTime.belongsTo(Subscription, {
+  foreignKey: "subscription_id",
+});
+
+Subscription.hasMany(SubscriptionPause, {
+  foreignKey: "subscription_id",
+  onDelete: "CASCADE",
+});
+SubscriptionPause.belongsTo(Subscription, {
+  foreignKey: "subscription_id",
+});
+
+Subscription.hasMany(Refund, {
+  foreignKey: "subscription_id",
+});
+Refund.belongsTo(Subscription, {
+  foreignKey: "subscription_id",
+});
+
+Subscription.hasMany(DailyMealChoice, {
+  foreignKey: "subscription_id",
+  onDelete: "CASCADE",
+});
+DailyMealChoice.belongsTo(Subscription, {
+  foreignKey: "subscription_id",
+});
+
 export {
   User,
   Customer,
@@ -230,4 +283,10 @@ export {
   Review,
   Notification,
   Promotion,
+  Subscription,
+  SubscriptionDeliveryDay,
+  SubscriptionMealTime,
+  SubscriptionPause,
+  Refund,
+  DailyMealChoice,
 };
