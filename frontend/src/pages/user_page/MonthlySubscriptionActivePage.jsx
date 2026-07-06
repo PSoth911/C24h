@@ -5,7 +5,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 
 import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
-import { getActiveSubscription } from "../../utils/subscriptionStorage";
+import { getActiveSubscription, normalizeSubscription } from "../../service/subscriptionService";
 import { suggestedRestaurants } from "../../data/monthlyMealData";
 import { PATH } from "../../path";
 
@@ -14,11 +14,19 @@ const formatDate = (iso) =>
 
 const MonthlySubscriptionActivePage = () => {
   const navigate = useNavigate();
-  const [sub] = useState(() => getActiveSubscription());
+  const [sub, setSub] = useState(null);
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (!sub) navigate(PATH.USER.MonthlyMeal);
-  }, [sub, navigate]);
+    getActiveSubscription()
+      .then(({ data }) => setSub(normalizeSubscription(data.subscription)))
+      .catch(() => setSub(null))
+      .finally(() => setLoaded(true));
+  }, []);
+
+  useEffect(() => {
+    if (loaded && !sub) navigate(PATH.USER.MonthlyMeal);
+  }, [loaded, sub, navigate]);
 
   if (!sub) return null;
 

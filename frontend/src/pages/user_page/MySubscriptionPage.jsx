@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCalendarDays, faPen } from "@fortawesome/free-solid-svg-icons";
@@ -7,7 +7,7 @@ import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
 import CancelSubscriptionModal from "../../components/userComponent/MonthlyMealComponent/CancelSubscriptionModal";
 import { dailyMealMenu } from "../../data/monthlyMealData";
-import { getActiveSubscription } from "../../utils/subscriptionStorage";
+import { getActiveSubscription, normalizeSubscription } from "../../service/subscriptionService";
 import { PATH } from "../../path";
 
 const formatDate = (iso) =>
@@ -17,8 +17,22 @@ const daysBetween = (a, b) => Math.floor((b - a) / (1000 * 60 * 60 * 24));
 
 const MySubscriptionPage = () => {
   const navigate = useNavigate();
-  const [sub, setSub] = useState(() => getActiveSubscription());
+  const [sub, setSub] = useState(null);
+  const [loaded, setLoaded] = useState(false);
   const [showCancel, setShowCancel] = useState(false);
+
+  const refreshSubscription = () => {
+    getActiveSubscription()
+      .then(({ data }) => setSub(normalizeSubscription(data.subscription)))
+      .catch(() => setSub(null))
+      .finally(() => setLoaded(true));
+  };
+
+  useEffect(() => {
+    refreshSubscription();
+  }, []);
+
+  if (!loaded) return null;
 
   if (!sub) {
     return (
@@ -189,7 +203,7 @@ const MySubscriptionPage = () => {
           onClose={() => setShowCancel(false)}
           onCancelled={() => {
             setShowCancel(false);
-            setSub(getActiveSubscription());
+            refreshSubscription();
           }}
         />
       )}

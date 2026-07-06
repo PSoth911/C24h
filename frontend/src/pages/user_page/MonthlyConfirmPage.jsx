@@ -6,7 +6,8 @@ import { faUtensils, faLayerGroup, faClock, faCalendarDays, faGift, faHeadset } 
 import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
 import SubscriptionSteps from "../../components/userComponent/MonthlyMealComponent/SubscriptionSteps";
-import { getDraft, clearDraft, saveActiveSubscription } from "../../utils/subscriptionStorage";
+import { getDraft, clearDraft } from "../../utils/subscriptionStorage";
+import { createSubscription } from "../../service/subscriptionService";
 import { PATH } from "../../path";
 
 const formatDate = (iso) =>
@@ -21,6 +22,8 @@ const addDays = (iso, days) => {
 const MonthlyConfirmPage = () => {
   const navigate = useNavigate();
   const [draft] = useState(() => getDraft());
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     if (!draft?.startDate) navigate(PATH.USER.MonthlyMeal);
@@ -30,26 +33,32 @@ const MonthlyConfirmPage = () => {
 
   const endDate = addDays(draft.startDate, draft.duration - 1);
 
-  const handleConfirm = () => {
-    saveActiveSubscription({
-      restaurantId: draft.restaurantId,
-      restaurantName: draft.restaurantName,
-      restaurantImage: draft.restaurantImage,
-      planId: draft.planId,
-      planName: draft.planName,
-      planPrice: draft.planPrice,
-      mealsPerDay: draft.mealsPerDay,
-      duration: draft.duration,
-      mealTimes: draft.mealTimes,
-      deliveryDays: draft.deliveryDays,
-      startDate: draft.startDate,
-      endDate,
-      total: draft.total ?? draft.planPrice,
-      status: "active",
-      daysUsed: 0,
-    });
-    clearDraft();
-    navigate(PATH.USER.MonthlyMealActive);
+  const handleConfirm = async () => {
+    setSubmitting(true);
+    setError("");
+    try {
+      await createSubscription({
+        restaurantRefId: draft.restaurantId,
+        restaurantName: draft.restaurantName,
+        restaurantImage: draft.restaurantImage,
+        planId: draft.planId,
+        planName: draft.planName,
+        planPrice: draft.planPrice,
+        mealsPerDay: draft.mealsPerDay,
+        duration: draft.duration,
+        mealTimes: draft.mealTimes,
+        deliveryDays: draft.deliveryDays,
+        startDate: draft.startDate,
+        paymentMethod: draft.paymentMethod,
+        couponCode: draft.couponCode,
+      });
+      clearDraft();
+      navigate(PATH.USER.MonthlyMealActive);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to confirm subscription. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -120,11 +129,14 @@ const MonthlyConfirmPage = () => {
                 </span>
               </div>
 
+              {error && <p className="text-xs text-red-500 mb-3">{error}</p>}
+
               <button
                 onClick={handleConfirm}
-                className="w-full py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition"
+                disabled={submitting}
+                className="w-full py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Confirm Subscription
+                {submitting ? "Confirming…" : "Confirm Subscription"}
               </button>
 
               <button

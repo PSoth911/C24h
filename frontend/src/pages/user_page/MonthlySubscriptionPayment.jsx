@@ -45,7 +45,12 @@ const MonthlySubscriptionPayment = () => {
   };
 
   const handlePay = () => {
-    saveDraft({ paymentMethod: method, discount, total });
+    saveDraft({
+      paymentMethod: method,
+      discount,
+      total,
+      couponCode: discount > 0 ? promo.trim().toUpperCase() : null,
+    });
     navigate(PATH.USER.MonthlyMealDelivery);
   };
 

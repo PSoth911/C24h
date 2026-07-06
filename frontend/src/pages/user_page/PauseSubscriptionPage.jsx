@@ -5,7 +5,7 @@ import { faCircleInfo, faPlay } from "@fortawesome/free-solid-svg-icons";
 
 import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
-import { getActiveSubscription, updateActiveSubscription } from "../../utils/subscriptionStorage";
+import { getActiveSubscription, normalizeSubscription, pauseSubscription } from "../../service/subscriptionService";
 import { PATH } from "../../path";
 
 const DURATIONS = [
@@ -27,14 +27,24 @@ const todayISO = () => new Date().toISOString().split("T")[0];
 
 const PauseSubscriptionPage = () => {
   const navigate = useNavigate();
-  const [sub] = useState(() => getActiveSubscription());
+  const [sub, setSub] = useState(null);
+  const [loaded, setLoaded] = useState(false);
   const [selectedDuration, setSelectedDuration] = useState(7);
   const [customDays, setCustomDays] = useState("");
   const [isCustom, setIsCustom] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (!sub) navigate(PATH.USER.MonthlyMeal);
-  }, [sub, navigate]);
+    getActiveSubscription()
+      .then(({ data }) => setSub(normalizeSubscription(data.subscription)))
+      .catch(() => setSub(null))
+      .finally(() => setLoaded(true));
+  }, []);
+
+  useEffect(() => {
+    if (loaded && !sub) navigate(PATH.USER.MonthlyMeal);
+  }, [loaded, sub, navigate]);
 
   if (!sub) return null;
 
@@ -43,15 +53,18 @@ const PauseSubscriptionPage = () => {
   const resumeDate = duration > 0 ? addDays(startDate, duration) : startDate;
   const newEndDate = duration > 0 ? addDays(sub.endDate, duration) : sub.endDate;
 
-  const handleConfirmPause = () => {
+  const handleConfirmPause = async () => {
     if (duration <= 0) return;
-    updateActiveSubscription({
-      status: "paused",
-      pauseStart: startDate,
-      pauseResume: resumeDate,
-      endDate: newEndDate,
-    });
-    navigate(PATH.USER.MySubscription);
+    setSubmitting(true);
+    setError("");
+    try {
+      await pauseSubscription(sub.subscription_id, { durationDays: duration });
+      navigate(PATH.USER.MySubscription);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to pause subscription. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -167,12 +180,14 @@ const PauseSubscriptionPage = () => {
                 </div>
               </div>
 
+              {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
+
               <button
                 onClick={handleConfirmPause}
-                disabled={duration <= 0}
+                disabled={duration <= 0 || submitting}
                 className="w-full mt-6 py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Confirm Pause
+                {submitting ? "Pausing…" : "Confirm Pause"}
               </button>
               <button
                 onClick={() => navigate(PATH.USER.MySubscription)}

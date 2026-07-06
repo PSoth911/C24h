@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faCircleInfo, faBan } from "@fortawesome/free-solid-svg-icons";
 
-import { clearActiveSubscription } from "../../../utils/subscriptionStorage";
+import { cancelSubscription } from "../../../service/subscriptionService";
 import { PATH } from "../../../path";
 
 const REASONS = ["Moving away", "Too expensive", "Dietary changes", "Ordering less often"];
@@ -11,15 +11,25 @@ const REASONS = ["Moving away", "Too expensive", "Dietary changes", "Ordering le
 const CancelSubscriptionModal = ({ subscription, remainingMeals, onClose, onCancelled }) => {
   const navigate = useNavigate();
   const [reason, setReason] = useState(REASONS[0]);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const mealValue = subscription.planPrice / (subscription.duration * subscription.mealsPerDay);
   const estimatedValue = mealValue * remainingMeals;
   const refundable = estimatedValue * 0.6;
 
-  const handleCancel = () => {
-    clearActiveSubscription();
-    onCancelled?.();
-    navigate(PATH.USER.MonthlyMeal);
+  const handleCancel = async () => {
+    setSubmitting(true);
+    setError("");
+    try {
+      await cancelSubscription(subscription.subscription_id, { reason });
+      onCancelled?.();
+      navigate(PATH.USER.MonthlyMeal);
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to cancel subscription. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const handlePauseInstead = () => {
@@ -92,11 +102,14 @@ const CancelSubscriptionModal = ({ subscription, remainingMeals, onClose, onCanc
           </button>
         </div>
 
+        {error && <p className="text-xs text-red-500 mb-2 text-center">{error}</p>}
+
         <button
           onClick={handleCancel}
-          className="w-full py-3 rounded-xl border-2 border-red-500 text-red-500 font-semibold hover:bg-red-50 transition flex items-center justify-center gap-2 mb-2"
+          disabled={submitting}
+          className="w-full py-3 rounded-xl border-2 border-red-500 text-red-500 font-semibold hover:bg-red-50 transition flex items-center justify-center gap-2 mb-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          <FontAwesomeIcon icon={faBan} /> Cancel & Request Refund
+          <FontAwesomeIcon icon={faBan} /> {submitting ? "Cancelling…" : "Cancel & Request Refund"}
         </button>
 
         <button onClick={onClose} className="w-full py-2 text-sm font-semibold text-gray-400 hover:text-gray-600 transition">

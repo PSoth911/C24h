@@ -6,7 +6,12 @@ import { faCheck, faClock } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
 import { dailyMealMenu } from "../../data/monthlyMealData";
-import { getActiveSubscription, getMealChoices, saveMealChoice } from "../../utils/subscriptionStorage";
+import {
+  getActiveSubscription,
+  normalizeSubscription,
+  getMealChoicesRange,
+  saveMealChoice,
+} from "../../service/subscriptionService";
 import { PATH } from "../../path";
 
 const buildWeek = () => {
@@ -24,15 +29,33 @@ const buildWeek = () => {
 
 const DailyMealChoicePage = () => {
   const navigate = useNavigate();
-  const [sub] = useState(() => getActiveSubscription());
+  const [sub, setSub] = useState(null);
+  const [loaded, setLoaded] = useState(false);
   const week = useMemo(() => buildWeek(), []);
   const [selectedDay, setSelectedDay] = useState(week[0].key);
-  const [choices, setChoices] = useState(() => getMealChoices());
+  const [choices, setChoices] = useState({});
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    if (!sub) navigate(PATH.USER.MonthlyMeal);
-  }, [sub, navigate]);
+    getActiveSubscription()
+      .then(async ({ data }) => {
+        const normalized = normalizeSubscription(data.subscription);
+        setSub(normalized);
+
+        const { data: choicesData } = await getMealChoicesRange(normalized.subscription_id);
+        const map = {};
+        choicesData.choices.forEach((c) => {
+          map[c.choice_date] = { lunch: c.lunch_item_id, dinner: c.dinner_item_id };
+        });
+        setChoices(map);
+      })
+      .catch(() => setSub(null))
+      .finally(() => setLoaded(true));
+  }, []);
+
+  useEffect(() => {
+    if (loaded && !sub) navigate(PATH.USER.MonthlyMeal);
+  }, [loaded, sub, navigate]);
 
   if (!sub) return null;
 
@@ -46,8 +69,8 @@ const DailyMealChoicePage = () => {
   const lunchName = dailyMealMenu.lunch.find((m) => m.id === dayChoice.lunch)?.name;
   const dinnerName = dailyMealMenu.dinner.find((m) => m.id === dayChoice.dinner)?.name;
 
-  const handleSave = () => {
-    saveMealChoice(selectedDay, dayChoice);
+  const handleSave = async () => {
+    await saveMealChoice(sub.subscription_id, selectedDay, dayChoice);
     setSaved(true);
   };
 
