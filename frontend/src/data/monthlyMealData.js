@@ -75,6 +75,7 @@ export const getPlanById = (planId) =>
   plansByRestaurant.plans.find((p) => p.id === planId);
 
 export const mealTimeOptions = [
+  { id: "breakfast", label: "Breakfast", window: "7:00 AM - 9:00 AM", optional: true },
   { id: "lunch", label: "Lunch", window: "11:00 AM - 1:00 PM", optional: false },
   { id: "dinner", label: "Dinner", window: "6:00 PM - 8:00 PM", optional: false },
   { id: "supper", label: "Supper (Optional)", window: "9:00 PM - 10:00 PM", optional: true },

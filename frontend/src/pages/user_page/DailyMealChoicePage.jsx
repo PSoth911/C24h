@@ -51,7 +51,12 @@ const DailyMealChoicePage = () => {
 
         const map = {};
         choicesData.choices.forEach((c) => {
-          map[c.choice_date] = { lunch: c.lunch_item_id, dinner: c.dinner_item_id };
+          map[c.choice_date] = {
+            lunch: c.lunch_item_id,
+            dinner: c.dinner_item_id,
+            supper: c.supper_item_id,
+            breakfast: c.breakfast_item_id,
+          };
         });
         setChoices(map);
 
@@ -76,9 +81,20 @@ const DailyMealChoicePage = () => {
 
   if (!sub) return null;
 
+  const hasSupper = (sub.mealTimes || []).some((mt) => mt.startsWith("Supper"));
+  const hasBreakfast = (sub.mealTimes || []).some((mt) => mt.startsWith("Breakfast"));
+
   const defaultLunch = menu[1]?.id || menu[0]?.id;
   const defaultDinner = menu[0]?.id;
-  const dayChoice = choices[selectedDay] || { lunch: defaultLunch, dinner: defaultDinner };
+  const defaultSupper = menu[2]?.id || menu[0]?.id;
+  const defaultBreakfast = menu[0]?.id;
+  const dayChoice =
+    choices[selectedDay] || {
+      lunch: defaultLunch,
+      dinner: defaultDinner,
+      supper: hasSupper ? defaultSupper : undefined,
+      breakfast: hasBreakfast ? defaultBreakfast : undefined,
+    };
 
   const pick = (meal, id) => {
     setSaved(false);
@@ -87,6 +103,8 @@ const DailyMealChoicePage = () => {
 
   const lunchName = menu.find((m) => m.id === dayChoice.lunch)?.name;
   const dinnerName = menu.find((m) => m.id === dayChoice.dinner)?.name;
+  const supperName = menu.find((m) => m.id === dayChoice.supper)?.name;
+  const breakfastName = menu.find((m) => m.id === dayChoice.breakfast)?.name;
 
   const handleSave = async () => {
     await saveMealChoice(sub.subscription_id, selectedDay, dayChoice);
@@ -129,6 +147,16 @@ const DailyMealChoicePage = () => {
           </p>
         ) : (
           <>
+            {hasBreakfast && (
+              <MealSection
+                title="Breakfast Choice"
+                icon="🥐"
+                options={menu}
+                selectedId={dayChoice.breakfast}
+                onSelect={(id) => pick("breakfast", id)}
+              />
+            )}
+
             <MealSection
               title="Lunch Choice"
               icon="☀️"
@@ -144,13 +172,35 @@ const DailyMealChoicePage = () => {
               selectedId={dayChoice.dinner}
               onSelect={(id) => pick("dinner", id)}
             />
+
+            {hasSupper && (
+              <MealSection
+                title="Supper Choice"
+                icon="🌃"
+                options={menu}
+                selectedId={dayChoice.supper}
+                onSelect={(id) => pick("supper", id)}
+              />
+            )}
           </>
         )}
 
         <div className="bg-white rounded-2xl shadow-md p-4 mt-8 flex items-center justify-between sticky bottom-4">
           <p className="text-sm text-gray-500">
-            Selected: <span className="font-semibold text-gray-800">{lunchName} (Lunch)</span>,{" "}
+            Selected:{" "}
+            {hasBreakfast && (
+              <>
+                <span className="font-semibold text-gray-800">{breakfastName} (Breakfast)</span>,{" "}
+              </>
+            )}
+            <span className="font-semibold text-gray-800">{lunchName} (Lunch)</span>,{" "}
             <span className="font-semibold text-gray-800">{dinnerName} (Dinner)</span>
+            {hasSupper && (
+              <>
+                ,{" "}
+                <span className="font-semibold text-gray-800">{supperName} (Supper)</span>
+              </>
+            )}
             <br />
             <span className="text-xs text-gray-400">You can change this until 9:00 PM today</span>
           </p>

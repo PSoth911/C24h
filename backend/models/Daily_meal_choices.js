@@ -34,6 +34,16 @@ const DailyMealChoice = sequelize.define(
       type: DataTypes.STRING(50),
       allowNull: true,
     },
+
+    supper_item_id: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
+
+    breakfast_item_id: {
+      type: DataTypes.STRING(50),
+      allowNull: true,
+    },
   },
   {
     tableName: "daily_meal_choices",

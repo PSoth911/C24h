@@ -8,6 +8,7 @@ import Footer from "../../components/userComponent/HomepageComponent/Footer";
 import placeholderRestaurant from "../../assets/image copy 2.png";
 import { plansByRestaurant } from "../../data/monthlyMealData";
 import { getAllRestaurants } from "../../service/restaurantService";
+import { getActiveSubscription } from "../../service/subscriptionService";
 import { PATH } from "../../path";
 
 const MonthlyMealPage = () => {
@@ -17,6 +18,7 @@ const MonthlyMealPage = () => {
   const [search, setSearch] = useState("");
   const [cuisine, setCuisine] = useState("All");
   const [sort, setSort] = useState("rating");
+  const [hasActiveSubscription, setHasActiveSubscription] = useState(false);
 
   const startingPrice = plansByRestaurant.plans[0].price;
 
@@ -32,6 +34,10 @@ const MonthlyMealPage = () => {
       }
     };
     load();
+
+    getActiveSubscription()
+      .then(() => setHasActiveSubscription(true))
+      .catch(() => setHasActiveSubscription(false));
   }, []);
 
   const cuisines = useMemo(
@@ -62,6 +68,20 @@ const MonthlyMealPage = () => {
           </div>
           <p className="text-sm text-gray-400">{filtered.length} active plans</p>
         </div>
+
+        {hasActiveSubscription && (
+          <div className="mb-6 flex items-center justify-between gap-4 rounded-2xl bg-amber-50 text-amber-700 px-5 py-4">
+            <p className="text-sm font-medium">
+              You already have an active subscription. Cancel it before subscribing to a new plan.
+            </p>
+            <button
+              onClick={() => navigate(PATH.USER.MySubscription)}
+              className="shrink-0 text-sm font-semibold underline hover:text-amber-800"
+            >
+              View My Subscription
+            </button>
+          </div>
+        )}
 
         <div className="flex flex-wrap gap-3 mb-8 items-center">
           <div className="relative flex-1 min-w-64 max-w-md">
@@ -151,9 +171,14 @@ const MonthlyMealPage = () => {
 
                   <button
                     onClick={() => navigate(PATH.USER.MonthlyMealPlan(r.restaurant_id))}
-                    className="mt-4 w-full py-2.5 rounded-xl bg-[#004953] text-white hover:bg-[#003940] transition font-semibold"
+                    disabled={hasActiveSubscription}
+                    className={`mt-4 w-full py-2.5 rounded-xl font-semibold transition ${
+                      hasActiveSubscription
+                        ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+                        : "bg-[#004953] text-white hover:bg-[#003940]"
+                    }`}
                   >
-                    View Plans
+                    {hasActiveSubscription ? "Already Subscribed" : "View Plans"}
                   </button>
                 </div>
               </div>

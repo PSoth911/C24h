@@ -91,28 +91,37 @@ const MySubscriptionPage = () => {
   const totalMeals = sub.duration * sub.mealsPerDay;
   const remainingMeals = Math.max(totalMeals - elapsed * sub.mealsPerDay, 0);
 
-  const mealName = (choice) => {
-    if (!choice) return "Not selected yet";
-    const itemId = choice.lunch_item_id || choice.dinner_item_id;
-    return menuById[itemId] || "Not selected yet";
+  const MEAL_TIME_FIELD = {
+    Breakfast: "breakfast_item_id",
+    Lunch: "lunch_item_id",
+    Dinner: "dinner_item_id",
+    "Supper (Optional)": "supper_item_id",
   };
 
+  const mealName = (choice, field) => {
+    if (!choice || !choice[field]) return "Not selected yet";
+    return menuById[choice[field]] || "Not selected yet";
+  };
+
+  const activeMealTimes = (sub.mealTimes || []).filter((mt) => MEAL_TIME_FIELD[mt]);
+  const mealTimesToShow = activeMealTimes.length > 0 ? activeMealTimes : ["Lunch"];
+
   const upcoming = [
-    {
-      label: "TODAY",
-      name: mealName(dayChoices.today),
-      window: sub.mealTimes?.[0] || "Lunch",
-      status: dayChoices.today ? "Preparing" : "Pending",
-      editable: true,
-    },
-    {
-      label: "TOMORROW",
-      name: mealName(dayChoices.tomorrow),
-      window: sub.mealTimes?.[0] || "Lunch",
-      status: dayChoices.tomorrow ? "Scheduled" : "Pending",
-      editable: true,
-    },
-  ];
+    { key: "today", label: "TODAY", choice: dayChoices.today, statusIfChosen: "Preparing" },
+    { key: "tomorrow", label: "TOMORROW", choice: dayChoices.tomorrow, statusIfChosen: "Scheduled" },
+  ].flatMap(({ key, label, choice, statusIfChosen }) =>
+    mealTimesToShow.map((mealTime) => {
+      const field = MEAL_TIME_FIELD[mealTime];
+      return {
+        key: `${key}-${mealTime}`,
+        label,
+        name: mealName(choice, field),
+        window: mealTime,
+        status: choice?.[field] ? statusIfChosen : "Pending",
+        editable: true,
+      };
+    })
+  );
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -166,7 +175,7 @@ const MySubscriptionPage = () => {
 
             <div className="space-y-4">
               {upcoming.map((meal) => (
-                <div key={meal.label} className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-4">
+                <div key={meal.key} className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-4">
                   <div className="w-16 h-16 rounded-xl bg-[#004953]/10 flex items-center justify-center shrink-0">
                     <FontAwesomeIcon icon={faCalendarDays} className="text-[#004953]" />
                   </div>

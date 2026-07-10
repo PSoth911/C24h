@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faShieldHalved, faCreditCard, faMoneyBillWave, faLock } from "@fortawesome/free-solid-svg-icons";
+import { faShieldHalved, faCreditCard, faLock } from "@fortawesome/free-solid-svg-icons";
 
 import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
@@ -14,7 +14,6 @@ const DELIVERY_FEE = 10;
 const PAYMENT_METHODS = [
   { id: "khqr", label: "KHQR (Bakong)", desc: "Pay instantly using any bank app in Cambodia", icon: faShieldHalved },
   { id: "card", label: "Credit or Debit Card", desc: "Visa, Mastercard, or UnionPay", icon: faCreditCard },
-  { id: "cash", label: "Cash on Delivery", desc: "Pay when your meal arrives at your doorstep", icon: faMoneyBillWave },
 ];
 
 const MonthlySubscriptionPayment = () => {

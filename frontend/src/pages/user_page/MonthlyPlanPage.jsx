@@ -17,6 +17,7 @@ import Footer from "../../components/userComponent/HomepageComponent/Footer";
 import placeholderRestaurant from "../../assets/image copy 2.png";
 import { plansByRestaurant } from "../../data/monthlyMealData";
 import { getRestaurantById } from "../../service/restaurantService";
+import { getActiveSubscription } from "../../service/subscriptionService";
 import { saveDraft } from "../../utils/subscriptionStorage";
 import { PATH } from "../../path";
 
@@ -45,7 +46,11 @@ const MonthlyPlanPage = () => {
       }
     };
     load();
-  }, [id]);
+
+    getActiveSubscription()
+      .then(() => navigate(PATH.USER.MySubscription))
+      .catch(() => {});
+  }, [id, navigate]);
 
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen">Loading…</div>;

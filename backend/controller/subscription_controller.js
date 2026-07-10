@@ -65,7 +65,7 @@ export const createSubscription = async (req, res) => {
       return res.status(400).json({ message: "Missing required subscription details" });
     }
 
-    const validMethods = ["khqr", "card", "cash"];
+    const validMethods = ["khqr", "card"];
     if (!validMethods.includes(paymentMethod)) {
       await transaction.rollback();
       return res.status(400).json({ message: "Invalid payment method" });
@@ -79,6 +79,21 @@ export const createSubscription = async (req, res) => {
     if (!customer) {
       await transaction.rollback();
       return res.status(404).json({ message: "Customer not found" });
+    }
+
+    const existingSubscription = await Subscription.findOne({
+      where: {
+        customer_id: customer.customer_id,
+        status: { [Op.in]: ["active", "paused"] },
+      },
+      transaction,
+    });
+
+    if (existingSubscription) {
+      await transaction.rollback();
+      return res.status(409).json({
+        message: "You already have an active subscription. Cancel it before subscribing to a new plan.",
+      });
     }
 
     let discount_amount = 0;
@@ -481,7 +496,7 @@ const resolveOwnedSubscription = async (req, transaction) => {
 export const saveMealChoice = async (req, res) => {
   try {
     const { date } = req.params;
-    const { lunch, dinner } = req.body;
+    const { lunch, dinner, supper, breakfast } = req.body;
 
     const { customer, subscription, error } = await resolveOwnedSubscription(req);
     if (error) return res.status(error.status).json({ message: error.message });
@@ -492,10 +507,17 @@ export const saveMealChoice = async (req, res) => {
         customer_id: customer.customer_id,
         lunch_item_id: lunch,
         dinner_item_id: dinner,
+        supper_item_id: supper,
+        breakfast_item_id: breakfast,
       },
     });
 
-    await choice.update({ lunch_item_id: lunch, dinner_item_id: dinner });
+    await choice.update({
+      lunch_item_id: lunch,
+      dinner_item_id: dinner,
+      supper_item_id: supper,
+      breakfast_item_id: breakfast,
+    });
 
     return res.status(200).json({ message: "Meal choice saved", choice });
   } catch (error) {

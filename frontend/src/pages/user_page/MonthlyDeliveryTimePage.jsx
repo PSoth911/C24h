@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSun, faMoon, faCalendarDay } from "@fortawesome/free-solid-svg-icons";
+import { faSun, faMoon, faCalendarDay, faMugSaucer } from "@fortawesome/free-solid-svg-icons";
 
 import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
@@ -10,7 +10,7 @@ import { mealTimeOptions, deliveryDayOptions } from "../../data/monthlyMealData"
 import { getDraft, saveDraft } from "../../utils/subscriptionStorage";
 import { PATH } from "../../path";
 
-const MEAL_ICONS = { lunch: faSun, dinner: faMoon, supper: faMoon };
+const MEAL_ICONS = { lunch: faSun, dinner: faMoon, supper: faMoon, breakfast: faMugSaucer };
 
 const tomorrowISO = () => {
   const d = new Date();
@@ -18,11 +18,15 @@ const tomorrowISO = () => {
   return d.toISOString().split("T")[0];
 };
 
-const defaultEnabledMeals = (mealsPerDay) =>
-  mealTimeOptions.reduce((acc, meal, index) => {
-    acc[meal.id] = index < mealsPerDay;
+const DEFAULT_MEAL_PRIORITY = ["lunch", "dinner", "supper", "breakfast"];
+
+const defaultEnabledMeals = (mealsPerDay) => {
+  const enabledIds = new Set(DEFAULT_MEAL_PRIORITY.slice(0, mealsPerDay));
+  return mealTimeOptions.reduce((acc, meal) => {
+    acc[meal.id] = enabledIds.has(meal.id);
     return acc;
   }, {});
+};
 
 const MonthlyDeliveryTimePage = () => {
   const navigate = useNavigate();
