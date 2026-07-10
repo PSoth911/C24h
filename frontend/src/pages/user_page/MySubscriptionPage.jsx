@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCalendarDays, faPen } from "@fortawesome/free-solid-svg-icons";
+import { faCalendarDays, faPen, faClock } from "@fortawesome/free-solid-svg-icons";
 
 import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
@@ -36,6 +36,7 @@ const MySubscriptionPage = () => {
   const [loaded, setLoaded] = useState(false);
   const [showCancel, setShowCancel] = useState(false);
   const [showEditSchedule, setShowEditSchedule] = useState(false);
+  const [focusMealTime, setFocusMealTime] = useState(null);
   const [menuById, setMenuById] = useState({});
   const [dayChoices, setDayChoices] = useState({ today: null, tomorrow: null });
 
@@ -134,6 +135,7 @@ const MySubscriptionPage = () => {
         key: `${key}-${mealTime}`,
         label,
         name: mealName(choice, field),
+        mealTime,
         window: time ? `${mealTime} · ${time}` : mealTime,
         status: choice?.[field] ? statusIfChosen : "Pending",
         editable: true,
@@ -200,7 +202,16 @@ const MySubscriptionPage = () => {
                   <div className="flex-1">
                     <p className="text-[10px] font-bold text-gray-400">{meal.label}</p>
                     <p className="font-semibold text-gray-800">{meal.name}</p>
-                    <p className="text-xs text-gray-400">{meal.window}</p>
+                    <button
+                      onClick={() => {
+                        setFocusMealTime(meal.mealTime);
+                        setShowEditSchedule(true);
+                      }}
+                      className="flex items-center gap-1 text-xs text-gray-400 hover:text-[#004953] transition"
+                    >
+                      <FontAwesomeIcon icon={faClock} className="text-[10px]" />
+                      {meal.window}
+                    </button>
                   </div>
                   <span
                     className={`text-xs font-semibold px-3 py-1 rounded-full shrink-0 ${
@@ -259,7 +270,10 @@ const MySubscriptionPage = () => {
               </button>
 
               <button
-                onClick={() => setShowEditSchedule(true)}
+                onClick={() => {
+                  setFocusMealTime(null);
+                  setShowEditSchedule(true);
+                }}
                 className="w-full mt-3 text-xs font-semibold text-[#004953] hover:underline"
               >
                 Want to change your delivery time? Edit here →
@@ -288,6 +302,7 @@ const MySubscriptionPage = () => {
       {showEditSchedule && (
         <EditScheduleModal
           subscription={sub}
+          focusMealTime={focusMealTime}
           onClose={() => setShowEditSchedule(false)}
           onUpdated={() => {
             setShowEditSchedule(false);

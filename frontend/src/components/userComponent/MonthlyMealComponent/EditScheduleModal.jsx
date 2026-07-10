@@ -1,10 +1,10 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faXmark, faClock } from "@fortawesome/free-solid-svg-icons";
 
 import { updateMealSchedule } from "../../../service/subscriptionService";
 
-const EditScheduleModal = ({ subscription, onClose, onUpdated }) => {
+const EditScheduleModal = ({ subscription, focusMealTime, onClose, onUpdated }) => {
   const mealTimes = subscription.mealTimes || [];
   const [times, setTimes] = useState(() =>
     mealTimes.reduce((acc, label) => {
@@ -14,6 +14,11 @@ const EditScheduleModal = ({ subscription, onClose, onUpdated }) => {
   );
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const focusedInputRef = useRef(null);
+
+  useEffect(() => {
+    focusedInputRef.current?.focus();
+  }, []);
 
   const handleSave = async () => {
     setSubmitting(true);
@@ -44,25 +49,31 @@ const EditScheduleModal = ({ subscription, onClose, onUpdated }) => {
         </p>
 
         <div className="space-y-3 mb-4">
-          {mealTimes.map((label) => (
-            <div
-              key={label}
-              className="flex items-center justify-between p-3 rounded-2xl border border-gray-100"
-            >
-              <div className="flex items-center gap-3">
-                <span className="w-9 h-9 rounded-xl bg-[#004953]/10 text-[#004953] flex items-center justify-center">
-                  <FontAwesomeIcon icon={faClock} />
-                </span>
-                <p className="font-semibold text-gray-800">{label}</p>
+          {mealTimes.map((label) => {
+            const isFocused = label === focusMealTime;
+            return (
+              <div
+                key={label}
+                className={`flex items-center justify-between p-3 rounded-2xl border transition-colors ${
+                  isFocused ? "border-[#004953] bg-[#004953]/5" : "border-gray-100"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="w-9 h-9 rounded-xl bg-[#004953]/10 text-[#004953] flex items-center justify-center">
+                    <FontAwesomeIcon icon={faClock} />
+                  </span>
+                  <p className="font-semibold text-gray-800">{label}</p>
+                </div>
+                <input
+                  ref={isFocused ? focusedInputRef : null}
+                  type="time"
+                  value={times[label]}
+                  onChange={(e) => setTimes((prev) => ({ ...prev, [label]: e.target.value }))}
+                  className="px-2 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-700 focus:outline-none focus:border-[#004953]"
+                />
               </div>
-              <input
-                type="time"
-                value={times[label]}
-                onChange={(e) => setTimes((prev) => ({ ...prev, [label]: e.target.value }))}
-                className="px-2 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-700 focus:outline-none focus:border-[#004953]"
-              />
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {error && <p className="text-xs text-red-500 mb-2 text-center">{error}</p>}
