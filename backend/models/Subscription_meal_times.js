@@ -19,6 +19,11 @@ const SubscriptionMealTime = sequelize.define(
       type: DataTypes.STRING(30),
       allowNull: false,
     },
+
+    delivery_time: {
+      type: DataTypes.STRING(5),
+      allowNull: true,
+    },
   },
   {
     tableName: "subscription_meal_times",

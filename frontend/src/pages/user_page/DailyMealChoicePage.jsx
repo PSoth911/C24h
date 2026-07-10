@@ -39,11 +39,19 @@ const DailyMealChoicePage = () => {
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
-    getActiveSubscription()
-      .then(async ({ data }) => {
-        const normalized = normalizeSubscription(data.subscription);
+    const load = async () => {
+      let normalized;
+      try {
+        const { data } = await getActiveSubscription();
+        normalized = normalizeSubscription(data.subscription);
         setSub(normalized);
+      } catch {
+        setSub(null);
+        setLoaded(true);
+        return;
+      }
 
+      try {
         const [{ data: choicesData }, { data: productsData }] = await Promise.all([
           getMealChoicesRange(normalized.subscription_id),
           getProductsByRestaurant(normalized.restaurantId),
@@ -70,9 +78,15 @@ const DailyMealChoicePage = () => {
               image: p.image ? `http://localhost:5000/uploads/${p.image}` : placeholderFood,
             }))
         );
-      })
-      .catch(() => setSub(null))
-      .finally(() => setLoaded(true));
+      } catch {
+        setChoices({});
+        setMenu([]);
+      }
+
+      setLoaded(true);
+    };
+
+    load();
   }, []);
 
   useEffect(() => {

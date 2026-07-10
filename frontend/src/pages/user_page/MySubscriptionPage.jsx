@@ -6,6 +6,7 @@ import { faCalendarDays, faPen } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
 import CancelSubscriptionModal from "../../components/userComponent/MonthlyMealComponent/CancelSubscriptionModal";
+import EditScheduleModal from "../../components/userComponent/MonthlyMealComponent/EditScheduleModal";
 import { getActiveSubscription, normalizeSubscription, getMealChoice } from "../../service/subscriptionService";
 import { getProductsByRestaurant } from "../../service/productService";
 import { PATH } from "../../path";
@@ -21,40 +22,56 @@ const formatDate = (iso) =>
 
 const daysBetween = (a, b) => Math.floor((b - a) / (1000 * 60 * 60 * 24));
 
+const formatTime = (time24) => {
+  if (!time24) return "";
+  const [h, m] = time24.split(":").map(Number);
+  const period = h >= 12 ? "PM" : "AM";
+  const hour12 = h % 12 === 0 ? 12 : h % 12;
+  return `${hour12}:${String(m).padStart(2, "0")} ${period}`;
+};
+
 const MySubscriptionPage = () => {
   const navigate = useNavigate();
   const [sub, setSub] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [showCancel, setShowCancel] = useState(false);
+  const [showEditSchedule, setShowEditSchedule] = useState(false);
   const [menuById, setMenuById] = useState({});
   const [dayChoices, setDayChoices] = useState({ today: null, tomorrow: null });
 
   const refreshSubscription = async () => {
+    let normalized;
     try {
       const { data } = await getActiveSubscription();
-      const normalized = normalizeSubscription(data.subscription);
+      normalized = normalizeSubscription(data.subscription);
       setSub(normalized);
+    } catch {
+      setSub(null);
+      setLoaded(true);
+      return;
+    }
 
+    try {
       const { data: productsData } = await getProductsByRestaurant(normalized.restaurantId);
       const map = {};
       (productsData.products || []).forEach((p) => {
         map[String(p.product_id)] = p.product_name;
       });
       setMenuById(map);
-
-      const [todayChoice, tomorrowChoice] = await Promise.all([
-        getMealChoice(normalized.subscription_id, isoDaysFromNow(0)).catch(() => null),
-        getMealChoice(normalized.subscription_id, isoDaysFromNow(1)).catch(() => null),
-      ]);
-      setDayChoices({
-        today: todayChoice?.data?.choice || null,
-        tomorrow: tomorrowChoice?.data?.choice || null,
-      });
     } catch {
-      setSub(null);
-    } finally {
-      setLoaded(true);
+      setMenuById({});
     }
+
+    const [todayChoice, tomorrowChoice] = await Promise.all([
+      getMealChoice(normalized.subscription_id, isoDaysFromNow(0)).catch(() => null),
+      getMealChoice(normalized.subscription_id, isoDaysFromNow(1)).catch(() => null),
+    ]);
+    setDayChoices({
+      today: todayChoice?.data?.choice || null,
+      tomorrow: tomorrowChoice?.data?.choice || null,
+    });
+
+    setLoaded(true);
   };
 
   useEffect(() => {
@@ -112,11 +129,12 @@ const MySubscriptionPage = () => {
   ].flatMap(({ key, label, choice, statusIfChosen }) =>
     mealTimesToShow.map((mealTime) => {
       const field = MEAL_TIME_FIELD[mealTime];
+      const time = formatTime(sub.deliveryTimes?.[mealTime]);
       return {
         key: `${key}-${mealTime}`,
         label,
         name: mealName(choice, field),
-        window: mealTime,
+        window: time ? `${mealTime} · ${time}` : mealTime,
         status: choice?.[field] ? statusIfChosen : "Pending",
         editable: true,
       };
@@ -240,9 +258,12 @@ const MySubscriptionPage = () => {
                 Cancel Subscription ✕
               </button>
 
-              <p className="text-xs text-gray-400 mt-3">
-                Want to change your delivery window? Updates take 24 hours to process.
-              </p>
+              <button
+                onClick={() => setShowEditSchedule(true)}
+                className="w-full mt-3 text-xs font-semibold text-[#004953] hover:underline"
+              >
+                Want to change your delivery time? Edit here →
+              </button>
             </div>
           </div>
         </div>
@@ -259,6 +280,17 @@ const MySubscriptionPage = () => {
           onClose={() => setShowCancel(false)}
           onCancelled={() => {
             setShowCancel(false);
+            refreshSubscription();
+          }}
+        />
+      )}
+
+      {showEditSchedule && (
+        <EditScheduleModal
+          subscription={sub}
+          onClose={() => setShowEditSchedule(false)}
+          onUpdated={() => {
+            setShowEditSchedule(false);
             refreshSubscription();
           }}
         />

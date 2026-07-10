@@ -7,6 +7,7 @@ import {
   resumeSubscription,
   cancelSubscription,
   getRefund,
+  updateMealSchedule,
   saveMealChoice,
   getMealChoice,
   getMealChoicesRange,
@@ -22,6 +23,7 @@ router.post("/:subscription_id/pause", verifyToken, pauseSubscription);
 router.post("/:subscription_id/resume", verifyToken, resumeSubscription);
 router.post("/:subscription_id/cancel", verifyToken, cancelSubscription);
 router.get("/:subscription_id/refund", verifyToken, getRefund);
+router.put("/:subscription_id/schedule", verifyToken, updateMealSchedule);
 router.get("/:subscription_id/meal-choices", verifyToken, getMealChoicesRange);
 router.put("/:subscription_id/meal-choice/:date", verifyToken, saveMealChoice);
 router.get("/:subscription_id/meal-choice/:date", verifyToken, getMealChoice);

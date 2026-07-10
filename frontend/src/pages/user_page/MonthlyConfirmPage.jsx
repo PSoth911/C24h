@@ -13,6 +13,14 @@ import { PATH } from "../../path";
 const formatDate = (iso) =>
   new Date(iso).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
 
+const formatTime = (time24) => {
+  if (!time24) return "";
+  const [h, m] = time24.split(":").map(Number);
+  const period = h >= 12 ? "PM" : "AM";
+  const hour12 = h % 12 === 0 ? 12 : h % 12;
+  return `${hour12}:${String(m).padStart(2, "0")} ${period}`;
+};
+
 const addDays = (iso, days) => {
   const d = new Date(iso);
   d.setDate(d.getDate() + days);
@@ -47,6 +55,7 @@ const MonthlyConfirmPage = () => {
         mealsPerDay: draft.mealsPerDay,
         duration: draft.duration,
         mealTimes: draft.mealTimes,
+        mealTimeSlots: draft.mealTimeSlots,
         deliveryDays: draft.deliveryDays,
         startDate: draft.startDate,
         paymentMethod: draft.paymentMethod,
@@ -89,7 +98,15 @@ const MonthlyConfirmPage = () => {
               <DetailRow icon={faLayerGroup} label="Plan" value={draft.planName} />
               <DetailRow icon={faCalendarDays} label="Duration" value={`${draft.duration} Days`} />
               <DetailRow icon={faCalendarDays} label="Timeline" value={`${formatDate(draft.startDate)} — ${formatDate(endDate)}`} />
-              <DetailRow icon={faClock} label="Meal Times" value={draft.mealTimes?.join(", ")} />
+              <DetailRow
+                icon={faClock}
+                label="Meal Times"
+                value={
+                  draft.mealTimeSlots?.length
+                    ? draft.mealTimeSlots.map((s) => `${s.label} (${formatTime(s.time)})`).join(", ")
+                    : draft.mealTimes?.join(", ")
+                }
+              />
               <DetailRow icon={faCalendarDays} label="Delivery Days" value={draft.deliveryDays?.join(", ")} />
             </div>
 

@@ -28,11 +28,26 @@ const defaultEnabledMeals = (mealsPerDay) => {
   }, {});
 };
 
+const to24Hour = (time12) => {
+  const [time, period] = time12.trim().split(" ");
+  let [h, m] = time.split(":").map(Number);
+  if (period === "PM" && h !== 12) h += 12;
+  if (period === "AM" && h === 12) h = 0;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+};
+
+const defaultMealTimeValues = () =>
+  mealTimeOptions.reduce((acc, meal) => {
+    acc[meal.id] = to24Hour(meal.window.split(" - ")[0]);
+    return acc;
+  }, {});
+
 const MonthlyDeliveryTimePage = () => {
   const navigate = useNavigate();
   const [draft] = useState(() => getDraft());
   const mealsPerDay = draft?.mealsPerDay || mealTimeOptions.length;
   const [enabledMeals, setEnabledMeals] = useState(() => defaultEnabledMeals(mealsPerDay));
+  const [mealTimeValues, setMealTimeValues] = useState(defaultMealTimeValues);
   const [days, setDays] = useState(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]);
   const [startDate, setStartDate] = useState(tomorrowISO());
 
@@ -55,8 +70,10 @@ const MonthlyDeliveryTimePage = () => {
     setDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]));
 
   const handleContinue = () => {
-    const mealTimes = mealTimeOptions.filter((m) => enabledMeals[m.id]).map((m) => m.label);
-    saveDraft({ mealTimes, deliveryDays: days, startDate });
+    const enabledOptions = mealTimeOptions.filter((m) => enabledMeals[m.id]);
+    const mealTimes = enabledOptions.map((m) => m.label);
+    const mealTimeSlots = enabledOptions.map((m) => ({ label: m.label, time: mealTimeValues[m.id] }));
+    saveDraft({ mealTimes, mealTimeSlots, deliveryDays: days, startDate });
     navigate(PATH.USER.MonthlyMealConfirm);
   };
 
@@ -97,19 +114,31 @@ const MonthlyDeliveryTimePage = () => {
                         <p className="text-xs text-gray-400">{meal.window}</p>
                       </div>
                     </div>
-                    <button
-                      onClick={() => toggleMeal(meal.id)}
-                      disabled={isDisabled}
-                      className={`w-11 h-6 shrink-0 rounded-full relative transition-colors ${
-                        isEnabled ? "bg-[#004953]" : "bg-gray-200"
-                      } ${isDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
-                    >
-                      <span
-                        className={`absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-                          isEnabled ? "translate-x-5" : "translate-x-0"
-                        }`}
-                      />
-                    </button>
+                    <div className="flex items-center gap-3 shrink-0">
+                      {isEnabled && (
+                        <input
+                          type="time"
+                          value={mealTimeValues[meal.id]}
+                          onChange={(e) =>
+                            setMealTimeValues((prev) => ({ ...prev, [meal.id]: e.target.value }))
+                          }
+                          className="px-2 py-1.5 rounded-lg border border-gray-200 text-sm text-gray-700 focus:outline-none focus:border-[#004953]"
+                        />
+                      )}
+                      <button
+                        onClick={() => toggleMeal(meal.id)}
+                        disabled={isDisabled}
+                        className={`w-11 h-6 shrink-0 rounded-full relative transition-colors ${
+                          isEnabled ? "bg-[#004953]" : "bg-gray-200"
+                        } ${isDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+                      >
+                        <span
+                          className={`absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                            isEnabled ? "translate-x-5" : "translate-x-0"
+                          }`}
+                        />
+                      </button>
+                    </div>
                   </div>
                 );
               })}

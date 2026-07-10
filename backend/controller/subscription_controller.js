@@ -40,6 +40,7 @@ export const createSubscription = async (req, res) => {
       mealsPerDay,
       duration,
       mealTimes,
+      mealTimeSlots,
       deliveryDays,
       startDate,
       paymentMethod,
@@ -153,10 +154,15 @@ export const createSubscription = async (req, res) => {
       { transaction }
     );
 
+    const timeByLabel = Object.fromEntries(
+      (Array.isArray(mealTimeSlots) ? mealTimeSlots : []).map((slot) => [slot.label, slot.time])
+    );
+
     await SubscriptionMealTime.bulkCreate(
       mealTimes.map((meal_time) => ({
         subscription_id: subscription.subscription_id,
         meal_time,
+        delivery_time: timeByLabel[meal_time] || null,
       })),
       { transaction }
     );
@@ -468,6 +474,64 @@ export const getRefund = async (req, res) => {
 
     return res.status(200).json({ refund });
   } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+export const updateMealSchedule = async (req, res) => {
+  const transaction = await sequelize.transaction();
+
+  try {
+    const { subscription_id } = req.params;
+    const { mealTimeSlots, deliveryDays } = req.body;
+
+    const customer = await Customer.findOne({
+      where: { user_id: req.user.id },
+      transaction,
+    });
+
+    if (!customer) {
+      await transaction.rollback();
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    const subscription = await Subscription.findOne({
+      where: { subscription_id, customer_id: customer.customer_id },
+      transaction,
+    });
+
+    if (!subscription) {
+      await transaction.rollback();
+      return res.status(404).json({ message: "Subscription not found" });
+    }
+
+    if (Array.isArray(mealTimeSlots)) {
+      for (const slot of mealTimeSlots) {
+        await SubscriptionMealTime.update(
+          { delivery_time: slot.time || null },
+          { where: { subscription_id, meal_time: slot.label }, transaction }
+        );
+      }
+    }
+
+    if (Array.isArray(deliveryDays) && deliveryDays.length > 0) {
+      await SubscriptionDeliveryDay.destroy({ where: { subscription_id }, transaction });
+      await SubscriptionDeliveryDay.bulkCreate(
+        deliveryDays.map((day_name) => ({ subscription_id, day_name })),
+        { transaction }
+      );
+    }
+
+    await transaction.commit();
+
+    const updated = await Subscription.findByPk(subscription_id, {
+      include: SUBSCRIPTION_INCLUDE,
+    });
+
+    return res.status(200).json({ message: "Delivery schedule updated", subscription: updated });
+  } catch (error) {
+    await transaction.rollback();
     console.error(error);
     return res.status(500).json({ message: error.message });
   }

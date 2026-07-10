@@ -14,6 +14,8 @@ export const cancelSubscription = (id, data) => API.post(`/subscription/${id}/ca
 
 export const getRefund = (id) => API.get(`/subscription/${id}/refund`);
 
+export const updateMealSchedule = (id, data) => API.put(`/subscription/${id}/schedule`, data);
+
 export const saveMealChoice = (id, date, data) =>
   API.put(`/subscription/${id}/meal-choice/${date}`, data);
 
@@ -37,5 +39,8 @@ export const normalizeSubscription = (raw) => ({
   status: raw.status,
   daysUsed: raw.days_used,
   mealTimes: (raw.SubscriptionMealTimes || []).map((m) => m.meal_time),
+  deliveryTimes: Object.fromEntries(
+    (raw.SubscriptionMealTimes || []).map((m) => [m.meal_time, m.delivery_time])
+  ),
   deliveryDays: (raw.SubscriptionDeliveryDays || []).map((d) => d.day_name),
 });
