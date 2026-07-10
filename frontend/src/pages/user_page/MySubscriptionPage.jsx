@@ -6,9 +6,15 @@ import { faCalendarDays, faPen } from "@fortawesome/free-solid-svg-icons";
 import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
 import CancelSubscriptionModal from "../../components/userComponent/MonthlyMealComponent/CancelSubscriptionModal";
-import { dailyMealMenu } from "../../data/monthlyMealData";
-import { getActiveSubscription, normalizeSubscription } from "../../service/subscriptionService";
+import { getActiveSubscription, normalizeSubscription, getMealChoice } from "../../service/subscriptionService";
+import { getProductsByRestaurant } from "../../service/productService";
 import { PATH } from "../../path";
+
+const isoDaysFromNow = (n) => {
+  const d = new Date();
+  d.setDate(d.getDate() + n);
+  return d.toISOString().split("T")[0];
+};
 
 const formatDate = (iso) =>
   new Date(iso).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
@@ -20,12 +26,35 @@ const MySubscriptionPage = () => {
   const [sub, setSub] = useState(null);
   const [loaded, setLoaded] = useState(false);
   const [showCancel, setShowCancel] = useState(false);
+  const [menuById, setMenuById] = useState({});
+  const [dayChoices, setDayChoices] = useState({ today: null, tomorrow: null });
 
-  const refreshSubscription = () => {
-    getActiveSubscription()
-      .then(({ data }) => setSub(normalizeSubscription(data.subscription)))
-      .catch(() => setSub(null))
-      .finally(() => setLoaded(true));
+  const refreshSubscription = async () => {
+    try {
+      const { data } = await getActiveSubscription();
+      const normalized = normalizeSubscription(data.subscription);
+      setSub(normalized);
+
+      const { data: productsData } = await getProductsByRestaurant(normalized.restaurantId);
+      const map = {};
+      (productsData.products || []).forEach((p) => {
+        map[String(p.product_id)] = p.product_name;
+      });
+      setMenuById(map);
+
+      const [todayChoice, tomorrowChoice] = await Promise.all([
+        getMealChoice(normalized.subscription_id, isoDaysFromNow(0)).catch(() => null),
+        getMealChoice(normalized.subscription_id, isoDaysFromNow(1)).catch(() => null),
+      ]);
+      setDayChoices({
+        today: todayChoice?.data?.choice || null,
+        tomorrow: tomorrowChoice?.data?.choice || null,
+      });
+    } catch {
+      setSub(null);
+    } finally {
+      setLoaded(true);
+    }
   };
 
   useEffect(() => {
@@ -62,9 +91,27 @@ const MySubscriptionPage = () => {
   const totalMeals = sub.duration * sub.mealsPerDay;
   const remainingMeals = Math.max(totalMeals - elapsed * sub.mealsPerDay, 0);
 
+  const mealName = (choice) => {
+    if (!choice) return "Not selected yet";
+    const itemId = choice.lunch_item_id || choice.dinner_item_id;
+    return menuById[itemId] || "Not selected yet";
+  };
+
   const upcoming = [
-    { label: "TODAY", name: "Signature Salmon Rice Bowl", window: sub.mealTimes?.[0] || "Lunch", status: "Preparing", editable: false },
-    { label: "TOMORROW", name: dailyMealMenu.lunch[2].name, window: sub.mealTimes?.[0] || "Lunch", status: "Scheduled", editable: true },
+    {
+      label: "TODAY",
+      name: mealName(dayChoices.today),
+      window: sub.mealTimes?.[0] || "Lunch",
+      status: dayChoices.today ? "Preparing" : "Pending",
+      editable: true,
+    },
+    {
+      label: "TOMORROW",
+      name: mealName(dayChoices.tomorrow),
+      window: sub.mealTimes?.[0] || "Lunch",
+      status: dayChoices.tomorrow ? "Scheduled" : "Pending",
+      editable: true,
+    },
   ];
 
   return (

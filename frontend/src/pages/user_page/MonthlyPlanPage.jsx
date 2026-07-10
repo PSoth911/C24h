@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -14,7 +14,9 @@ import {
 
 import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
-import { getRestaurantById, plansByRestaurant } from "../../data/monthlyMealData";
+import placeholderRestaurant from "../../assets/image copy 2.png";
+import { plansByRestaurant } from "../../data/monthlyMealData";
+import { getRestaurantById } from "../../service/restaurantService";
 import { saveDraft } from "../../utils/subscriptionStorage";
 import { PATH } from "../../path";
 
@@ -24,11 +26,30 @@ const TABS = ["Plans", "About", "Menu", "Reviews"];
 const MonthlyPlanPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const restaurant = getRestaurantById(id);
+  const [restaurant, setRestaurant] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("Plans");
   const [selectedPlanId, setSelectedPlanId] = useState(
     plansByRestaurant.plans.find((p) => p.popular)?.id || plansByRestaurant.plans[0].id
   );
+
+  useEffect(() => {
+    const load = async () => {
+      try {
+        const res = await getRestaurantById(id);
+        setRestaurant(res.data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    load();
+  }, [id]);
+
+  if (loading) {
+    return <div className="flex items-center justify-center min-h-screen">Loading…</div>;
+  }
 
   if (!restaurant) {
     return (
@@ -43,9 +64,9 @@ const MonthlyPlanPage = () => {
 
   const handleContinue = () => {
     saveDraft({
-      restaurantId: restaurant.id,
-      restaurantName: restaurant.name,
-      restaurantImage: restaurant.image,
+      restaurantId: restaurant.restaurant_id,
+      restaurantName: restaurant.restaurant_name,
+      restaurantImage: restaurant.logo,
       planId: selectedPlan.id,
       planName: selectedPlan.name,
       planPrice: selectedPlan.price,
@@ -64,7 +85,12 @@ const MonthlyPlanPage = () => {
           {/* LEFT */}
           <div className="col-span-2">
             <div className="relative rounded-3xl overflow-hidden">
-              <img src={restaurant.image} alt={restaurant.name} className="w-full h-64 object-cover" />
+              <img
+                src={restaurant.logo ? `http://localhost:5000/uploads/${restaurant.logo}` : placeholderRestaurant}
+                alt={restaurant.restaurant_name}
+                className="w-full h-64 object-cover"
+                onError={(e) => { e.target.src = placeholderRestaurant; }}
+              />
               <span className="absolute top-4 left-4 bg-[#004953] text-white text-xs font-bold px-3 py-1 rounded-full">
                 Monthly Meal
               </span>
@@ -78,17 +104,16 @@ const MonthlyPlanPage = () => {
               </div>
             </div>
 
-            <h1 className="text-3xl font-bold text-[#004953] mt-5">{restaurant.name}</h1>
+            <h1 className="text-3xl font-bold text-[#004953] mt-5">{restaurant.restaurant_name}</h1>
             <div className="flex items-center gap-4 text-gray-500 text-sm mt-2">
               <span className="flex items-center gap-1 font-semibold text-amber-500">
-                <FontAwesomeIcon icon={faStar} /> {restaurant.rating}
-                <span className="text-gray-400 font-normal">({restaurant.reviews} reviews)</span>
+                <FontAwesomeIcon icon={faStar} /> {restaurant.average_rating || "—"}
               </span>
               <span className="flex items-center gap-1">
-                <FontAwesomeIcon icon={faClock} /> {restaurant.prepTime}
+                <FontAwesomeIcon icon={faClock} /> {restaurant.status === "open" ? "Open now" : "Closed"}
               </span>
               <span className="flex items-center gap-1">
-                <FontAwesomeIcon icon={faLocationDot} /> {restaurant.distance}
+                <FontAwesomeIcon icon={faLocationDot} /> {restaurant.address}
               </span>
             </div>
 
@@ -151,7 +176,11 @@ const MonthlyPlanPage = () => {
                 </>
               )}
 
-              {activeTab === "About" && <p className="text-gray-600 leading-7">{restaurant.about}</p>}
+              {activeTab === "About" && (
+                <p className="text-gray-600 leading-7">
+                  {restaurant.description || "No description available for this restaurant yet."}
+                </p>
+              )}
 
               {activeTab === "Menu" && (
                 <p className="text-gray-400">Menu preview is available once you choose your plan.</p>

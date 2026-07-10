@@ -5,13 +5,14 @@ import { faCheck, faClock } from "@fortawesome/free-solid-svg-icons";
 
 import Navbar from "../../components/userComponent/HomepageComponent/Navbar";
 import Footer from "../../components/userComponent/HomepageComponent/Footer";
-import { dailyMealMenu } from "../../data/monthlyMealData";
+import placeholderFood from "../../assets/image copy 2.png";
 import {
   getActiveSubscription,
   normalizeSubscription,
   getMealChoicesRange,
   saveMealChoice,
 } from "../../service/subscriptionService";
+import { getProductsByRestaurant } from "../../service/productService";
 import { PATH } from "../../path";
 
 const buildWeek = () => {
@@ -31,6 +32,7 @@ const DailyMealChoicePage = () => {
   const navigate = useNavigate();
   const [sub, setSub] = useState(null);
   const [loaded, setLoaded] = useState(false);
+  const [menu, setMenu] = useState([]);
   const week = useMemo(() => buildWeek(), []);
   const [selectedDay, setSelectedDay] = useState(week[0].key);
   const [choices, setChoices] = useState({});
@@ -42,12 +44,27 @@ const DailyMealChoicePage = () => {
         const normalized = normalizeSubscription(data.subscription);
         setSub(normalized);
 
-        const { data: choicesData } = await getMealChoicesRange(normalized.subscription_id);
+        const [{ data: choicesData }, { data: productsData }] = await Promise.all([
+          getMealChoicesRange(normalized.subscription_id),
+          getProductsByRestaurant(normalized.restaurantId),
+        ]);
+
         const map = {};
         choicesData.choices.forEach((c) => {
           map[c.choice_date] = { lunch: c.lunch_item_id, dinner: c.dinner_item_id };
         });
         setChoices(map);
+
+        setMenu(
+          (productsData.products || [])
+            .filter((p) => p.status === "available")
+            .map((p) => ({
+              id: String(p.product_id),
+              name: p.product_name,
+              tag: p.Category?.category_name || "",
+              image: p.image ? `http://localhost:5000/uploads/${p.image}` : placeholderFood,
+            }))
+        );
       })
       .catch(() => setSub(null))
       .finally(() => setLoaded(true));
@@ -59,15 +76,17 @@ const DailyMealChoicePage = () => {
 
   if (!sub) return null;
 
-  const dayChoice = choices[selectedDay] || { lunch: dailyMealMenu.lunch[1].id, dinner: dailyMealMenu.dinner[0].id };
+  const defaultLunch = menu[1]?.id || menu[0]?.id;
+  const defaultDinner = menu[0]?.id;
+  const dayChoice = choices[selectedDay] || { lunch: defaultLunch, dinner: defaultDinner };
 
   const pick = (meal, id) => {
     setSaved(false);
     setChoices((prev) => ({ ...prev, [selectedDay]: { ...dayChoice, [meal]: id } }));
   };
 
-  const lunchName = dailyMealMenu.lunch.find((m) => m.id === dayChoice.lunch)?.name;
-  const dinnerName = dailyMealMenu.dinner.find((m) => m.id === dayChoice.dinner)?.name;
+  const lunchName = menu.find((m) => m.id === dayChoice.lunch)?.name;
+  const dinnerName = menu.find((m) => m.id === dayChoice.dinner)?.name;
 
   const handleSave = async () => {
     await saveMealChoice(sub.subscription_id, selectedDay, dayChoice);
@@ -104,21 +123,29 @@ const DailyMealChoicePage = () => {
           ))}
         </div>
 
-        <MealSection
-          title="Lunch Choice"
-          icon="☀️"
-          options={dailyMealMenu.lunch}
-          selectedId={dayChoice.lunch}
-          onSelect={(id) => pick("lunch", id)}
-        />
+        {menu.length === 0 ? (
+          <p className="text-center text-gray-400 py-16">
+            This restaurant hasn't added any menu items yet.
+          </p>
+        ) : (
+          <>
+            <MealSection
+              title="Lunch Choice"
+              icon="☀️"
+              options={menu}
+              selectedId={dayChoice.lunch}
+              onSelect={(id) => pick("lunch", id)}
+            />
 
-        <MealSection
-          title="Dinner Choice"
-          icon="🌙"
-          options={dailyMealMenu.dinner}
-          selectedId={dayChoice.dinner}
-          onSelect={(id) => pick("dinner", id)}
-        />
+            <MealSection
+              title="Dinner Choice"
+              icon="🌙"
+              options={menu}
+              selectedId={dayChoice.dinner}
+              onSelect={(id) => pick("dinner", id)}
+            />
+          </>
+        )}
 
         <div className="bg-white rounded-2xl shadow-md p-4 mt-8 flex items-center justify-between sticky bottom-4">
           <p className="text-sm text-gray-500">

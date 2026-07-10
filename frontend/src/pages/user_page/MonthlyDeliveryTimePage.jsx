@@ -18,10 +18,17 @@ const tomorrowISO = () => {
   return d.toISOString().split("T")[0];
 };
 
+const defaultEnabledMeals = (mealsPerDay) =>
+  mealTimeOptions.reduce((acc, meal, index) => {
+    acc[meal.id] = index < mealsPerDay;
+    return acc;
+  }, {});
+
 const MonthlyDeliveryTimePage = () => {
   const navigate = useNavigate();
   const [draft] = useState(() => getDraft());
-  const [enabledMeals, setEnabledMeals] = useState({ lunch: true, dinner: true, supper: false });
+  const mealsPerDay = draft?.mealsPerDay || mealTimeOptions.length;
+  const [enabledMeals, setEnabledMeals] = useState(() => defaultEnabledMeals(mealsPerDay));
   const [days, setDays] = useState(["Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]);
   const [startDate, setStartDate] = useState(tomorrowISO());
 
@@ -31,7 +38,15 @@ const MonthlyDeliveryTimePage = () => {
 
   if (!draft?.planId) return null;
 
-  const toggleMeal = (id) => setEnabledMeals((prev) => ({ ...prev, [id]: !prev[id] }));
+  const selectedMealCount = Object.values(enabledMeals).filter(Boolean).length;
+
+  const toggleMeal = (id) =>
+    setEnabledMeals((prev) => {
+      const turningOn = !prev[id];
+      if (turningOn && selectedMealCount >= mealsPerDay) return prev;
+      return { ...prev, [id]: !prev[id] };
+    });
+
   const toggleDay = (day) =>
     setDays((prev) => (prev.includes(day) ? prev.filter((d) => d !== day) : [...prev, day]));
 
@@ -57,33 +72,43 @@ const MonthlyDeliveryTimePage = () => {
           <p className="text-gray-500 mt-1 mb-6">Choose when you want to receive your meals.</p>
 
           <div className="bg-white rounded-3xl shadow-md p-6">
-            <h3 className="font-bold text-gray-800 mb-4">Select Meal Times</h3>
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-bold text-gray-800">Select Meal Times</h3>
+              <span className="text-xs text-gray-400">
+                {selectedMealCount}/{mealsPerDay} selected
+              </span>
+            </div>
             <div className="space-y-3">
-              {mealTimeOptions.map((meal) => (
-                <div key={meal.id} className="flex items-center justify-between p-3 rounded-2xl border border-gray-100">
-                  <div className="flex items-center gap-3">
-                    <span className="w-9 h-9 rounded-xl bg-[#004953]/10 text-[#004953] flex items-center justify-center">
-                      <FontAwesomeIcon icon={MEAL_ICONS[meal.id]} />
-                    </span>
-                    <div>
-                      <p className="font-semibold text-gray-800">{meal.label}</p>
-                      <p className="text-xs text-gray-400">{meal.window}</p>
+              {mealTimeOptions.map((meal) => {
+                const isEnabled = enabledMeals[meal.id];
+                const isDisabled = !isEnabled && selectedMealCount >= mealsPerDay;
+                return (
+                  <div key={meal.id} className="flex items-center justify-between p-3 rounded-2xl border border-gray-100">
+                    <div className="flex items-center gap-3">
+                      <span className="w-9 h-9 rounded-xl bg-[#004953]/10 text-[#004953] flex items-center justify-center">
+                        <FontAwesomeIcon icon={MEAL_ICONS[meal.id]} />
+                      </span>
+                      <div>
+                        <p className="font-semibold text-gray-800">{meal.label}</p>
+                        <p className="text-xs text-gray-400">{meal.window}</p>
+                      </div>
                     </div>
+                    <button
+                      onClick={() => toggleMeal(meal.id)}
+                      disabled={isDisabled}
+                      className={`w-11 h-6 shrink-0 rounded-full relative transition-colors ${
+                        isEnabled ? "bg-[#004953]" : "bg-gray-200"
+                      } ${isDisabled ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}`}
+                    >
+                      <span
+                        className={`absolute left-0.5 top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
+                          isEnabled ? "translate-x-5" : "translate-x-0"
+                        }`}
+                      />
+                    </button>
                   </div>
-                  <button
-                    onClick={() => toggleMeal(meal.id)}
-                    className={`w-11 h-6 rounded-full relative transition-colors cursor-pointer ${
-                      enabledMeals[meal.id] ? "bg-[#004953]" : "bg-gray-200"
-                    }`}
-                  >
-                    <span
-                      className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${
-                        enabledMeals[meal.id] ? "translate-x-5" : "translate-x-0.5"
-                      }`}
-                    />
-                  </button>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

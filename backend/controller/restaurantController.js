@@ -6,6 +6,7 @@ import {
   Delivery,
   Restaurant,
   User,
+  Category,
 } from "../models/associations.js";
 
 export const getAllRestaurants = async (req, res) => {
@@ -15,6 +16,10 @@ export const getAllRestaurants = async (req, res) => {
         {
           model: User,
           attributes: ["full_name"],
+        },
+        {
+          model: Category,
+          attributes: ["category_name"],
         },
       ],
     });
@@ -34,6 +39,10 @@ export const getRestaurantById = async (req, res) => {
         {
           model: User,
           attributes: ["full_name"],
+        },
+        {
+          model: Category,
+          attributes: ["category_name"],
         },
       ],
     });
