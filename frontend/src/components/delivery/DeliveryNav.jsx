@@ -1,21 +1,13 @@
-import { NavLink } from "react-router-dom";
-import { UtensilsCrossed, Bell, Wifi, WifiOff } from "lucide-react";
+import { Bell, Wifi, WifiOff } from "lucide-react";
 import { PATH } from "../../path.js";
+import Logo from "../common/Logo";
 
 export default function DeliveryNav({ online = true, onToggleOnline }) {
   return (
     <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/70 border-b border-white/40">
       <div className="h-20 flex justify-between items-center px-8">
         {/* Logo */}
-        <NavLink to={PATH.DELIVERY.DASHBOARD} className="flex items-center gap-3">
-          <div className="w-11 h-11 rounded-xl bg-slate-900 text-white flex items-center justify-center">
-            <UtensilsCrossed size={20} />
-          </div>
-          <div>
-            <h1 className="font-bold text-lg text-slate-900">Crave24h</h1>
-            <p className="text-xs text-slate-500">Driver Panel</p>
-          </div>
-        </NavLink>
+        <Logo to={PATH.DELIVERY.DASHBOARD} />
 
         {/* Right controls */}
         <div className="flex items-center gap-3">

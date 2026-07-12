@@ -2,6 +2,7 @@ import React from 'react';
 import { LayoutDashboard, ShoppingBag, Utensils, BarChart3, Megaphone, Settings, HelpCircle, LogOut } from 'lucide-react';
 import { PATH } from '../../path.js';
 import SidebarLink from './SidebarLink';
+import Logo from '../common/Logo';
 
 const PortalSidebar = () => {
   const navItems = [
@@ -14,13 +15,13 @@ const PortalSidebar = () => {
   ];
 
   return (
-    <aside className="w-64 h-screen bg-[#034752] flex flex-col justify-between sticky top-0 shrink-0 text-white select-none">
+    <aside className="w-64 h-screen bg-white border-r border-gray-100 flex flex-col justify-between sticky top-0 shrink-0 select-none">
       <div className="p-6 space-y-8">
-        
-        {/* Crave24h Branding Logo Block from image_86ad87.png */}
+
+        {/* Branding */}
         <div className="px-2 pt-2">
-          <h1 className="text-2xl font-black tracking-tight text-white">Crave24h</h1>
-          <span className="text-[10px] font-bold text-teal-200/50 uppercase tracking-widest block mt-0.5">
+          <Logo to={PATH.SELLER.DASHBOARD} />
+          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5 ml-11">
             Partner Portal
           </span>
         </div>
@@ -37,19 +38,19 @@ const PortalSidebar = () => {
       <div className="p-6 space-y-0.5">
         <button
           type="button"
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-300/80 hover:bg-white/5 hover:text-white transition-all cursor-pointer"
+          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:bg-gray-50 hover:text-slate-900 transition-all cursor-pointer"
         >
           <HelpCircle size={18} />
           <span>Help</span>
         </button>
-        
+
         <button
           type="button"
           onClick={() => {
             sessionStorage.clear();
             window.location.reload();
           }}
-          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-gray-300/80 hover:bg-rose-500/10 hover:text-rose-300 transition-all cursor-pointer"
+          className="w-full flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-500 hover:bg-rose-50 hover:text-rose-500 transition-all cursor-pointer"
         >
           <LogOut size={18} />
           <span>Logout</span>

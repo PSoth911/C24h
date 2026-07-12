@@ -5,9 +5,9 @@ import {
   Bike,
   UserCircle,
   LogOut,
-  UtensilsCrossed,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
+import Logo from "../common/Logo";
 
 
 export default function AdminSidebar({ PATH }) {
@@ -48,14 +48,9 @@ export default function AdminSidebar({ PATH }) {
     <aside className="w-64 bg-[#F8FAFC] h-screen flex flex-col px-5 py-8">
 
       {/* Logo */}
-      <div className="flex items-center gap-3 mb-12">
-        <div className="w-11 h-11 rounded-xl bg-slate-900 text-white flex items-center justify-center">
-          <UtensilsCrossed size={20} />
-        </div>
-        <div>
-          <h1 className="font-bold text-lg text-slate-900">Crave24h</h1>
-          <p className="text-xs text-slate-500">Admin Panel</p>
-        </div>
+      <div className="mb-12">
+        <Logo to={PATH.ADMIN.DASHBOARD} />
+        <p className="text-xs text-slate-500 mt-1 ml-11">Admin Panel</p>
       </div>
 
       {/* Menu */}
@@ -76,7 +71,7 @@ export default function AdminSidebar({ PATH }) {
                     className={({ isActive }) =>
                       `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                         isActive
-                          ? "bg-white text-slate-900 shadow-sm"
+                          ? "bg-[#004953] text-white shadow-sm"
                           : "text-slate-500 hover:bg-white hover:text-slate-900"
                       }`
                     }

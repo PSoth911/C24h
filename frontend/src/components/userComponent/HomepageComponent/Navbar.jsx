@@ -11,11 +11,11 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 
-import logo from "../../../assets/image copy 28.png";
 import { useNavigate, useLocation } from "react-router-dom";
 import { PATH } from "../../../path.js";
 import { getCart } from "../../../service/cartService";
 import NotificationBell from "./NotificationBell";
+import Logo from "../../common/Logo";
 
 const NAV_LINKS = [
   { label: "Home", path: PATH.USER.HOME },
@@ -126,13 +126,7 @@ const Navbar = () => {
     <nav className="sticky top-0 z-50 bg-[#FFF8EF] rounded-xl shadow-sm">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
 
-        <button
-          onClick={() => navigate(PATH.USER.HOME)}
-          className="flex items-center gap-2 cursor-pointer"
-        >
-          <img className="w-9 h-9 object-contain" src={logo} alt="C24h logo" />
-          <span className="text-[#004953] text-xl font-bold tracking-tight">C24h</span>
-        </button>
+        <Logo to={PATH.USER.HOME} />
         <ul className="flex items-center gap-1">
           {NAV_LINKS.map(({ label, path }) => (
             <li key={path}>

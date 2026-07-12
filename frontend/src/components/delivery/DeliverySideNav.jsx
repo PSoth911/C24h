@@ -44,7 +44,7 @@ export default function DeliverySideNav() {
                   className={({ isActive }) =>
                     `flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 ${
                       isActive
-                        ? "bg-white text-slate-900 shadow-sm"
+                        ? "bg-[#004953] text-white shadow-sm"
                         : "text-slate-500 hover:bg-white hover:text-slate-900"
                     }`
                   }
