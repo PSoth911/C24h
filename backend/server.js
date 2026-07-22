@@ -42,6 +42,10 @@ app.use(cors({
 app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.use("/api/auth", authRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/deliver", deliverRoutes);

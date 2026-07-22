@@ -49,21 +49,20 @@ import Settings from './pages/seller/Settings';
 
 import './index.css';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import ConnectionGuard from './components/common/ConnectionGuard.jsx';
 
 import { Navigate } from "react-router-dom";
 
 
 function App() {
-  
-  return (
-    <Routes>
 
-        
+  return (
+    <ConnectionGuard>
+    <Routes>
 
       <Route path={PATH.AUTH.LOGIN} element={<AuthLogin/>}/>
       <Route path={PATH.AUTH.SIGNUP} element={<AuthSignUp/>}/>
       <Route path="/" element={<Navigate to={PATH.AUTH.LOGIN} replace/>}/>
-=
 
       <Route path={PATH.DELIVERY.DASHBOARD} element={<ProtectedRoute role="driver"> <DeliveryDashboard/> </ProtectedRoute>} />
       <Route path={PATH.DELIVERY.MAP} element={<ProtectedRoute role="driver"> <DeliveryMap/> </ProtectedRoute>}/>
@@ -108,8 +107,7 @@ function App() {
 
 
     </Routes>
-      
-  
+    </ConnectionGuard>
   )
 }
 
