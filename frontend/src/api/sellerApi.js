@@ -124,6 +124,15 @@ export const sendOrderForDelivery = (id) => putOrderAction(id, "send-for-deliver
 export const cancelOrder = (id) => putOrderAction(id, "cancel");
 
 /* ========================= */
+/* REVIEWS */
+/* ========================= */
+
+export const getReviews = async () => {
+  const res = await fetch(`${BASE_URL}/reviews`, { headers: authHeaders() });
+  return res.json();
+};
+
+/* ========================= */
 /* DASHBOARD */
 /* ========================= */
 

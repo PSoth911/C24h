@@ -4,6 +4,32 @@ import OrderItem from "../models/OrderItem.js";
 import Review from "../models/Review.js";
 import Order from "../models/Order.js";
 import User from "../models/user.js";
+import Restaurant from "../models/Restaurant.js";
+
+const updateRestaurantAverageRating = async (restaurant_id) => {
+  const products = await Product.findAll({
+    where: { restaurant_id },
+    attributes: ["product_id"],
+  });
+
+  const productIds = products.map((p) => p.product_id);
+  if (productIds.length === 0) return;
+
+  const reviews = await Review.findAll({
+    where: { product_id: productIds },
+    attributes: ["rating"],
+  });
+
+  if (reviews.length === 0) return;
+
+  const average =
+    reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length;
+
+  await Restaurant.update(
+    { average_rating: average.toFixed(1) },
+    { where: { restaurant_id } }
+  );
+};
 export const createReview = async (req, res) => {
   try {
     const { product_id, rating, comment } = req.body;
@@ -75,6 +101,13 @@ export const createReview = async (req, res) => {
       rating,
       comment,
     });
+
+    const product = await Product.findByPk(product_id, {
+      attributes: ["restaurant_id"],
+    });
+    if (product) {
+      await updateRestaurantAverageRating(product.restaurant_id);
+    }
 
     return res.status(201).json({
       message: "Review submitted successfully",

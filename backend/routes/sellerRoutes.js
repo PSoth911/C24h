@@ -29,6 +29,7 @@ import {
   getSalesMix,
   getPromotions,
   createPromotion,
+  getRestaurantReviews,
 } from "../controller/sellerController.js";
 
 const route = express.Router();
@@ -53,6 +54,9 @@ route.put("/products/:id", upload.single("image"), updateProduct);
 route.patch("/products/:id/status", toggleProductStatus);
 route.patch("/products/:id/restock", restockProduct);
 route.delete("/products/:id", deleteProduct);
+
+// Reviews
+route.get("/reviews", getRestaurantReviews);
 
 // Orders
 route.get("/orders", getOrders);

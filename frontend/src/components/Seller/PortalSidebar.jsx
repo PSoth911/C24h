@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutDashboard, ShoppingBag, Utensils, BarChart3, Megaphone, Settings, HelpCircle, LogOut, X } from 'lucide-react';
+import { LayoutDashboard, ShoppingBag, Utensils, BarChart3, Megaphone, Star, Settings, HelpCircle, LogOut, X } from 'lucide-react';
 import { PATH } from '../../path.js';
 import SidebarLink from './SidebarLink';
 import Logo from '../common/Logo';
@@ -11,6 +11,7 @@ const PortalSidebar = ({ mobileOpen = false, onClose = () => {} }) => {
     { to: PATH.SELLER.MENU, label: 'Menu', icon: Utensils },
     { to: PATH.SELLER.ANALYTICS, label: 'Analytics', icon: BarChart3 },
     { to: PATH.SELLER.PROMOTIONS, label: 'Promotions', icon: Megaphone },
+    { to: PATH.SELLER.REVIEWS, label: 'Reviews', icon: Star },
     { to: PATH.SELLER.SETTINGS, label: 'Settings', icon: Settings },
   ];
 

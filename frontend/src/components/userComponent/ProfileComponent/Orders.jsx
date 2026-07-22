@@ -20,6 +20,7 @@ import {
 } from "../../../service/favouriteService";
 import placeholderRestaurant from "../../../assets/image copy 2.png";
 import Loading from "../../../pages/user_page/LoadingPage";
+import RateOrderModal from "./RateOrderModal";
 
 const ACTIVE_STATUSES = ["pending", "confirmed", "preparing", "ready", "on_the_way", "out_for_delivery"];
 const PAST_STATUSES   = ["delivered", "completed", "cancelled"];
@@ -40,6 +41,7 @@ const Orders = ({ setactiveMenu }) => {
   const [select,         setSelect]        = useState("All");
   const [favRestaurants, setFavRestaurants] = useState([]);
   const [removingFavId,  setRemovingFavId] = useState(null);
+  const [ratingOrder,    setRatingOrder]   = useState(null);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -194,21 +196,32 @@ const Orders = ({ setactiveMenu }) => {
                         </span>
                       </div>
 
-                      <button
-                        onClick={() =>
-                          active
-                            ? navigate(`${PATH.USER.Trackorder}/${order.order_id}`)
-                            : navigate(PATH.USER.HOME)
-                        }
-                        className={`btn-press flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200
-                          ${active
-                            ? "bg-[#004953] text-white hover:bg-[#003940] shadow-sm"
-                            : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                          }`}
-                      >
-                        <FontAwesomeIcon icon={active ? faMotorcycle : faStore} className="text-xs" />
-                        {active ? "Track Order" : "Reorder"}
-                      </button>
+                      <div className="flex items-center gap-2">
+                        {(order.order_status || "").toLowerCase() === "delivered" && (
+                          <button
+                            onClick={() => setRatingOrder(order)}
+                            className="btn-press flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold bg-amber-50 text-amber-700 hover:bg-amber-100 transition-all duration-200"
+                          >
+                            <FontAwesomeIcon icon={faStar} className="text-xs" />
+                            Rate Order
+                          </button>
+                        )}
+                        <button
+                          onClick={() =>
+                            active
+                              ? navigate(`${PATH.USER.Trackorder}/${order.order_id}`)
+                              : navigate(PATH.USER.HOME)
+                          }
+                          className={`btn-press flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200
+                            ${active
+                              ? "bg-[#004953] text-white hover:bg-[#003940] shadow-sm"
+                              : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                            }`}
+                        >
+                          <FontAwesomeIcon icon={active ? faMotorcycle : faStore} className="text-xs" />
+                          {active ? "Track Order" : "Reorder"}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -299,6 +312,10 @@ const Orders = ({ setactiveMenu }) => {
           </div>
         )}
       </div>
+
+      {ratingOrder && (
+        <RateOrderModal order={ratingOrder} onClose={() => setRatingOrder(null)} />
+      )}
 
     </div>
   );

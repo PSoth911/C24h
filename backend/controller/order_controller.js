@@ -261,6 +261,7 @@ export const getOrders = async (req, res) => {
                         {
                             model: Product,
                             attributes: [
+                                "product_id",
                                 "product_name",
                                 "image",
                             ],

@@ -10,6 +10,7 @@ import {
   Driver,
   Delivery,
   Promotion,
+  Review,
 } from "../models/associations.js";
 
 export const getAllRestaurants = async (req, res) => {
@@ -262,6 +263,66 @@ export const deleteProduct = async (req, res) => {
     await product.destroy();
 
     res.status(200).json({ success: true, message: "Product deleted" });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+/* ========================= */
+/* REVIEWS                   */
+/* ========================= */
+
+export const getRestaurantReviews = async (req, res) => {
+  try {
+    const restaurant = await resolveRestaurant(req);
+    if (!restaurant) return notFoundRestaurant(res);
+
+    const products = await Product.findAll({
+      where: { restaurant_id: restaurant.restaurant_id },
+      attributes: ["product_id"],
+    });
+
+    const productIds = products.map((p) => p.product_id);
+
+    if (productIds.length === 0) {
+      return res.status(200).json({
+        success: true,
+        total_reviews: 0,
+        average_rating: "0.0",
+        data: [],
+      });
+    }
+
+    const reviews = await Review.findAll({
+      where: { product_id: productIds },
+      include: [
+        {
+          model: Customer,
+          attributes: [],
+          include: [{ model: User, attributes: ["full_name"] }],
+        },
+        {
+          model: Product,
+          attributes: ["product_name"],
+        },
+      ],
+      order: [["review_date", "DESC"]],
+    });
+
+    const average_rating =
+      reviews.length > 0
+        ? (
+            reviews.reduce((sum, review) => sum + review.rating, 0) /
+            reviews.length
+          ).toFixed(1)
+        : "0.0";
+
+    res.status(200).json({
+      success: true,
+      total_reviews: reviews.length,
+      average_rating,
+      data: reviews,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

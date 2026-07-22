@@ -23,6 +23,7 @@ export const PATH = {
         MENU:"/seller/menu",
         ANALYTICS:"/seller/analytics",
         PROMOTIONS:"/seller/promotions",
+        REVIEWS:"/seller/reviews",
         SETTINGS:"/seller/settings"
     },
     USER:{

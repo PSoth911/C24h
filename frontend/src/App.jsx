@@ -45,6 +45,7 @@ import Orders from './pages/seller/Orders';
 import MenuManagement from './pages/seller/MenuManagement';
 import Analytics from './pages/seller/Analytics';
 import Promotions from './pages/seller/Promotions';
+import Reviews from './pages/seller/Reviews';
 import Settings from './pages/seller/Settings';
 
 import './index.css';
@@ -102,6 +103,7 @@ function App() {
       <Route path={PATH.SELLER.MENU} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><MenuManagement /></PortalLayout></ProtectedRoute>} />
       <Route path={PATH.SELLER.ANALYTICS} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><Analytics /></PortalLayout></ProtectedRoute>} />
       <Route path={PATH.SELLER.PROMOTIONS} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><Promotions /></PortalLayout></ProtectedRoute>} />
+      <Route path={PATH.SELLER.REVIEWS} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><Reviews /></PortalLayout></ProtectedRoute>} />
       <Route path={PATH.SELLER.SETTINGS} element={<ProtectedRoute role="restaurant_owner"><PortalLayout><Settings /></PortalLayout></ProtectedRoute>} />
 
 
