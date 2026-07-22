@@ -17,7 +17,7 @@ const Order = sequelize.define(
 
     restaurant_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+    allowNull: false,
     },
 
     subtotal: {

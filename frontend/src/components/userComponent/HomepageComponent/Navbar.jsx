@@ -37,7 +37,7 @@ const Navbar = () => {
   );
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState("");
-  const [isLoggedIn] = useState(!!sessionStorage.getItem("token"));
+  const [isLoggedIn] = useState(!!localStorage.getItem("accessToken"));
 
   const profileRef = useRef(null);
   const locationRef = useRef(null);
@@ -53,7 +53,7 @@ const Navbar = () => {
 
   useEffect(() => {
     const handler = () => fetchCart();
-    if (sessionStorage.getItem("token")) handler();
+    if (localStorage.getItem("accessToken")) handler();
     window.addEventListener("cartUpdated", handler);
     window.addEventListener("focus", handler);
     return () => {
@@ -112,7 +112,10 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
     setProfileOpen(false);
     navigate(PATH.AUTH.LOGIN);
   };

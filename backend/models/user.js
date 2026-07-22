@@ -49,6 +49,11 @@ const User = sequelize.define(
       ),
       defaultValue: "active",
     },
+    refresh_token: {
+      type: DataTypes.TEXT,
+      allowNull: true,
+    },
+
   },
   {
     tableName: "users",

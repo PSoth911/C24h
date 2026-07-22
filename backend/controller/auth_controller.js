@@ -67,7 +67,7 @@ export const register = async (req, res) => {
 // LOGIN
 export const login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { email, password ,rememberme} = req.body;
 
     // 1. Validation
     if (!email || !password) {
@@ -105,22 +105,36 @@ export const login = async (req, res) => {
     }
 
     // Generate token
-    // 4. Generate JWT token
-    const token = jwt.sign(
+    // 4. Generate access token
+    const accessToken = jwt.sign(
       {
         id: user.user_id,
         email: user.email,
         role: user.role,
       },
-      process.env.JWT_SECRET,
+      process.env.ACCESS_TOKEN_SECRET,
       {
-        expiresIn: "1d",
+        expiresIn: rememberme? "30d": "15m",
       }
     );
-
+    // 5. Generate refresh token
+    const refreshToken = jwt.sign(
+      {
+        id: user.user_id
+      },
+      process.env.REFRESH_TOKEN_SECRET,
+      {
+        expiresIn: "7d",
+      }
+    );
+    // 6. Save refresh token in database
+    user.refresh_token = refreshToken;
+    await user.save();
+    // 7. Return tokens and user info
     return res.status(200).json({
       message: "Login successful",
-      token,
+      accessToken,
+      refreshToken,
       user: {
         id: user.user_id,
         full_name: user.full_name,
@@ -130,6 +144,46 @@ export const login = async (req, res) => {
       },
     });
 
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
+
+export const refreshToken = async (req, res) => {
+  try {
+    // 1. Get refresh token from request body
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(401).json({ message: "Refresh token is required" });
+    }
+    // 2. Verify refresh token and get user
+    const user = await User.findOne({ where: { refresh_token : refreshToken } });
+    if (!user) {
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
+    // 3. Verify the refresh token using jwt.verify
+    const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+    if (decoded.id !== user.user_id) {
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
+    // 4. Generate new access token
+    const newAccessToken = jwt.sign(
+      {
+        id: user.user_id,
+        email: user.email,
+        role: user.role,
+      },
+      process.env.ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "15m",
+      }
+    );
+    // 5. Return new access token
+    return res.status(200).json({
+      accessToken: newAccessToken,
+    });
   } catch (error) {
     return res.status(500).json({
       message: error.message,

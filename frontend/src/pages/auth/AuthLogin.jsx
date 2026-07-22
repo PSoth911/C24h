@@ -6,11 +6,16 @@ import {login} from "../../service/authService.js"
 const TEAL = "#004953";
 
 export default function AuthLogin() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(
+    () => localStorage.getItem("rememberedEmail") || ""
+  );
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [rememberme, setRememberme] = useState(
+    () => !!localStorage.getItem("rememberedEmail")
+  );
 
   const navigate = useNavigate();
 
@@ -20,12 +25,19 @@ export default function AuthLogin() {
     setLoading(true);
 
     try {
-      const response = await login(email, password);
-      const { token, user } = response.data;
+      const response = await login(email, password,rememberme);
+      const { accessToken, refreshToken, user } = response.data;
 
-      sessionStorage.setItem("token", token);
-      sessionStorage.setItem("role", user.role);
-      sessionStorage.setItem("user", JSON.stringify(user));
+      localStorage.setItem("accessToken", accessToken);
+      localStorage.setItem("refreshToken", refreshToken);
+      localStorage.setItem("role", user.role);
+      localStorage.setItem("user", JSON.stringify(user));
+
+      if (rememberme) {
+        localStorage.setItem("rememberedEmail", email);
+      } else {
+        localStorage.removeItem("rememberedEmail");
+      }
 
       switch (user.role) {
         case "admin":
@@ -135,7 +147,7 @@ export default function AuthLogin() {
                 A
               </span>
               <span className="text-[15px] font-semibold tracking-tight text-slate-900">
-                FoodAdmin
+                Crave24h
               </span>
             </div>
 
@@ -143,7 +155,7 @@ export default function AuthLogin() {
               Welcome back
             </h1>
             <p className="mt-1.5 text-sm text-slate-500">
-              Sign in to manage your dashboard
+              Sign in to continue to your account
             </p>
 
             {error && (
@@ -163,7 +175,7 @@ export default function AuthLogin() {
                 <input
                   type="email"
                   autoComplete="email"
-                  placeholder="admin@example.com"
+                  placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   className="auth-input w-full rounded-xl border border-slate-200 bg-white px-4 py-3 text-[15px] text-slate-900 placeholder:text-slate-400 transition"
@@ -206,7 +218,7 @@ export default function AuthLogin() {
 
               <div className="flex items-center justify-between pt-0.5 text-sm">
                 <label className="flex cursor-pointer items-center gap-2 text-slate-600">
-                  <input type="checkbox" className="h-4 w-4 rounded accent-[#004953]" />
+                  <input type="checkbox" className="h-4 w-4 rounded accent-[#004953]" checked={rememberme} onChange={(e)=>setRememberme(e.target.checked)} />
                   Remember me
                 </label>
                 <button type="button" className="font-semibold hover:underline" style={{ color: TEAL }}>

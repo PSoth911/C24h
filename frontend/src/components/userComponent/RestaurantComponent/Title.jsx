@@ -32,7 +32,7 @@ const Title = ({
   const [popped, setPopped] = useState(false);
 
   useEffect(() => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     if (!token || !restaurantId) return;
     getFavouriteRestaurants()
       .then((res) => {
@@ -43,7 +43,7 @@ const Title = ({
   }, [restaurantId]);
 
   const toggleFavourite = async () => {
-    const token = sessionStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     if (!token || toggling) return;
     setToggling(true);
     try {

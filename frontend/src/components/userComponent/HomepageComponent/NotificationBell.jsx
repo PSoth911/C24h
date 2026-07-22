@@ -28,7 +28,7 @@ const timeAgo = (dateString) => {
 };
 
 const NotificationBell = () => {
-  const [isLoggedIn] = useState(!!sessionStorage.getItem("token"));
+  const [isLoggedIn] = useState(!!localStorage.getItem("accessToken"));
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [notifications, setNotifications] = useState([]);

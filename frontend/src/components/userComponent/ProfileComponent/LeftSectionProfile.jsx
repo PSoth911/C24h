@@ -26,8 +26,10 @@ const LeftSectionProfile = ({ activeMenu, setactiveMenu, userData, loading }) =>
   }, [setactiveMenu]);
 
   const handleLogout = () => {
-    sessionStorage.removeItem("token");
-    sessionStorage.removeItem("user");
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    localStorage.removeItem("role");
+    localStorage.removeItem("user");
     localStorage.removeItem("activeMenu");
     navigate(PATH.AUTH.LOGIN);
   };
