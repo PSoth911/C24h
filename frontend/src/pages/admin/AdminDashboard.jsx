@@ -13,6 +13,7 @@ import {
 
 import AdminSidebar from "../../components/admin/AdminSidebar";
 import PageLoader from "../../components/admin/PageLoader";
+import Reveal from "../../components/common/Reveal";
 import { PATH } from "../../path";
 
 export default function AdminDashboard() {
@@ -27,7 +28,7 @@ export default function AdminDashboard() {
     const fetchDashboard = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/admin/dashboard", {
-          headers: { Authorization: `Bearer ${sessionStorage.getItem("token")}` },
+          headers: { Authorization: `Bearer ${localStorage.getItem("accessToken")}` },
         });
         const data = await res.json();
 
@@ -81,7 +82,7 @@ export default function AdminDashboard() {
             <p className="text-slate-600 font-medium">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="px-5 py-2 bg-teal-600 text-white rounded-2xl text-sm hover:bg-teal-700 transition"
+              className="px-5 py-2 bg-teal-600 text-white rounded-2xl text-sm hover:bg-teal-700 transition btn-press"
             >
               Retry
             </button>
@@ -98,7 +99,7 @@ export default function AdminDashboard() {
       <main className="flex-1">
         {/* HEADER */}
         <header className="sticky top-0 z-20 backdrop-blur-xl bg-white/70 border-b border-white/40">
-          <div className="h-20 flex items-center justify-between px-8">
+          <div className="py-4 sm:h-20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0 px-4 sm:px-8">
             <div>
               <h1 className="text-2xl font-bold text-slate-800">Dashboard</h1>
               <p className="text-sm text-slate-500">
@@ -107,7 +108,7 @@ export default function AdminDashboard() {
             </div>
 
             <div className="flex items-center gap-4">
-              <div className="relative">
+              <div className="relative flex-1 sm:flex-initial">
                 <Search
                   className="absolute left-3 top-2.5 text-slate-400"
                   size={18}
@@ -116,59 +117,67 @@ export default function AdminDashboard() {
                   placeholder="Search orders..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-72 pl-10 pr-4 py-2 rounded-2xl bg-white/80 border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                  className="w-full sm:w-72 pl-10 pr-4 py-2 rounded-2xl bg-white/80 border border-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
-              <button className="w-10 h-10 rounded-2xl bg-white shadow-sm border flex items-center justify-center hover:scale-105 transition">
+              <button className="w-10 h-10 shrink-0 rounded-2xl bg-white shadow-sm border flex items-center justify-center hover:scale-105 transition btn-press">
                 <Bell size={18} />
               </button>
 
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-600 to-teal-400 text-white flex items-center justify-center font-bold shadow">
+              <div className="w-10 h-10 shrink-0 rounded-full bg-gradient-to-br from-teal-600 to-teal-400 text-white flex items-center justify-center font-bold shadow">
                 A
               </div>
             </div>
           </div>
         </header>
 
-        <div className="p-8 space-y-8">
+        <div className="p-4 sm:p-8 space-y-8">
           {/* STATS */}
-          <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-6">
-            <StatCard
-              title="Total Orders"
-              value={dashboard.totalOrders}
-              icon={<ShoppingBag size={20} />}
-              color="from-orange-500 to-orange-400"
-            />
-            <StatCard
-              title="Total Users"
-              value={dashboard.totalUsers}
-              icon={<Users size={20} />}
-              color="from-blue-500 to-blue-400"
-            />
-            <StatCard
-              title="Restaurants"
-              value={dashboard.totalRestaurants}
-              icon={<Store size={20} />}
-              color="from-green-500 to-green-400"
-            />
-            <StatCard
-              title="Drivers"
-              value={dashboard.totalDrivers}
-              icon={<Bike size={20} />}
-              color="from-purple-500 to-purple-400"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+            <Reveal delay={0}>
+              <StatCard
+                title="Total Orders"
+                value={dashboard.totalOrders}
+                icon={<ShoppingBag size={20} />}
+                color="from-orange-500 to-orange-400"
+              />
+            </Reveal>
+            <Reveal delay={80}>
+              <StatCard
+                title="Total Users"
+                value={dashboard.totalUsers}
+                icon={<Users size={20} />}
+                color="from-blue-500 to-blue-400"
+              />
+            </Reveal>
+            <Reveal delay={160}>
+              <StatCard
+                title="Restaurants"
+                value={dashboard.totalRestaurants}
+                icon={<Store size={20} />}
+                color="from-green-500 to-green-400"
+              />
+            </Reveal>
+            <Reveal delay={240}>
+              <StatCard
+                title="Drivers"
+                value={dashboard.totalDrivers}
+                icon={<Bike size={20} />}
+                color="from-purple-500 to-purple-400"
+              />
+            </Reveal>
           </div>
 
           {/* MAIN GRID */}
           <div className="grid lg:grid-cols-3 gap-6">
             {/* ORDERS TABLE */}
-            <div className="lg:col-span-2 bg-white/70 backdrop-blur-xl rounded-3xl shadow-sm border border-white/40 overflow-hidden">
+            <Reveal className="lg:col-span-2 bg-white/70 backdrop-blur-xl rounded-3xl shadow-sm border border-white/40 overflow-hidden">
               <div className="flex items-center justify-between p-6 border-b border-white/30">
                 <h2 className="font-semibold text-lg">Recent Orders</h2>
                 <button
                   onClick={() => navigate(PATH.adminOrders ?? "/admin/orders")}
-                  className="text-teal-600 text-sm font-medium hover:underline"
+                  className="text-teal-600 text-sm font-medium hover:underline btn-press"
                 >
                   View all
                 </button>
@@ -214,12 +223,12 @@ export default function AdminDashboard() {
                   </table>
                 )}
               </div>
-            </div>
+            </Reveal>
 
             {/* RIGHT PANEL */}
             <div className="space-y-6">
               {/* ORDER BREAKDOWN */}
-              <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-6 border border-white/40 shadow-sm">
+              <Reveal delay={80} className="bg-white/70 backdrop-blur-xl rounded-3xl p-6 border border-white/40 shadow-sm">
                 <h3 className="font-semibold mb-5">Order Breakdown</h3>
 
                 <div className="space-y-4">
@@ -247,16 +256,16 @@ export default function AdminDashboard() {
                     />
                   </div>
                 </div>
-              </div>
+              </Reveal>
 
               {/* SYSTEM OVERVIEW BANNER */}
-              <div className="rounded-3xl p-6 text-white bg-gradient-to-br from-teal-600 to-cyan-500 shadow-lg">
+              <Reveal delay={160} className="rounded-3xl p-6 text-white bg-gradient-to-br from-teal-600 to-cyan-500 shadow-lg card-hover">
                 <TrendingUp className="mb-3" />
                 <h2 className="text-xl font-bold">System Overview</h2>
                 <p className="text-sm opacity-90 mt-2">
                   Track orders, users, restaurants, and deliveries in real time.
                 </p>
-              </div>
+              </Reveal>
             </div>
           </div>
         </div>
@@ -271,7 +280,7 @@ export default function AdminDashboard() {
 
 function StatCard({ title, value, icon, color }) {
   return (
-    <div className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-sm rounded-3xl p-6 hover:scale-[1.02] transition">
+    <div className="bg-white/70 backdrop-blur-xl border border-white/40 shadow-sm rounded-3xl p-6 hover:scale-[1.02] transition card-hover">
       <div className="flex justify-between items-center">
         <div>
           <p className="text-slate-500 text-sm">{title}</p>

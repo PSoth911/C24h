@@ -11,7 +11,10 @@ import {
 } from "lucide-react";
 
 import AdminSidebar from "../../components/admin/AdminSidebar";
+import Reveal from "../../components/common/Reveal";
 import { PATH } from "../../path";
+
+const UPLOADS_URL = "http://localhost:5000/uploads";
 
 import {
   getRestaurants,
@@ -39,9 +42,15 @@ export default function AdminRestaurantManagement() {
     address: "",
     phone: "",
     status: "open",
+    logo: null,
+    image: null,
   };
 
   const [form, setForm] = useState(emptyForm);
+  const [logoPreview, setLogoPreview] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
+  const [existingLogo, setExistingLogo] = useState(null);
+  const [existingImage, setExistingImage] = useState(null);
 
   /* ================= FETCH ================= */
   useEffect(() => {
@@ -77,11 +86,25 @@ export default function AdminRestaurantManagement() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    const { name, files } = e.target;
+    const file = files?.[0] || null;
+    setForm({ ...form, [name]: file });
+
+    const previewUrl = file ? URL.createObjectURL(file) : null;
+    if (name === "logo") setLogoPreview(previewUrl);
+    if (name === "image") setImagePreview(previewUrl);
+  };
+
   /* ================= OPEN ADD ================= */
   const openAddModal = () => {
     setEditMode(false);
     setSelectedRestaurant(null);
     setForm(emptyForm);
+    setLogoPreview(null);
+    setImagePreview(null);
+    setExistingLogo(null);
+    setExistingImage(null);
     setIsModalOpen(true);
   };
 
@@ -97,7 +120,13 @@ export default function AdminRestaurantManagement() {
       address: r.address || "",
       phone: r.phone || "",
       status: r.status || "open",
+      logo: null,
+      image: null,
     });
+    setLogoPreview(null);
+    setImagePreview(null);
+    setExistingLogo(r.logo || null);
+    setExistingImage(r.image || null);
     setIsModalOpen(true);
   };
 
@@ -116,6 +145,8 @@ export default function AdminRestaurantManagement() {
         user_id: Number(form.user_id),
         category_id: Number(form.category_id),
         status: form.status,
+        ...(form.logo && { logo: form.logo }),
+        ...(form.image && { image: form.image }),
       };
 
       let res;
@@ -172,7 +203,7 @@ export default function AdminRestaurantManagement() {
       <main className="flex-1">
         {/* HEADER */}
         <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/70 border-b border-white/40">
-          <div className="h-20 px-8 flex items-center justify-between">
+          <div className="py-4 sm:h-20 px-4 sm:px-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
             <div>
               <h1 className="text-2xl font-bold text-slate-800">
                 Restaurant Operations
@@ -180,7 +211,7 @@ export default function AdminRestaurantManagement() {
               <p className="text-sm text-slate-500">Manage partner restaurants</p>
             </div>
 
-            <div className="flex gap-3 items-center">
+            <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
               <div className="relative">
                 <Search
                   size={18}
@@ -190,14 +221,14 @@ export default function AdminRestaurantManagement() {
                   placeholder="Search restaurant..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-72 rounded-2xl bg-white/80 border border-slate-200 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                  className="pl-10 pr-4 py-2 w-full sm:w-72 rounded-2xl bg-white/80 border border-slate-200 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 />
               </div>
 
               {/* ADD BUTTON */}
               <button
                 onClick={openAddModal}
-                className="flex items-center gap-2 bg-gradient-to-r from-teal-600 to-teal-500 text-white px-5 py-2.5 rounded-2xl shadow hover:scale-[1.02] transition"
+                className="flex items-center justify-center gap-2 bg-gradient-to-r from-teal-600 to-teal-500 text-white px-5 py-2.5 rounded-2xl shadow hover:scale-[1.02] transition btn-press"
               >
                 <Plus size={18} />
                 Add Restaurant
@@ -206,31 +237,37 @@ export default function AdminRestaurantManagement() {
           </div>
         </div>
 
-        <div className="p-8 space-y-8">
+        <div className="p-4 sm:p-8 space-y-8">
           {/* STATS */}
-          <div className="grid md:grid-cols-3 gap-6">
-            <StatCard
-              title="Restaurants"
-              value={restaurants.length}
-              icon={<Store size={20} />}
-              color="from-orange-500 to-orange-400"
-            />
-            <StatCard
-              title="Owners"
-              value={owners.length}
-              icon={<Users size={20} />}
-              color="from-blue-500 to-blue-400"
-            />
-            <StatCard
-              title="Active"
-              value={activeRestaurants}
-              icon={<CircleCheck size={20} />}
-              color="from-green-500 to-green-400"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            <Reveal delay={0}>
+              <StatCard
+                title="Restaurants"
+                value={restaurants.length}
+                icon={<Store size={20} />}
+                color="from-orange-500 to-orange-400"
+              />
+            </Reveal>
+            <Reveal delay={80}>
+              <StatCard
+                title="Owners"
+                value={owners.length}
+                icon={<Users size={20} />}
+                color="from-blue-500 to-blue-400"
+              />
+            </Reveal>
+            <Reveal delay={160}>
+              <StatCard
+                title="Active"
+                value={activeRestaurants}
+                icon={<CircleCheck size={20} />}
+                color="from-green-500 to-green-400"
+              />
+            </Reveal>
           </div>
 
           {/* LIST */}
-          <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm">
+          <Reveal className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm">
             <div className="flex justify-between items-center p-6 border-b border-white/30">
               <h2 className="font-semibold text-lg">Restaurant List</h2>
               <span className="text-sm text-slate-500">
@@ -238,23 +275,32 @@ export default function AdminRestaurantManagement() {
               </span>
             </div>
 
-            <div className="p-6 grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div className="p-6 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
               {filteredRestaurants.length === 0 ? (
-                <p className="text-slate-400 col-span-3 text-center py-12">
+                <p className="text-slate-400 col-span-full text-center py-12">
                   No restaurants found.
                 </p>
               ) : (
-                filteredRestaurants.map((r) => (
-                  <div
+                filteredRestaurants.map((r, i) => (
+                  <Reveal
                     key={r.restaurant_id}
-                    className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-1 transition"
+                    delay={Math.min(i, 8) * 60}
+                    className="bg-white rounded-3xl p-5 shadow-sm border border-slate-100 hover:shadow-md hover:-translate-y-1 transition card-hover"
                   >
                     {/* TOP */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-400 text-white flex items-center justify-center font-bold">
-                          {r.restaurant_name.charAt(0).toUpperCase()}
-                        </div>
+                        {r.logo ? (
+                          <img
+                            src={`${UPLOADS_URL}/${r.logo}`}
+                            alt={r.restaurant_name}
+                            className="w-12 h-12 rounded-2xl object-cover shrink-0"
+                          />
+                        ) : (
+                          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-400 text-white flex items-center justify-center font-bold shrink-0">
+                            {r.restaurant_name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
                         <div>
                           <h3 className="font-semibold text-slate-800">
                             {r.restaurant_name}
@@ -288,17 +334,17 @@ export default function AdminRestaurantManagement() {
                         onClick={() => handleDelete(r.restaurant_id)}
                       />
                     </div>
-                  </div>
+                  </Reveal>
                 ))
               )}
             </div>
-          </div>
+          </Reveal>
         </div>
 
         {/* MODAL */}
         {isModalOpen && (
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
-            <div className="bg-white w-[480px] rounded-3xl p-7 shadow-xl relative">
+          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+            <div className="bg-white w-full max-w-[480px] rounded-3xl p-7 shadow-xl relative animate-fade-in-scale max-h-[90vh] overflow-y-auto">
               {/* MODAL HEADER */}
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold text-slate-800">
@@ -306,13 +352,62 @@ export default function AdminRestaurantManagement() {
                 </h2>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="text-slate-400 hover:text-slate-600 transition"
+                  className="text-slate-400 hover:text-slate-600 transition btn-press"
                 >
                   <X size={20} />
                 </button>
               </div>
 
               <div className="space-y-3">
+                {/* LOGO + IMAGE */}
+                <div className="grid grid-cols-2 gap-3">
+                  <Field label="Logo">
+                    <label className="flex flex-col items-center justify-center gap-2 border border-dashed border-slate-300 rounded-xl p-3 cursor-pointer hover:bg-slate-50 transition">
+                      {logoPreview || existingLogo ? (
+                        <img
+                          src={logoPreview || `${UPLOADS_URL}/${existingLogo}`}
+                          alt="Logo preview"
+                          className="w-16 h-16 rounded-xl object-cover"
+                        />
+                      ) : (
+                        <span className="text-xs text-slate-400 text-center">
+                          Click to upload logo
+                        </span>
+                      )}
+                      <input
+                        type="file"
+                        name="logo"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </Field>
+
+                  <Field label="Cover Image">
+                    <label className="flex flex-col items-center justify-center gap-2 border border-dashed border-slate-300 rounded-xl p-3 cursor-pointer hover:bg-slate-50 transition">
+                      {imagePreview || existingImage ? (
+                        <img
+                          src={imagePreview || `${UPLOADS_URL}/${existingImage}`}
+                          alt="Cover preview"
+                          className="w-16 h-16 rounded-xl object-cover"
+                        />
+                      ) : (
+                        <span className="text-xs text-slate-400 text-center">
+                          Click to upload image
+                        </span>
+                      )}
+                      <input
+                        type="file"
+                        name="image"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                  </Field>
+                </div>
+
                 {/* NAME */}
                 <Field label="Restaurant Name">
                   <input
@@ -413,13 +508,13 @@ export default function AdminRestaurantManagement() {
               <div className="flex justify-end gap-3 mt-6">
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm"
+                  className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm btn-press"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleSave}
-                  className="px-5 py-2 rounded-xl bg-teal-600 text-white text-sm hover:bg-teal-700 transition"
+                  className="px-5 py-2 rounded-xl bg-teal-600 text-white text-sm hover:bg-teal-700 transition btn-press"
                 >
                   {editMode ? "Save Changes" : "Create Restaurant"}
                 </button>
@@ -447,7 +542,7 @@ function Field({ label, children }) {
 
 function StatCard({ title, value, icon, color }) {
   return (
-    <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-6 shadow-sm hover:scale-[1.02] transition">
+    <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-6 shadow-sm hover:scale-[1.02] transition card-hover">
       <div className="flex justify-between items-center">
         <div>
           <p className="text-sm text-slate-500">{title}</p>
@@ -483,7 +578,7 @@ function ActionButton({ icon, color, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${styles[color]}`}
+      className={`w-9 h-9 rounded-xl flex items-center justify-center transition btn-press ${styles[color]}`}
     >
       {icon}
     </button>

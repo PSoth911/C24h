@@ -4,7 +4,7 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 const COLORS = ['#004D40', '#0ea5e9', '#f59e0b', '#a855f7', '#ef4444', '#10b981'];
 
 const SalesMixChart = ({ data = [] }) => (
-  <div className="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-sm space-y-4 lg:w-96">
+  <div className="card-hover bg-white border border-gray-200/80 rounded-2xl p-6 shadow-sm space-y-4 lg:w-96">
     <div>
       <h4 className="text-sm font-bold text-gray-800">Product Category Mix</h4>
       <p className="text-xs text-gray-400 mt-0.5">Revenue share by category over the last 30 days.</p>

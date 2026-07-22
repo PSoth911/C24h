@@ -19,7 +19,7 @@ import { updateProfile } from "../../../service/profileService";
 const Toggle = ({ on, onClick }) => (
   <button
     onClick={onClick}
-    className={`relative w-12 h-6 rounded-full transition-colors duration-200 shrink-0 ${
+    className={`btn-press relative w-12 h-6 rounded-full transition-colors duration-200 shrink-0 ${
       on ? "bg-[#004953]" : "bg-gray-300"
     }`}
   >
@@ -107,7 +107,7 @@ const Setting = ({ userData }) => {
   const SaveButton = () => (
     <button
       onClick={handleSave}
-      className="mt-4 inline-flex items-center gap-2 bg-[#004953] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-black transition"
+      className="btn-press mt-4 inline-flex items-center gap-2 bg-[#004953] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-black transition"
     >
       <FontAwesomeIcon icon={faFloppyDisk} />
       Save Changes
@@ -172,7 +172,7 @@ const Setting = ({ userData }) => {
 
               {/* BODY */}
               {isOpen && (
-                <div className="px-5 pb-6 pt-1 border-t border-gray-100">
+                <div className="animate-slide-down px-5 pb-6 pt-1 border-t border-gray-100">
 
                   {/* PROFILE */}
                   {s.name === "My Profile" && (
@@ -282,7 +282,7 @@ const Setting = ({ userData }) => {
                         Keep your account secure by updating your password
                         regularly.
                       </p>
-                      <button className="inline-flex items-center gap-2 bg-[#004953] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-black transition">
+                      <button className="btn-press inline-flex items-center gap-2 bg-[#004953] text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-black transition">
                         <FontAwesomeIcon icon={faKey} />
                         Change Password
                       </button>
@@ -293,7 +293,7 @@ const Setting = ({ userData }) => {
                       <p className="text-sm text-red-600 mb-3">
                         Deleting your account is permanent and cannot be undone.
                       </p>
-                      <button className="inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-red-700 transition">
+                      <button className="btn-press inline-flex items-center gap-2 bg-red-600 text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-red-700 transition">
                         <FontAwesomeIcon icon={faTrashCan} />
                         Delete Account
                       </button>

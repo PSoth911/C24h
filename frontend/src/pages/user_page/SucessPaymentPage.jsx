@@ -6,7 +6,7 @@ const SucessPaymentPage = () => {
   return (
     <div>
         <Navbar/>
-        <div className=' mt-5 mx-auto max-w-2xl'>
+        <div className='mt-5 mx-auto max-w-2xl px-4 sm:px-0'>
             <ProcessStep currentStep={3}/>
         </div>
         <Seccess/>

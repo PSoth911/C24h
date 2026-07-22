@@ -2,7 +2,7 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 const VolumeTimelineChart = ({ data = [] }) => (
-  <div className="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-sm space-y-4 flex-1">
+  <div className="card-hover bg-white border border-gray-200/80 rounded-2xl p-6 shadow-sm space-y-4 flex-1">
     <div>
       <h4 className="text-sm font-bold text-gray-800">Weekly Revenue Volume</h4>
       <p className="text-xs text-gray-400 mt-0.5">Daily gross revenue over the last 7 days.</p>

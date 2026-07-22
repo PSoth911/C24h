@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import OrderFilters from '../../components/Seller/OrderFilters';
 import OrderCard from '../../components/Seller/OrderCard';
+import Reveal from '../../components/common/Reveal';
 import { getOrders, acceptOrder, prepareOrder, sendOrderForDelivery, cancelOrder } from '../../api/sellerApi';
 
 const Orders = () => {
@@ -61,7 +62,7 @@ const Orders = () => {
     <div className="max-w-7xl mx-auto space-y-6 pb-12 px-4 sm:px-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-gray-800 tracking-tight">Kitchen Orders</h2>
+          <h2 className="text-xl sm:text-2xl font-black text-gray-800 tracking-tight">Kitchen Orders</h2>
           <p className="text-sm text-gray-500 mt-0.5">Fulfill streaming guest orders, update execution tracks, and manage handovers.</p>
         </div>
       </div>
@@ -70,15 +71,16 @@ const Orders = () => {
 
       {filteredOrders.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredOrders.map(order => (
-            <OrderCard
-              key={order.order_id}
-              order={order}
-              onAccept={handleAccept}
-              onPrepare={handlePrepare}
-              onSendForDelivery={handleSendForDelivery}
-              onCancel={handleCancel}
-            />
+          {filteredOrders.map((order, index) => (
+            <Reveal key={order.order_id} delay={Math.min(index, 6) * 80}>
+              <OrderCard
+                order={order}
+                onAccept={handleAccept}
+                onPrepare={handlePrepare}
+                onSendForDelivery={handleSendForDelivery}
+                onCancel={handleCancel}
+              />
+            </Reveal>
           ))}
         </div>
       ) : (

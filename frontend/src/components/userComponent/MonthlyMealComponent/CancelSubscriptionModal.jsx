@@ -39,10 +39,10 @@ const CancelSubscriptionModal = ({ subscription, remainingMeals, onClose, onCanc
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-6">
+      <div className="animate-fade-in-scale bg-white rounded-3xl shadow-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-gray-800">Cancel Subscription?</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+          <button onClick={onClose} className="btn-press text-gray-400 hover:text-gray-600 cursor-pointer">
             <FontAwesomeIcon icon={faXmark} />
           </button>
         </div>
@@ -78,7 +78,7 @@ const CancelSubscriptionModal = ({ subscription, remainingMeals, onClose, onCanc
             <button
               key={r}
               onClick={() => setReason(r)}
-              className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors cursor-pointer ${
+              className={`btn-press px-3 py-1.5 rounded-full text-xs font-semibold transition-colors cursor-pointer ${
                 reason === r ? "bg-[#004953] text-white" : "bg-gray-100 text-gray-500 hover:bg-gray-200"
               }`}
             >
@@ -87,7 +87,7 @@ const CancelSubscriptionModal = ({ subscription, remainingMeals, onClose, onCanc
           ))}
         </div>
 
-        <div className="bg-emerald-50 rounded-2xl p-4 flex items-center justify-between gap-3 mb-4">
+        <div className="bg-emerald-50 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
           <div>
             <p className="text-sm font-semibold text-emerald-700">Not at home for a while?</p>
             <p className="text-xs text-emerald-600">
@@ -96,7 +96,7 @@ const CancelSubscriptionModal = ({ subscription, remainingMeals, onClose, onCanc
           </div>
           <button
             onClick={handlePauseInstead}
-            className="shrink-0 px-4 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition"
+            className="btn-press shrink-0 px-4 py-2 rounded-lg bg-emerald-600 text-white text-xs font-semibold hover:bg-emerald-700 transition"
           >
             Pause Instead
           </button>
@@ -107,12 +107,12 @@ const CancelSubscriptionModal = ({ subscription, remainingMeals, onClose, onCanc
         <button
           onClick={handleCancel}
           disabled={submitting}
-          className="w-full py-3 rounded-xl border-2 border-red-500 text-red-500 font-semibold hover:bg-red-50 transition flex items-center justify-center gap-2 mb-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn-press w-full py-3 rounded-xl border-2 border-red-500 text-red-500 font-semibold hover:bg-red-50 transition flex items-center justify-center gap-2 mb-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <FontAwesomeIcon icon={faBan} /> {submitting ? "Cancelling…" : "Cancel & Request Refund"}
         </button>
 
-        <button onClick={onClose} className="w-full py-2 text-sm font-semibold text-gray-400 hover:text-gray-600 transition">
+        <button onClick={onClose} className="btn-press w-full py-2 text-sm font-semibold text-gray-400 hover:text-gray-600 transition">
           Keep Subscription
         </button>
       </div>

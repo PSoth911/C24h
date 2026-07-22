@@ -69,11 +69,11 @@ const PauseSubscriptionPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="px-15 py-5">
+      <div className="px-4 sm:px-8 lg:px-15 py-5">
         <Navbar />
 
-        <div className="grid grid-cols-3 gap-8 mt-8">
-          <div className="col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-8">
+          <div className="lg:col-span-2">
             <h1 className="text-2xl font-bold text-[#004953]">Pause Your Subscription</h1>
             <p className="text-gray-500 mt-1 mb-6">Going away? Pause your meals and your remaining days will be saved.</p>
 
@@ -87,7 +87,7 @@ const PauseSubscriptionPage = () => {
                       setIsCustom(false);
                       setSelectedDuration(d.days);
                     }}
-                    className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors cursor-pointer ${
+                    className={`btn-press px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors cursor-pointer ${
                       !isCustom && selectedDuration === d.days
                         ? "bg-[#004953] text-white"
                         : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -98,7 +98,7 @@ const PauseSubscriptionPage = () => {
                 ))}
                 <button
                   onClick={() => setIsCustom(true)}
-                  className={`px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors cursor-pointer ${
+                  className={`btn-press px-5 py-2.5 rounded-xl font-semibold text-sm transition-colors cursor-pointer ${
                     isCustom ? "bg-[#004953] text-white" : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
@@ -185,13 +185,13 @@ const PauseSubscriptionPage = () => {
               <button
                 onClick={handleConfirmPause}
                 disabled={duration <= 0 || submitting}
-                className="w-full mt-6 py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-press w-full mt-6 py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? "Pausing…" : "Confirm Pause"}
               </button>
               <button
                 onClick={() => navigate(PATH.USER.MySubscription)}
-                className="w-full mt-2 py-3 rounded-xl border border-gray-200 font-semibold text-gray-600 hover:bg-gray-50 transition"
+                className="btn-press w-full mt-2 py-3 rounded-xl border border-gray-200 font-semibold text-gray-600 hover:bg-gray-50 transition"
               >
                 Keep My Plan Active
               </button>

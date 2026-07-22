@@ -13,7 +13,7 @@ const NewMenu = ({ products }) => {
 
   return (
     <div>
-      <div className="px-15 mt-10 py-5 bg-gray-300 rounded-2xl">
+      <div className="px-4 sm:px-8 lg:px-15 mt-10 py-5 bg-gray-300 rounded-2xl">
         <div>
           <h1 className="text-black font-bold text-2xl p-4">
             New on Crave24H
@@ -25,7 +25,7 @@ const NewMenu = ({ products }) => {
             <button
               key={item.product_id}
               onClick={() => navigate(`/restaurant/${item.Restaurant?.restaurant_id}`)}
-              className="relative w-155 shrink-0 bg-white rounded-3xl p-4 flex gap-4 items-start transition-all hover:scale-[1.03] hover:shadow-xl"
+              className="card-hover btn-press relative w-[85vw] sm:w-155 max-w-155 shrink-0 bg-white rounded-3xl p-4 flex gap-4 items-start transition-all hover:shadow-xl"
             >
               <div className="relative">
                 <img

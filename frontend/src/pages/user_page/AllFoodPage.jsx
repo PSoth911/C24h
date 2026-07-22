@@ -83,11 +83,11 @@ const AllFoodPage = () => {
     <div>
       <Navbar />
 
-      <div className="px-15 py-4 gap-15 grid grid-cols-7 items-start">
+      <div className="px-4 sm:px-8 lg:px-15 py-4 gap-6 lg:gap-15 grid grid-cols-1 lg:grid-cols-7 items-start">
         <LeftSectionFilter onApply={handleFilterApply} />
 
-        <div className="col-span-5">
-          <div className="flex items-center justify-between pt-2 mb-6">
+        <div className="col-span-1 lg:col-span-5 w-full min-w-0">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between pt-2 mb-6 gap-3">
             <div>
               <h2 className="font-bold text-[#004953] text-2xl">
                 {keyword ? `Results for "${keyword}"` : "All Food"}
@@ -97,7 +97,7 @@ const AllFoodPage = () => {
               </p>
             </div>
 
-            <div className="flex items-center bg-white rounded-2xl shadow-md border border-gray-200 px-4 py-2.5 gap-3 w-80">
+            <div className="flex items-center bg-white rounded-2xl shadow-md border border-gray-200 px-4 py-2.5 gap-3 w-full sm:w-80">
               <FontAwesomeIcon icon={faMagnifyingGlass} className="text-[#004953]" />
               <input
                 type="text"
@@ -105,19 +105,19 @@ const AllFoodPage = () => {
                 onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={(e) => { if (e.key === "Enter") handleSearch(); }}
                 placeholder="Search dishes, cuisines..."
-                className="flex-1 outline-none text-sm placeholder:text-gray-400"
+                className="flex-1 min-w-0 outline-none text-sm placeholder:text-gray-400"
               />
               {inputValue && (
                 <button
                   onClick={clearSearch}
-                  className="text-gray-400 hover:text-gray-600 text-lg leading-none"
+                  className="btn-press text-gray-400 hover:text-gray-600 text-lg leading-none"
                 >
                   ×
                 </button>
               )}
               <button
                 onClick={handleSearch}
-                className="bg-[#004953] hover:bg-black text-white px-4 py-1.5 rounded-xl text-sm font-semibold transition whitespace-nowrap"
+                className="btn-press bg-[#004953] hover:bg-black text-white px-4 py-1.5 rounded-xl text-sm font-semibold transition whitespace-nowrap"
               >
                 Search
               </button>

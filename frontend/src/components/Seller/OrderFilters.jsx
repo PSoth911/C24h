@@ -15,7 +15,7 @@ const OrderFilters = ({ activeFilter, setActiveFilter, counts }) => {
         <button
           key={filter.id}
           onClick={() => setActiveFilter(filter.id)}
-          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
+          className={`btn-press px-4 py-2 rounded-xl text-sm font-bold transition-all flex items-center gap-2 cursor-pointer ${
             activeFilter === filter.id
               ? 'bg-[#004D40] text-white shadow-sm'
               : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'

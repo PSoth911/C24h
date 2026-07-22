@@ -8,12 +8,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import DeliveryNav from "../../components/delivery/DeliveryNav";
 import DeliverySideNav from "../../components/delivery/DeliverySideNav";
+import Reveal from "../../components/common/Reveal";
 
 const BASE = "http://localhost:5000/api";
 
 export default function DeliveryProfile() {
   const navigate  = useNavigate();
-  const user      = JSON.parse(sessionStorage.getItem("user"));
+  const user      = JSON.parse(localStorage.getItem("user"));
 
   const [profile,  setProfile]  = useState(null);
   const [stats,    setStats]    = useState(null);
@@ -67,9 +68,9 @@ export default function DeliveryProfile() {
     const data = await res.json();
     if (!data.success) { showToast("error", data.message ?? "Update failed."); return; }
 
-    // update sessionStorage so the name reflects immediately
+    // update localStorage so the name reflects immediately
     const updated = { ...user, full_name: data.data.full_name, phone: data.data.phone };
-    sessionStorage.setItem("user", JSON.stringify(updated));
+    localStorage.setItem("user", JSON.stringify(updated));
 
     setProfile((prev) => ({ ...prev, full_name: data.data.full_name, phone: data.data.phone }));
     setModal(false);
@@ -88,23 +89,23 @@ export default function DeliveryProfile() {
       <div className="flex flex-1">
         <DeliverySideNav />
 
-        <main className="flex-1 p-8 space-y-8 relative">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 sm:space-y-8 relative">
           {toast && (
-            <div className={`fixed top-5 right-5 z-50 flex items-center gap-2 px-5 py-3 rounded-2xl shadow-lg text-white text-sm font-medium ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}`}>
+            <div className={`fixed top-5 right-5 z-50 flex items-center gap-2 px-5 py-3 rounded-2xl shadow-lg text-white text-sm font-medium animate-fade-in-scale ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}`}>
               {toast.type === "success" ? <CheckCircle size={16}/> : <AlertCircle size={16}/>}
               {toast.msg}
             </div>
           )}
 
-          <div className="flex items-center justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h1 className="text-2xl font-bold text-slate-800">My Profile</h1>
+              <h1 className="text-xl sm:text-2xl font-bold text-slate-800">My Profile</h1>
               <p className="text-sm text-slate-500">Your account details and preferences</p>
             </div>
             {profile && (
               <button
                 onClick={() => setModal(true)}
-                className="flex items-center gap-2 bg-gradient-to-r from-teal-600 to-teal-500 text-white px-5 py-2.5 rounded-2xl shadow hover:scale-[1.02] transition"
+                className="btn-press flex items-center gap-2 bg-gradient-to-r from-teal-600 to-teal-500 text-white px-5 py-2.5 rounded-2xl shadow hover:scale-[1.02] transition"
               >
                 <Edit size={18} /> Edit Profile
               </button>
@@ -118,8 +119,8 @@ export default function DeliveryProfile() {
               <AlertCircle size={16} /> {error}
             </div>
           ) : (
-            <div className="grid lg:grid-cols-3 gap-8">
-              <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-8 shadow-sm text-center">
+            <div className="grid lg:grid-cols-3 gap-6 lg:gap-8">
+              <Reveal className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-6 sm:p-8 shadow-sm text-center card-hover">
                 <div className="relative inline-block">
                   <div className="w-28 h-28 rounded-3xl bg-gradient-to-br from-teal-600 to-cyan-500 text-white flex items-center justify-center text-4xl font-bold shadow-lg">
                     {initials}
@@ -137,10 +138,10 @@ export default function DeliveryProfile() {
                   <InfoRow icon={<ShieldCheck size={16}/>} label="Role"   value={profile.role} />
                   <InfoRow icon={<Circle size={16}/>}      label="Status" value={profile.status} />
                 </div>
-              </div>
+              </Reveal>
 
               <div className="lg:col-span-2 space-y-6">
-                <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-8 shadow-sm">
+                <Reveal delay={80} className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-6 sm:p-8 shadow-sm">
                   <h2 className="text-lg font-semibold mb-6 text-slate-800">Personal Information</h2>
                   <div className="grid md:grid-cols-2 gap-6">
                     <Field label="Full Name" value={profile.full_name} />
@@ -150,20 +151,20 @@ export default function DeliveryProfile() {
                     <Field label="Status"    value={profile.status} />
                     <Field label="User ID"   value={`#${profile.user_id}`} />
                   </div>
-                </div>
+                </Reveal>
 
-                <div className="grid md:grid-cols-3 gap-6">
+                <Reveal delay={160} className="grid sm:grid-cols-3 gap-4 sm:gap-6">
                   <MiniCard title="Total Deliveries" value={stats?.total     ?? "—"} icon={<Package    size={18}/>} color="from-blue-500 to-blue-400"  />
                   <MiniCard title="Completed"         value={stats?.delivered ?? "—"} icon={<Star       size={18}/>} color="from-green-500 to-green-400" />
                   <MiniCard title="Total Earned"      value={stats ? `$${parseFloat(stats.totalEarnings).toFixed(2)}` : "—"} icon={<TrendingUp size={18}/>} color="from-teal-600 to-teal-400" />
-                </div>
+                </Reveal>
 
-                <div className="rounded-3xl p-8 text-white bg-gradient-to-br from-teal-600 to-cyan-500 shadow-lg">
+                <Reveal delay={240} className="rounded-3xl p-6 sm:p-8 text-white bg-gradient-to-br from-teal-600 to-cyan-500 shadow-lg">
                   <h2 className="text-xl font-bold">Driver Access</h2>
                   <p className="text-sm opacity-90 mt-2">
                     View your deliveries, earnings, and live order tracking all in one place.
                   </p>
-                </div>
+                </Reveal>
               </div>
             </div>
           )}
@@ -187,7 +188,7 @@ function EditModal({ user, onClose, onSave }) {
       <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-7">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-slate-800">Edit Profile</h2>
-          <button onClick={onClose} className="text-slate-400 hover:text-slate-600"><X size={20}/></button>
+          <button onClick={onClose} className="btn-press text-slate-400 hover:text-slate-600"><X size={20}/></button>
         </div>
         <div className="space-y-4">
           {[["Full Name","full_name","text"],["Phone","phone","tel"]].map(([label,key,type]) => (
@@ -203,11 +204,11 @@ function EditModal({ user, onClose, onSave }) {
           </div>
         </div>
         <div className="flex justify-end gap-3 mt-6">
-          <button onClick={onClose} className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm">Cancel</button>
+          <button onClick={onClose} className="btn-press px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm">Cancel</button>
           <button
             onClick={async () => { setSaving(true); await onSave(form); setSaving(false); }}
             disabled={saving}
-            className="px-5 py-2 rounded-xl bg-teal-600 text-white text-sm hover:bg-teal-700 disabled:opacity-50"
+            className="btn-press px-5 py-2 rounded-xl bg-teal-600 text-white text-sm hover:bg-teal-700 disabled:opacity-50"
           >
             {saving ? "Saving…" : "Save Changes"}
           </button>
@@ -240,13 +241,13 @@ function Field({ label, value }) {
 
 function MiniCard({ title, value, icon, color }) {
   return (
-    <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-6 shadow-sm hover:scale-[1.02] transition">
+    <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-4 sm:p-6 shadow-sm card-hover">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm text-slate-500">{title}</p>
-          <h3 className="text-2xl font-bold mt-1 text-slate-800">{value}</h3>
+          <h3 className="text-xl sm:text-2xl font-bold mt-1 text-slate-800">{value}</h3>
         </div>
-        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-white bg-gradient-to-br ${color}`}>{icon}</div>
+        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-white bg-gradient-to-br ${color} shrink-0`}>{icon}</div>
       </div>
     </div>
   );

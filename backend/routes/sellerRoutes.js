@@ -1,6 +1,7 @@
 import express from "express";
 import { verifyToken } from "../middleware/auth_middleware.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
+import { upload } from "../middleware/upload.js";
 
 import {
   getAllRestaurants,
@@ -47,8 +48,8 @@ route.put("/settings", updateSettings);
 // Menu
 route.get("/categories", getCategories);
 route.get("/products", getProducts);
-route.post("/products", createProduct);
-route.put("/products/:id", updateProduct);
+route.post("/products", upload.single("image"), createProduct);
+route.put("/products/:id", upload.single("image"), updateProduct);
 route.patch("/products/:id/status", toggleProductStatus);
 route.patch("/products/:id/restock", restockProduct);
 route.delete("/products/:id", deleteProduct);

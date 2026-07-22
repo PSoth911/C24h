@@ -67,7 +67,7 @@ const WalletPayment = () => {
             onClick={() =>
               setSelectedWallet(wallet.id)
             }
-            className={`flex w-full items-center justify-between rounded-xl border p-4 transition-all
+            className={`btn-press flex w-full items-center justify-between rounded-xl border p-4 transition-all
               ${
                 selectedWallet === wallet.id
                   ? "border-[#004953] bg-[#004953]"
@@ -111,7 +111,7 @@ const WalletPayment = () => {
         <p className="mt-2 text-sm text-gray-600"> You will be redirected to the selected wallet provider to complete your payment securely. </p>
       </div>
       <button
-        className="mt-6 w-full rounded-xl bg-[#004953] py-3 font-semibold text-white transition hover:bg-[#003640]">Continue with{" "}
+        className="btn-press mt-6 w-full rounded-xl bg-[#004953] py-3 font-semibold text-white transition hover:bg-[#003640]">Continue with{" "}
         {
           wallets.find(
             (w) => w.id === selectedWallet

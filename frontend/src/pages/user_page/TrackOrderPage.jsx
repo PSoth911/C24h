@@ -29,10 +29,10 @@ const TrackOrderPage = () => {
   return (
     <div>
       <Navbar />
-      <div className="px-30 py-3">
+      <div className="px-4 sm:px-8 lg:px-30 py-3">
         <Map order={order} />
         <Orderstatus order={order} />
-        <div className="grid gap-5 mt-2 grid-cols-2">
+        <div className="grid gap-5 mt-2 grid-cols-1 lg:grid-cols-2">
           <LeftSection order={order} />
           <RightSection order={order} />
         </div>

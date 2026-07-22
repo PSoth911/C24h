@@ -8,6 +8,7 @@ import Footer from "../../components/userComponent/HomepageComponent/Footer";
 import { getActiveSubscription, normalizeSubscription } from "../../service/subscriptionService";
 import { suggestedRestaurants } from "../../data/monthlyMealData";
 import { PATH } from "../../path";
+import Reveal from "../../components/common/Reveal";
 
 const formatDate = (iso) =>
   new Date(iso).toLocaleDateString("en-US", { month: "short", day: "2-digit" });
@@ -32,7 +33,7 @@ const MonthlySubscriptionActivePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="px-15 py-5">
+      <div className="px-4 sm:px-8 lg:px-15 py-5">
         <Navbar />
 
         <div className="max-w-2xl mx-auto text-center mt-10">
@@ -42,11 +43,11 @@ const MonthlySubscriptionActivePage = () => {
           <h1 className="text-3xl font-bold text-[#004953] mt-6">Subscription Active!</h1>
           <p className="text-gray-500 mt-2">Your monthly meal subscription is now active.</p>
 
-          <div className="bg-white rounded-3xl shadow-md p-6 mt-8 flex items-center justify-between text-left">
+          <div className="bg-white rounded-3xl shadow-md p-6 mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
             <div>
               <h3 className="font-bold text-[#004953] text-lg">{sub.restaurantName}</h3>
               <p className="text-xs text-gray-400">{sub.planName}</p>
-              <div className="flex gap-6 mt-3 text-sm">
+              <div className="flex flex-wrap gap-6 mt-3 text-sm">
                 <div>
                   <p className="text-xs text-gray-400">Duration</p>
                   <p className="font-semibold text-gray-800">{sub.duration} Days</p>
@@ -63,16 +64,16 @@ const MonthlySubscriptionActivePage = () => {
                 </div>
               </div>
             </div>
-            <div className="flex flex-col gap-2 shrink-0">
+            <div className="flex flex-col gap-2 shrink-0 w-full sm:w-auto">
               <button
                 onClick={() => navigate(PATH.USER.MySubscription)}
-                className="px-5 py-2.5 rounded-xl bg-[#004953] text-white text-sm font-semibold hover:bg-[#003940] transition"
+                className="btn-press px-5 py-2.5 rounded-xl bg-[#004953] text-white text-sm font-semibold hover:bg-[#003940] transition"
               >
                 Go to My Subscription
               </button>
               <button
                 onClick={() => navigate(PATH.USER.HOME)}
-                className="px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition"
+                className="btn-press px-5 py-2.5 rounded-xl border border-gray-200 text-sm font-semibold text-gray-600 hover:bg-gray-50 transition"
               >
                 Back to Home
               </button>
@@ -91,15 +92,15 @@ const MonthlySubscriptionActivePage = () => {
             </button>
           </div>
 
-          <div className="grid grid-cols-2 gap-6">
-            {suggestedRestaurants.map((r) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            {suggestedRestaurants.map((r, index) => (
+              <Reveal key={r.id} delay={Math.min(index, 6) * 80}>
               <div
-                key={r.id}
                 onClick={() => navigate(PATH.USER.MonthlyMealPlan(r.id))}
-                className="bg-white rounded-3xl shadow-md overflow-hidden flex gap-4 p-4 cursor-pointer hover:shadow-xl transition"
+                className="card-hover bg-white rounded-3xl shadow-md overflow-hidden flex gap-4 p-4 cursor-pointer hover:shadow-xl transition"
               >
                 <img src={r.image} alt={r.name} className="w-28 h-28 rounded-2xl object-cover shrink-0" />
-                <div>
+                <div className="min-w-0">
                   <h3 className="font-bold text-[#004953]">{r.name}</h3>
                   <p className="text-sm text-gray-400 mt-1">${r.price} / mo</p>
                   <div className="flex gap-2 mt-2 flex-wrap">
@@ -111,6 +112,7 @@ const MonthlySubscriptionActivePage = () => {
                   </div>
                 </div>
               </div>
+              </Reveal>
             ))}
           </div>
         </div>

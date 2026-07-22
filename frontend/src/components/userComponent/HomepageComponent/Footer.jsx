@@ -1,7 +1,7 @@
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white px-30 py-20">
-      <div className="grid grid-cols-4 gap-12">
+    <footer className="bg-gray-800 text-white px-6 sm:px-10 lg:px-30 py-12 lg:py-20">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
         <div>
           <h1 className="text-2xl font-bold mb-4 text-[#004953]">
             Crave24h
@@ -40,19 +40,21 @@ const Footer = () => {
             <p>Apple Pay</p>
           </div>
           <h2 className="font-semibold mb-3">Subscribe Newsletter</h2>
-          <div className="flex gap-2"><input type="email" placeholder="Enter your email" className="flex-1 px-4 py-2 rounded-lg text-black outline-none"/>
-            <button className="bg-[#004953] text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition cursor-pointer">
+          <div className="flex flex-col sm:flex-row gap-2">
+            <input type="email" placeholder="Enter your email" className="flex-1 min-w-0 px-4 py-2 rounded-lg text-black outline-none"/>
+            <button className="btn-press bg-[#004953] text-black px-6 py-2 rounded-lg font-semibold hover:bg-yellow-400 transition cursor-pointer">
               Join
             </button>
           </div>
         </div>
       </div>
-      <div className="border-t border-gray-700 mt-12 pt-6 flex justify-between items-center text-gray-400 text-sm">
+      <div className="border-t border-gray-700 mt-12 pt-6 flex flex-col sm:flex-row gap-4 justify-between items-center text-gray-400 text-sm text-center sm:text-left">
         <p>© 2026 Crave24h. All rights reserved.</p>
 
-        <div className="flex gap-6"><p className="hover:text-white cursor-pointer">Terms of Service</p>
-            <p className="hover:text-white cursor-pointer">Privacy Policy</p>
-            <p className="hover:text-white cursor-pointer">Cookies</p>
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6">
+          <p className="hover:text-white cursor-pointer">Terms of Service</p>
+          <p className="hover:text-white cursor-pointer">Privacy Policy</p>
+          <p className="hover:text-white cursor-pointer">Cookies</p>
         </div>
       </div>
     </footer>

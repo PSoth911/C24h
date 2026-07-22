@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import AdminSidebar from "../../components/admin/AdminSidebar";
+import Reveal from "../../components/common/Reveal";
 import { PATH } from "../../path";
 
 import {
@@ -149,7 +150,7 @@ export default function AdminUserManagement() {
 
         {/* HEADER */}
         <div className="sticky top-0 z-20 backdrop-blur-xl bg-white/70 border-b border-white/40">
-          <div className="h-20 px-8 flex items-center justify-between">
+          <div className="py-4 sm:h-20 px-4 sm:px-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
             <div>
               <h1 className="text-2xl font-bold text-slate-800">
                 User Management
@@ -159,7 +160,7 @@ export default function AdminUserManagement() {
               </p>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <div className="relative">
                 <Search
                   size={18}
@@ -169,12 +170,12 @@ export default function AdminUserManagement() {
                   placeholder="Search users..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-72 rounded-2xl bg-white/80 border border-slate-200 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none"
+                  className="pl-10 pr-4 py-2 w-full sm:w-72 rounded-2xl bg-white/80 border border-slate-200 shadow-sm focus:ring-2 focus:ring-teal-500 outline-none"
                 />
               </div>
             <button
               onClick={() => setAddModal(true)}
-              className="flex items-center gap-2 bg-gradient-to-r from-teal-600 to-teal-500 text-white px-5 py-2.5 rounded-2xl shadow hover:scale-[1.02] transition"
+              className="flex items-center justify-center gap-2 bg-gradient-to-r from-teal-600 to-teal-500 text-white px-5 py-2.5 rounded-2xl shadow hover:scale-[1.02] transition btn-press"
             >
               <Plus size={18} />
               Add User
@@ -183,31 +184,37 @@ export default function AdminUserManagement() {
           </div>
         </div>
 
-        <div className="p-8 space-y-8">
+        <div className="p-4 sm:p-8 space-y-8">
           {/* STATS */}
-          <div className="grid md:grid-cols-3 gap-6">
-            <StatCard
-              title="Total Users"
-              value={users.length}
-              icon={<Users size={20} />}
-              color="from-blue-500 to-blue-400"
-            />
-            <StatCard
-              title="Active"
-              value={activeUsers}
-              icon={<UserCheck size={20} />}
-              color="from-green-500 to-green-400"
-            />
-            <StatCard
-              title="Inactive / Banned"
-              value={inactiveUsers}
-              icon={<UserX size={20} />}
-              color="from-red-500 to-red-400"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+            <Reveal delay={0}>
+              <StatCard
+                title="Total Users"
+                value={users.length}
+                icon={<Users size={20} />}
+                color="from-blue-500 to-blue-400"
+              />
+            </Reveal>
+            <Reveal delay={80}>
+              <StatCard
+                title="Active"
+                value={activeUsers}
+                icon={<UserCheck size={20} />}
+                color="from-green-500 to-green-400"
+              />
+            </Reveal>
+            <Reveal delay={160}>
+              <StatCard
+                title="Inactive / Banned"
+                value={inactiveUsers}
+                icon={<UserX size={20} />}
+                color="from-red-500 to-red-400"
+              />
+            </Reveal>
           </div>
 
           {/* USER GRID */}
-          <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm">
+          <Reveal className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm">
             <div className="flex justify-between items-center p-6 border-b border-white/30">
               <h2 className="font-semibold text-lg">Users</h2>
               <span className="text-sm text-slate-500">
@@ -223,20 +230,21 @@ export default function AdminUserManagement() {
                   No users found.
                 </p>
               ) : (
-                <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
-                  {filteredUsers.map((user) => (
-                    <UserCard
-                      key={user.user_id}
-                      user={user}
-                      onEdit={() => setEditModal({ open: true, user })}
-                      onToggle={() => handleToggleStatus(user.user_id)}
-                      onDelete={() => handleDelete(user.user_id)}
-                    />
+                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                  {filteredUsers.map((user, i) => (
+                    <Reveal key={user.user_id} delay={Math.min(i, 8) * 60}>
+                      <UserCard
+                        user={user}
+                        onEdit={() => setEditModal({ open: true, user })}
+                        onToggle={() => handleToggleStatus(user.user_id)}
+                        onDelete={() => handleDelete(user.user_id)}
+                      />
+                    </Reveal>
                   ))}
                 </div>
               )}
             </div>
-          </div>
+          </Reveal>
         </div>
       </main>
 
@@ -266,7 +274,7 @@ export default function AdminUserManagement() {
 
 function UserCard({ user, onEdit, onToggle, onDelete }) {
   return (
-    <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition">
+    <div className="bg-white rounded-3xl p-5 border border-slate-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition card-hover">
       {/* HEADER */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -342,14 +350,14 @@ function EditUserModal({ user, onClose, onSave }) {
       <div className="flex justify-end gap-3 mt-6">
         <button
           onClick={onClose}
-          className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm"
+          className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm btn-press"
         >
           Cancel
         </button>
         <button
           onClick={handleSubmit}
           disabled={saving}
-          className="px-5 py-2 rounded-xl bg-teal-600 text-white text-sm hover:bg-teal-700 disabled:opacity-50"
+          className="px-5 py-2 rounded-xl bg-teal-600 text-white text-sm hover:bg-teal-700 disabled:opacity-50 btn-press"
         >
           {saving ? "Saving…" : "Save"}
         </button>
@@ -426,14 +434,14 @@ function AddUserModal({ onClose, onSave }) {
       <div className="flex justify-end gap-3 mt-6">
         <button
           onClick={onClose}
-          className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm"
+          className="px-4 py-2 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 text-sm btn-press"
         >
           Cancel
         </button>
         <button
           onClick={handleSubmit}
           disabled={saving}
-          className="px-5 py-2 rounded-xl bg-teal-600 text-white text-sm hover:bg-teal-700 disabled:opacity-50"
+          className="px-5 py-2 rounded-xl bg-teal-600 text-white text-sm hover:bg-teal-700 disabled:opacity-50 btn-press"
         >
           {saving ? "Creating…" : "Create User"}
         </button>
@@ -449,12 +457,12 @@ function AddUserModal({ onClose, onSave }) {
 function Modal({ title, onClose, children }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-7 relative">
+      <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-7 relative animate-fade-in-scale">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-lg font-semibold text-slate-800">{title}</h2>
           <button
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 transition"
+            className="text-slate-400 hover:text-slate-600 transition btn-press"
           >
             <X size={20} />
           </button>
@@ -478,7 +486,7 @@ function Field({ label, children }) {
 
 function StatCard({ title, value, icon, color }) {
   return (
-    <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-6 shadow-sm hover:scale-[1.02] transition">
+    <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl p-6 shadow-sm hover:scale-[1.02] transition card-hover">
       <div className="flex justify-between items-center">
         <div>
           <p className="text-sm text-slate-500">{title}</p>
@@ -516,7 +524,7 @@ function ActionButton({ icon, color, title, onClick }) {
     <button
       title={title}
       onClick={onClick}
-      className={`w-9 h-9 rounded-xl flex items-center justify-center transition ${styles[color]}`}
+      className={`w-9 h-9 rounded-xl flex items-center justify-center transition btn-press ${styles[color]}`}
     >
       {icon}
     </button>

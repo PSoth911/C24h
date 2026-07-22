@@ -30,18 +30,18 @@ const BrowAllfood = ({ products }) => {
   }
 
   return (
-    <div className="py-5 px-10 rounded-2xl bg-gray-300">
-      <div className="flex justify-between p-2">
+    <div className="py-5 px-4 sm:px-10 rounded-2xl bg-gray-300">
+      <div className="flex flex-col sm:flex-row sm:justify-between gap-3 p-2">
         <h1 className="font-bold text-[#004953] text-2xl">
           Browse All Food
         </h1>
 
-        <div className="flex gap-2 bg-white rounded-2xl text-black">
+        <div className="flex gap-2 bg-white rounded-2xl text-black overflow-x-auto scrollbar-hide">
           {filter.map((item) => (
             <button
               key={item}
               onClick={() => setSelect(item)}
-              className={`transition-all ${
+              className={`btn-press shrink-0 transition-all ${
                 select === item
                   ? "bg-[#004953] text-white rounded-2xl px-4 py-2"
                   : "px-4 py-2"
@@ -68,7 +68,7 @@ const BrowAllfood = ({ products }) => {
             />
 
             <button
-              className="absolute top-7 left-7"
+              className="btn-press absolute top-7 left-7"
               onClick={(e) => { e.stopPropagation(); toggleLove(food.product_id); }}
             >
               <FontAwesomeIcon
@@ -116,7 +116,7 @@ const BrowAllfood = ({ products }) => {
               </div>
             )}
 
-            <button className="mt-2 hover:cursor-pointer w-full py-3 rounded-xl border border-[#004953] text-[#004953] hover:bg-[#004953] hover:text-white transition">
+            <button className="btn-press mt-2 hover:cursor-pointer w-full py-3 rounded-xl border border-[#004953] text-[#004953] hover:bg-[#004953] hover:text-white transition">
               Order Now
             </button>
           </div>

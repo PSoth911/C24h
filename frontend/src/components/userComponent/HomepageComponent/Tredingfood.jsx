@@ -9,11 +9,11 @@ const Tredingfood = ({ products }) => {
     .slice(0, 6);
 
   return (
-    <div className="px-15 mt-10 rounded-2xl py-20 bg-gray-300">
+    <div className="px-4 sm:px-8 lg:px-15 mt-10 rounded-2xl py-12 lg:py-20 bg-gray-300">
       {/* Header */}
       <div className="flex items-center gap-2">
           <img src={image20} className="w-5 h-3" alt="" />
-          <h1 className="text-3xl font-bold text-[#004953]">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#004953]">
             Trending Now
           </h1>
         </div>
@@ -23,7 +23,7 @@ const Tredingfood = ({ products }) => {
           <div
             key={food.product_id}
             onClick={() => navigate(`/restaurant/${food.Restaurant?.restaurant_id}`)}
-            className="bg-white rounded-3xl shadow-md min-w-[31%] shrink-0 overflow-hidden relative cursor-pointer"
+            className="card-hover bg-white rounded-3xl shadow-md min-w-[75%] sm:min-w-[45%] lg:min-w-[31%] shrink-0 overflow-hidden relative cursor-pointer"
           >
             <img
               src={food.image ? `http://localhost:5000/uploads/${food.image}` : placeholderFood}

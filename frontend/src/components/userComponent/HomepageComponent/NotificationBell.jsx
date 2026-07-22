@@ -136,7 +136,7 @@ const NotificationBell = () => {
     <div className="relative" ref={panelRef}>
       <button
         onClick={handleToggle}
-        className="relative p-2.5 rounded-xl text-gray-600 hover:bg-[#004953] hover:text-white transition-colors cursor-pointer"
+        className="btn-press relative p-2.5 rounded-xl text-gray-600 hover:bg-[#004953] hover:text-white transition-colors cursor-pointer"
         aria-label="Notifications"
       >
         <FontAwesomeIcon icon={faBell} className="text-lg" />
@@ -148,7 +148,7 @@ const NotificationBell = () => {
       </button>
 
       {open && (
-        <div className="absolute right-0 mt-2 w-96 max-w-[90vw] bg-white rounded-2xl shadow-lg border border-gray-100 z-50 overflow-hidden">
+        <div className="animate-fade-in-scale absolute right-0 mt-2 w-96 max-w-[90vw] bg-white rounded-2xl shadow-lg border border-gray-100 z-50 overflow-hidden">
           <div className="flex items-center justify-between px-4 py-3 border-b border-gray-100">
             <div className="flex items-center gap-2">
               <p className="text-sm font-semibold text-[#004953]">Notifications</p>

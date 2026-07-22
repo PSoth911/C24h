@@ -49,7 +49,7 @@ const AnalyticsMetrics = ({ summary }) => {
       {stats.map((stat, idx) => {
         const Icon = stat.icon;
         return (
-          <div key={idx} className="bg-white border border-gray-200/80 p-5 rounded-2xl shadow-sm space-y-3">
+          <div key={idx} className="card-hover bg-white border border-gray-200/80 p-5 rounded-2xl shadow-sm space-y-3">
             <div className="flex justify-between items-center">
               <span className="text-xs font-bold text-gray-400 uppercase tracking-wider">{stat.title}</span>
               <div className={`p-2 rounded-lg ${stat.bg}`}><Icon size={16} /></div>

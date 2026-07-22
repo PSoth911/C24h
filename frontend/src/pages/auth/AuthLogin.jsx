@@ -229,7 +229,7 @@ export default function AuthLogin() {
               <button
                 type="submit"
                 disabled={loading}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-[15px] font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
+                className="btn-press mt-2 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-[15px] font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
                 style={{ background: TEAL }}
               >
                 {loading ? (
@@ -251,7 +251,7 @@ export default function AuthLogin() {
               <button
                 type="button"
                 onClick={() => navigate(PATH.AUTH.SIGNUP)}
-                className="font-semibold hover:underline"
+                className="btn-press font-semibold hover:underline"
                 style={{ color: TEAL }}
               >
                 Sign Up

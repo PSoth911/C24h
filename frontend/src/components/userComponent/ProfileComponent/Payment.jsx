@@ -57,9 +57,9 @@ const Payment = () => {
   return (
     <div className="p-6">
       {/* Header */}
-      <div className="flex justify-between items-start">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-slate-800">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-800">
             Payment Methods
           </h1>
           <p className="text-slate-500">
@@ -67,7 +67,7 @@ const Payment = () => {
           </p>
         </div>
 
-        <button className="bg-teal-700 text-white px-5 py-3 rounded-full flex items-center gap-2 hover:bg-teal-800 transition-all">
+        <button className="btn-press bg-teal-700 text-white px-5 py-3 rounded-full flex items-center gap-2 hover:bg-teal-800 transition-all self-start">
           <FontAwesomeIcon icon={faPlus} />
           Add new card
         </button>
@@ -125,13 +125,13 @@ const Payment = () => {
               </div>
 
               <div className="flex gap-5 mt-3 text-sm">
-                <button className="text-teal-700">
+                <button className="btn-press text-teal-700">
                   {card.default
                     ? "Default Method"
                     : "Set as default"}
                 </button>
 
-                <button className="text-red-500 flex items-center gap-2">
+                <button className="btn-press text-red-500 flex items-center gap-2">
                   <FontAwesomeIcon icon={faTrash} />
                   Remove
                 </button>
@@ -140,7 +140,7 @@ const Payment = () => {
           ))}
 
           {/* Add Card */}
-          <button className="h-44 border-2 border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center gap-3 hover:border-teal-600 transition-all">
+          <button className="btn-press h-44 border-2 border-dashed border-slate-300 rounded-2xl flex flex-col items-center justify-center gap-3 hover:border-teal-600 transition-all">
             <div className="w-14 h-14 rounded-full bg-slate-100 flex items-center justify-center">
               <FontAwesomeIcon
                 icon={faCreditCard}
@@ -171,7 +171,7 @@ const Payment = () => {
           {wallets.map((wallet) => (
             <div
               key={wallet.name}
-              className="bg-white rounded-2xl shadow-sm p-5 flex justify-between items-center"
+              className="card-hover bg-white rounded-2xl shadow-sm p-5 flex justify-between items-center"
             >
               <div className="flex gap-4">
                 <div
@@ -203,7 +203,7 @@ const Payment = () => {
                   className="text-slate-500"
                 />
               ) : (
-                <button className="bg-slate-100 px-5 py-2 rounded-full text-sm font-medium">
+                <button className="btn-press bg-slate-100 px-5 py-2 rounded-full text-sm font-medium">
                   Connect
                 </button>
               )}
@@ -224,7 +224,7 @@ const Payment = () => {
           </h2>
         </div>
 
-        <div className="bg-white rounded-2xl p-5 shadow-sm flex justify-between items-center">
+        <div className="bg-white rounded-2xl p-5 shadow-sm flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
           <div className="flex gap-4">
             <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center">
               <FontAwesomeIcon

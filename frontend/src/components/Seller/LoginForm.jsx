@@ -50,7 +50,7 @@ const LoginForm = ({ onSubmit, isLoading }) => {
       <button
         type="submit"
         disabled={isLoading}
-        className="w-full bg-[#004D40] text-white py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#003d33] transition-colors shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+        className="btn-press w-full bg-[#004D40] text-white py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#003d33] transition-colors shadow-md cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed mt-2"
       >
         {isLoading ? 'Verifying Account...' : 'Sign In To Terminal'}
         {!isLoading && <ArrowRight size={16} />}

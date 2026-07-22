@@ -2,7 +2,7 @@ import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
 const RevenueChart = ({ data = [] }) => (
-  <div className="bg-white border border-gray-200/80 rounded-2xl p-6 shadow-sm space-y-4">
+  <div className="card-hover bg-white border border-gray-200/80 rounded-2xl p-6 shadow-sm space-y-4">
     <div>
       <h4 className="text-sm font-bold text-gray-800">Hourly Revenue Stream</h4>
       <p className="text-xs text-gray-400 mt-0.5">Today's gross revenue by hour.</p>

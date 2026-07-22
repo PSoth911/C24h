@@ -1,13 +1,21 @@
 const BASE_URL = "http://localhost:5000/api/admin";
 
 const authHeaders = () => ({
-  Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+  Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
 });
 
 const jsonHeaders = () => ({
   "Content-Type": "application/json",
   ...authHeaders(),
 });
+
+const toFormData = (data) => {
+  const formData = new FormData();
+  Object.entries(data).forEach(([key, value]) => {
+    if (value !== undefined && value !== null) formData.append(key, value);
+  });
+  return formData;
+};
 
 /* ========================= */
 /* USERS */
@@ -68,8 +76,8 @@ export const getRestaurants = async () => {
 export const createRestaurant = async (data) => {
   const res = await fetch(`${BASE_URL}/restaurants`, {
     method: "POST",
-    headers: jsonHeaders(),
-    body: JSON.stringify(data),
+    headers: authHeaders(),
+    body: toFormData(data),
   });
 
   return res.json();
@@ -78,8 +86,8 @@ export const createRestaurant = async (data) => {
 export const updateRestaurant = async (id, data) => {
   const res = await fetch(`${BASE_URL}/restaurants/${id}`, {
     method: "PUT",
-    headers: jsonHeaders(),
-    body: JSON.stringify(data),
+    headers: authHeaders(),
+    body: toFormData(data),
   });
 
   return res.json();

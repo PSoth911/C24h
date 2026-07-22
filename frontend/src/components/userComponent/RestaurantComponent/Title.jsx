@@ -64,20 +64,20 @@ const Title = ({
   };
 
   return (
-    <div className="w-full p-8">
+    <div className="w-full p-4 sm:p-8">
       <div className="relative">
-        <div className="h-55 rounded-xl overflow-hidden relative">
+        <div className="min-h-55 rounded-xl overflow-hidden relative">
           <img
             src={img}
             alt="Restaurant"
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover absolute inset-0"
           />
 
           <div className="absolute inset-0 bg-black/50"></div>
 
-          <div className="absolute inset-0 flex items-center justify-between px-12">
-            <div className="flex items-center gap-8">
-              <div className="w-52 h-30 rounded-2xl overflow-hidden border-2 border-yellow-500 shadow-lg bg-white">
+          <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6 px-5 sm:px-8 lg:px-12 py-8">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 sm:gap-8">
+              <div className="w-32 h-20 sm:w-52 sm:h-30 rounded-2xl overflow-hidden border-2 border-yellow-500 shadow-lg bg-white shrink-0">
                 <img
                   src={logo}
                   alt="Restaurant Logo"
@@ -85,7 +85,7 @@ const Title = ({
                 />
               </div>
 
-              <div>
+              <div className="min-w-0">
                 <div className="flex items-center gap-2 mb-2">
                   <div
                     className={`w-3 h-3 rounded-full ${
@@ -100,7 +100,7 @@ const Title = ({
                   </span>
                 </div>
 
-                <h1 className="text-5xl font-serif text-white mb-3">
+                <h1 className="text-2xl sm:text-3xl lg:text-5xl font-serif text-white mb-3">
                   {name}
                 </h1>
 
@@ -110,12 +110,12 @@ const Title = ({
               </div>
             </div>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 shrink-0">
               <button
                 onClick={toggleFavourite}
                 disabled={toggling}
                 title={like ? "Remove from favourites" : "Save to favourites"}
-                className={`w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-transform duration-150 disabled:cursor-not-allowed ${popped ? "scale-125" : "scale-100"}`}
+                className={`btn-press w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-transform duration-150 disabled:cursor-not-allowed ${popped ? "scale-125" : "scale-100"}`}
               >
                 <FontAwesomeIcon
                   icon={faHeart}
@@ -125,7 +125,7 @@ const Title = ({
                 />
               </button>
 
-              <button className="w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30">
+              <button className="btn-press w-14 h-14 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30">
                 <FontAwesomeIcon
                   icon={faShareNodes}
                   className="w-7 h-7 text-white"
@@ -135,8 +135,8 @@ const Title = ({
           </div>
         </div>
 
-        <div className="bg-white shadow-xl rounded-2xl py-2 mx-8 -mt-4 relative">
-          <div className="grid grid-cols-4 text-center">
+        <div className="bg-white shadow-xl rounded-2xl py-2 mx-2 sm:mx-8 -mt-4 relative">
+          <div className="grid grid-cols-2 sm:grid-cols-4 text-center gap-y-3">
             <div>
               <FontAwesomeIcon
                 icon={faStar}

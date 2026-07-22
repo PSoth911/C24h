@@ -9,9 +9,10 @@ import {
 } from "lucide-react";
 
 import AdminSidebar from "../../components/admin/AdminSidebar";
+import Reveal from "../../components/common/Reveal";
 import { PATH } from "../../path";
 
-import {getDrivers,toggleDriverStatus,deleteDriver, updateDriver} from "../../api/adminApi"; 
+import {getDrivers,toggleDriverStatus,deleteDriver, updateDriver} from "../../api/adminApi";
 
 export default function AdminDeliveryManagement() {
   const [drivers, setDrivers] = useState([]);
@@ -180,9 +181,9 @@ export default function AdminDeliveryManagement() {
     <div className="flex min-h-screen bg-slate-50">
       <AdminSidebar PATH={PATH} />
       {editDriver && (
-        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-          
-          <div className="bg-white w-[400px] rounded-2xl p-6 shadow-xl">
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 p-4">
+
+          <div className="bg-white w-full max-w-[400px] rounded-2xl p-6 shadow-xl animate-fade-in-scale">
 
             <h2 className="text-xl font-bold mb-4">
               Edit Driver
@@ -230,14 +231,14 @@ export default function AdminDeliveryManagement() {
 
               <button
                 onClick={() => setEditDriver(null)}
-                className="px-4 py-2 rounded-lg bg-gray-200"
+                className="px-4 py-2 rounded-lg bg-gray-200 btn-press"
               >
                 Cancel
               </button>
 
               <button
                 onClick={handleUpdate}
-                className="px-4 py-2 rounded-lg bg-teal-600 text-white"
+                className="px-4 py-2 rounded-lg bg-teal-600 text-white btn-press"
               >
                 Save
               </button>
@@ -252,7 +253,7 @@ export default function AdminDeliveryManagement() {
 
         {/* HEADER */}
         <div className="sticky top-0 bg-white/70 backdrop-blur-xl z-20">
-          <div className="h-20 px-8 flex items-center justify-between">
+          <div className="py-4 sm:h-20 px-4 sm:px-8 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-0">
 
             <div>
               <h1 className="text-3xl font-bold text-slate-800">
@@ -263,7 +264,7 @@ export default function AdminDeliveryManagement() {
               </p>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
 
               <div className="relative">
                 <Search
@@ -275,13 +276,13 @@ export default function AdminDeliveryManagement() {
                   placeholder="Search driver..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-10 pr-4 py-2 w-72 rounded-xl bg-white shadow-sm outline-none focus:ring-2 focus:ring-teal-500"
+                  className="pl-10 pr-4 py-2 w-full sm:w-72 rounded-xl bg-white shadow-sm outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
 
               <button
                 onClick={fetchDrivers}
-                className="px-4 rounded-xl bg-white shadow-sm hover:bg-slate-100 transition flex items-center gap-2"
+                className="px-4 py-2 sm:py-0 rounded-xl bg-white shadow-sm hover:bg-slate-100 transition flex items-center justify-center gap-2 btn-press"
               >
                 <RefreshCw size={16} />
                 Refresh
@@ -292,36 +293,42 @@ export default function AdminDeliveryManagement() {
           </div>
         </div>
 
-        <div className="p-8 space-y-8">
+        <div className="p-4 sm:p-8 space-y-8">
 
           {/* STATS */}
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
-            <StatCard
-              title="Available"
-              value={availableDrivers}
-              icon={<Bike size={20} />}
-              color="bg-green-500"
-            />
+            <Reveal delay={0}>
+              <StatCard
+                title="Available"
+                value={availableDrivers}
+                icon={<Bike size={20} />}
+                color="bg-green-500"
+              />
+            </Reveal>
 
-            <StatCard
-              title="Busy"
-              value={busyDrivers}
-              icon={<Truck size={20} />}
-              color="bg-yellow-500"
-            />
+            <Reveal delay={80}>
+              <StatCard
+                title="Busy"
+                value={busyDrivers}
+                icon={<Truck size={20} />}
+                color="bg-yellow-500"
+              />
+            </Reveal>
 
-            <StatCard
-              title="Offline"
-              value={offlineDrivers}
-              icon={<Clock3 size={20} />}
-              color="bg-slate-500"
-            />
+            <Reveal delay={160}>
+              <StatCard
+                title="Offline"
+                value={offlineDrivers}
+                icon={<Clock3 size={20} />}
+                color="bg-slate-500"
+              />
+            </Reveal>
 
           </div>
 
           {/* FILTER */}
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-wrap">
 
             <FilterButton
               active={filter === "all"}
@@ -362,10 +369,11 @@ export default function AdminDeliveryManagement() {
               </div>
             )}
 
-            {filteredDrivers.map((driver) => (
-              <div
+            {filteredDrivers.map((driver, i) => (
+              <Reveal
                 key={driver.driver_id}
-                className="bg-white rounded-2xl shadow-sm p-5 flex justify-between items-center hover:shadow-md transition"
+                delay={Math.min(i, 8) * 60}
+                className="bg-white rounded-2xl shadow-sm p-5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 hover:shadow-md transition card-hover"
               >
 
                 <div className="flex items-center gap-4">
@@ -400,7 +408,7 @@ export default function AdminDeliveryManagement() {
 
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4">
 
                   <span
                     className={`px-4 py-1 rounded-full text-sm font-medium ${
@@ -419,7 +427,7 @@ export default function AdminDeliveryManagement() {
                     onClick={() =>
                       handleToggleDriver(driver.driver_id)
                     }
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 text-white hover:bg-slate-800 transition disabled:opacity-50 btn-press"
                   >
                     <Power size={16} />
                     {updating === driver.driver_id
@@ -428,25 +436,25 @@ export default function AdminDeliveryManagement() {
                       ? "Activate"
                       : "Set Offline"}
                   </button>
-                  
+
 
                   <button
                     onClick={() => handleDelete(driver.driver_id)}
-                    className="px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600"
+                    className="px-3 py-1 rounded-lg bg-red-500 text-white hover:bg-red-600 btn-press"
                   >
                     Delete
                   </button>
 
                   <button
                     onClick={() => handleEdit(driver)}
-                    className="px-3 py-1 rounded-lg bg-blue-500 text-white hover:bg-blue-600"
+                    className="px-3 py-1 rounded-lg bg-blue-500 text-white hover:bg-blue-600 btn-press"
                   >
                     Edit
                   </button>
 
                 </div>
 
-              </div>
+              </Reveal>
             ))}
 
           </div>
@@ -461,7 +469,7 @@ export default function AdminDeliveryManagement() {
 
 function StatCard({ title, value, icon, color }) {
   return (
-    <div className="bg-white rounded-2xl p-6 shadow-sm">
+    <div className="bg-white rounded-2xl p-6 shadow-sm card-hover">
       <div className="flex justify-between items-center">
         <div>
           <p className="text-slate-500">{title}</p>
@@ -480,7 +488,7 @@ function FilterButton({ active, children, onClick }) {
   return (
     <button
       onClick={onClick}
-      className={`px-5 py-2 rounded-xl transition font-medium ${
+      className={`px-5 py-2 rounded-xl transition font-medium btn-press ${
         active
           ? "bg-slate-900 text-white"
           : "bg-white shadow-sm hover:bg-slate-100 text-slate-600"

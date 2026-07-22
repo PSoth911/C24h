@@ -55,17 +55,17 @@ const MonthlySubscriptionPayment = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="px-15 py-5">
+      <div className="px-4 sm:px-8 lg:px-15 py-5">
         <Navbar />
 
         <div className="mt-8 mb-8">
           <SubscriptionSteps currentStep={2} />
         </div>
 
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* LEFT */}
-          <div className="col-span-2">
-            <div className="flex items-center justify-between mb-4">
+          <div className="lg:col-span-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
               <h1 className="text-2xl font-bold text-[#004953]">Select Payment Method</h1>
               <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
                 <FontAwesomeIcon icon={faShieldHalved} /> Secure Payment
@@ -77,7 +77,7 @@ const MonthlySubscriptionPayment = () => {
                 <button
                   key={m.id}
                   onClick={() => setMethod(m.id)}
-                  className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 bg-white text-left transition-colors cursor-pointer ${
+                  className={`btn-press w-full flex items-center justify-between p-4 rounded-2xl border-2 bg-white text-left transition-colors cursor-pointer ${
                     method === m.id ? "border-[#004953] bg-[#004953]/5" : "border-gray-200 hover:border-gray-300"
                   }`}
                 >
@@ -138,7 +138,7 @@ const MonthlySubscriptionPayment = () => {
 
               <button
                 onClick={handlePay}
-                className="w-full mt-5 py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition"
+                className="btn-press w-full mt-5 py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition"
               >
                 Pay ${total.toFixed(2)}
               </button>
@@ -157,7 +157,7 @@ const MonthlySubscriptionPayment = () => {
                 />
                 <button
                   onClick={handleApplyPromo}
-                  className="px-4 py-2 rounded-lg bg-gray-100 text-sm font-semibold text-gray-700 hover:bg-gray-200 transition"
+                  className="btn-press px-4 py-2 rounded-lg bg-gray-100 text-sm font-semibold text-gray-700 hover:bg-gray-200 transition"
                 >
                   Apply
                 </button>

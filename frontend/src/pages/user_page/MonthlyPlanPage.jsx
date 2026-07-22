@@ -83,12 +83,12 @@ const MonthlyPlanPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="px-15 py-5">
+      <div className="px-4 sm:px-8 lg:px-15 py-5">
         <Navbar />
 
-        <div className="mt-8 grid grid-cols-3 gap-8">
+        <div className="mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* LEFT */}
-          <div className="col-span-2">
+          <div className="lg:col-span-2">
             <div className="relative rounded-3xl overflow-hidden">
               <img
                 src={restaurant.logo ? `http://localhost:5000/uploads/${restaurant.logo}` : placeholderRestaurant}
@@ -100,10 +100,10 @@ const MonthlyPlanPage = () => {
                 Monthly Meal
               </span>
               <div className="absolute top-4 right-4 flex gap-2">
-                <button className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow hover:scale-110 transition-transform">
+                <button className="btn-press w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow hover:scale-110 transition-transform">
                   <FontAwesomeIcon icon={faShareNodes} className="text-gray-500" />
                 </button>
-                <button className="w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow hover:scale-110 transition-transform">
+                <button className="btn-press w-10 h-10 rounded-full bg-white/90 flex items-center justify-center shadow hover:scale-110 transition-transform">
                   <FontAwesomeIcon icon={faHeart} className="text-red-500" />
                 </button>
               </div>
@@ -122,12 +122,12 @@ const MonthlyPlanPage = () => {
               </span>
             </div>
 
-            <div className="flex gap-6 border-b border-gray-200 mt-6">
+            <div className="flex gap-6 border-b border-gray-200 mt-6 overflow-x-auto scrollbar-hide">
               {TABS.map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`pb-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer ${
+                  className={`btn-press pb-3 text-sm font-semibold border-b-2 transition-colors cursor-pointer shrink-0 ${
                     activeTab === tab
                       ? "border-[#004953] text-[#004953]"
                       : "border-transparent text-gray-400 hover:text-gray-600"
@@ -147,7 +147,7 @@ const MonthlyPlanPage = () => {
                       <button
                         key={plan.id}
                         onClick={() => setSelectedPlanId(plan.id)}
-                        className={`w-full flex items-center justify-between p-4 rounded-2xl border-2 transition-colors text-left cursor-pointer relative ${
+                        className={`btn-press w-full flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-2xl border-2 transition-colors text-left cursor-pointer relative ${
                           selectedPlanId === plan.id
                             ? "border-[#004953] bg-[#004953]/5"
                             : "border-gray-200 bg-white hover:border-gray-300"
@@ -229,7 +229,7 @@ const MonthlyPlanPage = () => {
 
               <button
                 onClick={handleContinue}
-                className="w-full mt-5 py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition"
+                className="btn-press w-full mt-5 py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition"
               >
                 Continue to Payment →
               </button>

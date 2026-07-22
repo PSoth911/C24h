@@ -18,6 +18,7 @@ import {
   removeFavouriteRestaurant,
 } from "../../service/favouriteService";
 import Loading from "./LoadingPage";
+import Reveal from "../../components/common/Reveal";
 
 const AllRestaurantsPage = () => {
   const navigate = useNavigate();
@@ -90,12 +91,12 @@ const AllRestaurantsPage = () => {
     }
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="px-15 py-5">
+      <div className="px-4 sm:px-8 lg:px-15 py-5">
         <Navbar />
 
 
         <div className="mt-10 mb-8">
-          <h1 className="text-4xl font-bold text-[#004953]">All Restaurants</h1>
+          <h1 className="text-3xl sm:text-4xl font-bold text-[#004953]">All Restaurants</h1>
           <p className="text-gray-500 mt-2">
             {filtered.length} restaurant{filtered.length !== 1 ? "s" : ""} available
           </p>
@@ -103,7 +104,7 @@ const AllRestaurantsPage = () => {
 
 
         <div className="flex flex-wrap gap-4 mb-8 items-center">
-          <div className="relative flex-1 min-w-64 max-w-md">
+          <div className="relative flex-1 min-w-full sm:min-w-64 max-w-full sm:max-w-md">
             <FontAwesomeIcon
               icon={faMagnifyingGlass}
               className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
@@ -117,7 +118,7 @@ const AllRestaurantsPage = () => {
             />
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {[
               { label: "Default", value: "default" },
               { label: "Top Rated", value: "rating" },
@@ -126,7 +127,7 @@ const AllRestaurantsPage = () => {
               <button
                 key={option.value}
                 onClick={() => setSort(option.value)}
-                className={`px-5 py-3 rounded-2xl font-semibold transition ${
+                className={`btn-press px-5 py-3 rounded-2xl font-semibold transition ${
                   sort === option.value
                     ? "bg-[#004953] text-white shadow-md"
                     : "bg-white text-[#004953] border border-gray-400 hover:bg-white"
@@ -139,7 +140,7 @@ const AllRestaurantsPage = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="bg-white rounded-3xl h-80 animate-pulse" />
             ))}
@@ -147,20 +148,20 @@ const AllRestaurantsPage = () => {
         ) : filtered.length === 0 ? (
           <div className="text-center py-32 text-gray-500 text-lg">No restaurants found.</div>
         ) : (
-          <div className="grid grid-cols-3 gap-6">
-            {filtered.map((r) => {
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((r, index) => {
               const isFav = favouriteIds.has(r.restaurant_id);
               const isPopped = poppedId === r.restaurant_id;
               return (
+                <Reveal key={r.restaurant_id} delay={Math.min(index, 6) * 80}>
                 <div
-                  key={r.restaurant_id}
                   onClick={() => navigate(`/restaurant/${r.restaurant_id}`)}
-                  className="bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer flex flex-col"
+                  className="card-hover bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 cursor-pointer flex flex-col"
                 >
                   {/* Image */}
                   <div className="relative">
                     <img
-                      src={r.logo ? `http://localhost:5000/uploads/${r.image}` : placeholderRestaurant}
+                      src={r.image ? `http://localhost:5000/uploads/${r.image}` : placeholderRestaurant}
                       alt={r.restaurant_name}
                       className="w-full h-48 object-cover"
                       onError={(e) => { e.target.src = placeholderRestaurant; }}
@@ -171,8 +172,8 @@ const AllRestaurantsPage = () => {
                       onClick={(e) => toggleFavourite(e, r.restaurant_id)}
                       disabled={togglingId === r.restaurant_id}
                       title={isFav ? "Remove from favourites" : "Add to favourites"}
-                      className={`absolute top-3 right-3 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md
-                        transition-transform duration-150 hover:scale-110 active:scale-90 disabled:cursor-not-allowed z-10
+                      className={`btn-press absolute top-3 right-3 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md
+                        transition-transform duration-150 hover:scale-110 disabled:cursor-not-allowed z-10
                         ${isPopped ? "scale-125" : "scale-100"}`}
                     >
                       <FontAwesomeIcon
@@ -213,11 +214,12 @@ const AllRestaurantsPage = () => {
 
                     <p className="text-gray-600 text-sm mt-2 line-clamp-2 flex-1">{r.description}</p>
 
-                    <button className="mt-4 w-full py-2.5 rounded-xl bg-[#004953] text-white hover:bg-black transition font-semibold">
+                    <button className="btn-press mt-4 w-full py-2.5 rounded-xl bg-[#004953] text-white hover:bg-black transition font-semibold">
                       View Restaurant
                     </button>
                   </div>
                 </div>
+                </Reveal>
               );
             })}
           </div>

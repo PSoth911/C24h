@@ -36,10 +36,10 @@ const EditScheduleModal = ({ subscription, focusMealTime, onClose, onUpdated }) 
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl shadow-xl w-full max-w-md p-6">
+      <div className="animate-fade-in-scale bg-white rounded-3xl shadow-xl w-full max-w-md p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-bold text-gray-800">Edit Delivery Time</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 cursor-pointer">
+          <button onClick={onClose} className="btn-press text-gray-400 hover:text-gray-600 cursor-pointer">
             <FontAwesomeIcon icon={faXmark} />
           </button>
         </div>
@@ -81,12 +81,12 @@ const EditScheduleModal = ({ subscription, focusMealTime, onClose, onUpdated }) 
         <button
           onClick={handleSave}
           disabled={submitting}
-          className="w-full py-3 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
+          className="btn-press w-full py-3 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition disabled:opacity-50 disabled:cursor-not-allowed mb-2"
         >
           {submitting ? "Saving…" : "Save Delivery Time"}
         </button>
 
-        <button onClick={onClose} className="w-full py-2 text-sm font-semibold text-gray-400 hover:text-gray-600 transition">
+        <button onClick={onClose} className="btn-press w-full py-2 text-sm font-semibold text-gray-400 hover:text-gray-600 transition">
           Cancel
         </button>
       </div>

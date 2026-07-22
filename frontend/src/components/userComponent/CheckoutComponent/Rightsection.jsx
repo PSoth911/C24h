@@ -87,7 +87,7 @@ const Rightsection = () => {
   const total = Math.max(subtotal + deliveryFee - discount, 0);
 
   return (
-    <div className="col-span-2 bg-white rounded-3xl shadow-xl border p-6 h-fit sticky top-5">
+    <div className="lg:col-span-2 bg-white rounded-3xl shadow-xl border p-6 h-fit sticky top-5">
 
       <h2 className="text-2xl font-bold text-[#004953] mb-6">
         Order Summary
@@ -130,26 +130,26 @@ const Rightsection = () => {
             </span>
             <button
               onClick={handleRemoveCoupon}
-              className="text-sm text-red-600 hover:underline"
+              className="btn-press text-sm text-red-600 hover:underline"
             >
               Remove
             </button>
           </div>
         ) : (
-          <div className="flex gap-3 mt-3">
+          <div className="flex flex-col sm:flex-row gap-3 mt-3">
 
             <input
               type="text"
               value={promoCode}
               onChange={(e) => setPromoCode(e.target.value)}
               placeholder="Enter promo code"
-              className="flex-1 border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#004953]"
+              className="flex-1 min-w-0 border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#004953]"
             />
 
             <button
               onClick={handleApplyCoupon}
               disabled={applyingCoupon || !promoCode.trim()}
-              className="bg-[#004953] text-white px-5 rounded-xl hover:bg-[#00353d] disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn-press bg-[#004953] text-white px-5 py-3 sm:py-0 rounded-xl hover:bg-[#00353d] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {applyingCoupon ? "Applying..." : "Apply"}
             </button>
@@ -187,7 +187,7 @@ const Rightsection = () => {
       <button
         disabled={isEmpty}
         onClick={() => navigate(PATH.USER.AddAdress)}
-        className={`w-full mt-6 py-4 rounded-2xl font-semibold transition-all
+        className={`btn-press w-full mt-6 py-4 rounded-2xl font-semibold transition-all
           ${
             isEmpty
               ? "bg-gray-300 text-gray-500 cursor-not-allowed"

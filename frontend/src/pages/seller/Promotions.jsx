@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react';
 import PromoMetrics from '../../components/Seller/PromoMetrics';
 import PromoTable from '../../components/Seller/PromoTable';
 import PromoModal from '../../components/Seller/PromoModal';
+import Reveal from '../../components/common/Reveal';
 import { getPromotions, createPromotion } from '../../api/sellerApi';
 
 const Promotions = () => {
@@ -56,21 +57,25 @@ const Promotions = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-12 px-4 sm:px-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-gray-800 tracking-tight">Promotions & Offers</h2>
+          <h2 className="text-xl sm:text-2xl font-black text-gray-800 tracking-tight">Promotions & Offers</h2>
           <p className="text-sm text-gray-500 mt-0.5">Deploy store discount rules, monitor user coupon claims, and schedule flashes.</p>
         </div>
         <button
           onClick={() => setIsModalOpen(true)}
-          className="bg-[#004D40] text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[#003d33] transition-all shadow-sm cursor-pointer shrink-0"
+          className="btn-press bg-[#004D40] text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#003d33] transition-all shadow-sm cursor-pointer shrink-0"
         >
           <Plus size={16} /> Create Campaign
         </button>
       </div>
 
-      <PromoMetrics summary={summary} />
-      <PromoTable campaigns={campaigns} />
+      <Reveal>
+        <PromoMetrics summary={summary} />
+      </Reveal>
+      <Reveal delay={80}>
+        <PromoTable campaigns={campaigns} />
+      </Reveal>
 
       <PromoModal
         isOpen={isModalOpen}

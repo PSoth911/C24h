@@ -21,7 +21,7 @@ const RightSection = ({
   const isEmpty = items.length === 0;
 
   return (
-    <div className="col-span-2 h-fit rounded-3xl bg-gray-100 shadow-xl p-7 sticky top-28">
+    <div className="lg:col-span-2 h-fit rounded-3xl bg-gray-100 shadow-xl p-7 sticky top-28">
       <div className="flex items-center gap-3 mb-7">
         <div className="bg-emerald-50 text-[#004953] w-11 h-11 rounded-2xl flex items-center justify-center">
           <FontAwesomeIcon icon={faReceipt} />
@@ -77,7 +77,7 @@ const RightSection = ({
       <button
         onClick={onPlaceOrder}
         disabled={loading || isEmpty}
-        className="w-full mt-6 bg-[#004953] text-white py-4 rounded-2xl text-lg font-semibold hover:bg-black transition flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#004953]"
+        className="btn-press w-full mt-6 bg-[#004953] text-white py-4 rounded-2xl text-lg font-semibold hover:bg-black transition flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#004953]"
       >
         {loading ? (
           "Processing..."

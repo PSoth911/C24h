@@ -88,7 +88,7 @@ const Favaurite = () => {
       <div className="flex gap-3 mb-5">
         <button
           onClick={() => setActiveTab("restaurants")}
-          className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+          className={`btn-press flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
             activeTab === "restaurants"
               ? "bg-[#004953] text-white shadow-md"
               : "bg-white border border-gray-200 text-gray-500 hover:border-[#004953] hover:text-[#004953]"
@@ -99,7 +99,7 @@ const Favaurite = () => {
         </button>
         <button
           onClick={() => setActiveTab("products")}
-          className={`flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
+          className={`btn-press flex items-center gap-2 px-5 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
             activeTab === "products"
               ? "bg-[#004953] text-white shadow-md"
               : "bg-white border border-gray-200 text-gray-500 hover:border-[#004953] hover:text-[#004953]"
@@ -120,14 +120,14 @@ const Favaurite = () => {
               subtitle="Browse restaurants and tap the heart to save them here"
             />
           ) : (
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {restaurants.map((item) => {
                 const r = item.Restaurant;
                 return (
                   <div
                     key={item.favourite_id}
                     onClick={() => navigate(PATH.USER.Restaurant(r.restaurant_id))}
-                    className="bg-white rounded-3xl overflow-hidden border border-[#004953] shadow-sm hover:scale-[1.03] transition-all duration-300 hover:cursor-pointer"
+                    className="card-hover bg-white rounded-3xl overflow-hidden border border-[#004953] shadow-sm transition-all duration-300 hover:cursor-pointer"
                   >
                     <div className="relative">
                       <img
@@ -139,7 +139,7 @@ const Favaurite = () => {
                       <button
                         onClick={(e) => { e.stopPropagation(); handleRemoveRestaurant(r.restaurant_id); }}
                         disabled={removingId === r.restaurant_id}
-                        className="absolute top-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow hover:scale-110 transition-transform disabled:opacity-50"
+                        className="btn-press absolute top-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow hover:scale-110 transition-transform disabled:opacity-50"
                         title="Remove from favourites"
                       >
                         <FontAwesomeIcon icon={faHeart} className="text-red-500" />
@@ -189,14 +189,14 @@ const Favaurite = () => {
               subtitle="Browse menus and tap the heart to save dishes here"
             />
           ) : (
-            <div className="grid grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
               {products.map((item) => {
                 const p = item.Product;
                 return (
                   <div
                     key={item.favourite_id}
                     onClick={() => navigate(PATH.USER.Restaurant(p.restaurant_id))}
-                    className="bg-white rounded-3xl overflow-hidden border border-pink-200 shadow-sm hover:scale-[1.03] transition-all duration-300 hover:cursor-pointer"
+                    className="card-hover bg-white rounded-3xl overflow-hidden border border-pink-200 shadow-sm transition-all duration-300 hover:cursor-pointer"
                   >
                     <div className="relative">
                       <img
@@ -208,7 +208,7 @@ const Favaurite = () => {
                       <button
                         onClick={(e) => { e.stopPropagation(); handleRemoveProduct(p.product_id); }}
                         disabled={removingId === p.product_id}
-                        className="absolute top-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow hover:scale-110 transition-transform disabled:opacity-50"
+                        className="btn-press absolute top-3 right-3 bg-white rounded-full w-8 h-8 flex items-center justify-center shadow hover:scale-110 transition-transform disabled:opacity-50"
                         title="Remove from favourites"
                       >
                         <FontAwesomeIcon icon={faHeart} className="text-red-500" />

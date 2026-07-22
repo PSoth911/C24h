@@ -112,7 +112,7 @@ const Leftsection = () => {
   }
 
   return (
-    <div className="col-span-3">
+    <div className="lg:col-span-3">
       <div className="bg-gray-100 rounded-3xl shadow-xl border border-gray-100 p-5 h-[500px] overflow-y-auto">
 
         {orderItems.length === 0 ? (
@@ -149,7 +149,7 @@ const Leftsection = () => {
 
                       <button
                         onClick={() => removeItem(item)}
-                        className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-50 transition"
+                        className="btn-press w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-50 transition"
                         title="Remove item"
                       >
                         <FontAwesomeIcon
@@ -170,7 +170,7 @@ const Leftsection = () => {
 
                         <button
                           onClick={() => decreaseQuantity(item)}
-                          className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white transition"
+                          className="btn-press w-8 h-8 rounded-full flex items-center justify-center hover:bg-white transition"
                         >
                           <FontAwesomeIcon icon={faMinus} className="text-sm" />
                         </button>
@@ -181,7 +181,7 @@ const Leftsection = () => {
 
                         <button
                           onClick={() => increaseQuantity(item)}
-                          className="w-8 h-8 rounded-full flex items-center justify-center hover:bg-white transition"
+                          className="btn-press w-8 h-8 rounded-full flex items-center justify-center hover:bg-white transition"
                         >
                           <FontAwesomeIcon icon={faPlus} className="text-sm" />
                         </button>
@@ -211,7 +211,7 @@ const Leftsection = () => {
       <button
         onClick={() => navigate(`/restaurant/${restaurantId}`)}
         disabled={!restaurantId || orderItems.length === 0}
-        className={`mt-6 w-full py-3 rounded-xl font-medium transition flex items-center justify-center gap-2
+        className={`btn-press mt-6 w-full py-3 rounded-xl font-medium transition flex items-center justify-center gap-2
           ${
             !restaurantId || orderItems.length === 0
               ? "bg-gray-200 text-gray-400 cursor-not-allowed"
@@ -225,11 +225,11 @@ const Leftsection = () => {
       {suggestProducts.length > 0 && (
       <div className="mt-8">
         <h3 className="font-semibold text-[#004953] mb-3">You might also like</h3>
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           {suggestProducts.map((product) => (
             <div
               key={product.product_id}
-              className="bg-white rounded-xl shadow-md hover:shadow-xl transition cursor-pointer"
+              className="card-hover bg-white rounded-xl shadow-md hover:shadow-xl transition cursor-pointer"
               onClick={() => navigate(`/restaurant/${restaurantId}`)}
             >
               <img

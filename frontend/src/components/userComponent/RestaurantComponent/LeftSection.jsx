@@ -26,7 +26,7 @@ const LeftSection = ({ activeCategory, cartitems, setcartitems, categories = [] 
             <button
               key={name}
               onClick={() => handleScroll(name)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg duration-200
+              className={`btn-press w-full flex items-center gap-3 px-4 py-3 rounded-lg duration-200
                 ${
                   activeCategory === name
                     ? "bg-[#004953] text-white"

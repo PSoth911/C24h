@@ -6,6 +6,7 @@ import {
 
 import DeliveryNav from "../../components/delivery/DeliveryNav";
 import DeliverySideNav from "../../components/delivery/DeliverySideNav";
+import Reveal from "../../components/common/Reveal";
 
 const BASE    = "http://localhost:5000/api";
 const STEPS = [
@@ -28,7 +29,7 @@ const BUTTONS = [
   null,
 ];
 export default function DeliveryMap() {
-  const user     = JSON.parse(sessionStorage.getItem("user"));
+  const user     = JSON.parse(localStorage.getItem("user"));
   console.log(user);
   const driverId = user?.driver_id;
   console.log(driverId);
@@ -89,23 +90,23 @@ export default function DeliveryMap() {
       <div className="flex flex-1">
         <DeliverySideNav />
 
-        <main className="flex-1 p-8 space-y-6 relative">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 space-y-6 relative">
           {/* Toast */}
           {toast && (
-            <div className={`fixed top-5 right-5 z-50 flex items-center gap-2 px-5 py-3 rounded-2xl shadow-lg text-white text-sm font-medium ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}`}>
+            <div className={`fixed top-5 right-5 z-50 flex items-center gap-2 px-5 py-3 rounded-2xl shadow-lg text-white text-sm font-medium animate-fade-in-scale ${toast.type === "success" ? "bg-green-500" : "bg-red-500"}`}>
               {toast.msg}
             </div>
           )}
 
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Active Delivery</h1>
+            <h1 className="text-xl sm:text-2xl font-bold text-slate-800">Active Delivery</h1>
             <p className="text-sm text-slate-500">Track and manage your current order</p>
           </div>
 
           {loading ? (
             <p className="text-slate-400 text-sm animate-pulse">Loading...</p>
           ) : !delivery ? (
-            <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm p-12 text-center text-slate-400">
+            <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm p-8 sm:p-12 text-center text-slate-400">
               <Bike size={40} className="mx-auto mb-3 opacity-30" />
               <p className="font-medium">No active delivery right now.</p>
               <p className="text-xs mt-1">Accept an order from the Dashboard to get started.</p>
@@ -113,9 +114,9 @@ export default function DeliveryMap() {
           ) : (
             <div className="max-w-2xl space-y-6">
               {/* Tracking card */}
-              <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm p-8 space-y-8">
+              <Reveal className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm p-5 sm:p-8 space-y-6 sm:space-y-8">
                 {/* Header */}
-                <div className="flex justify-between items-start">
+                <div className="flex flex-wrap justify-between items-start gap-3">
                   <div>
                     <p className="text-sm text-slate-500">Active Delivery</p>
                     <h2 className="text-2xl font-bold text-slate-800">
@@ -128,13 +129,13 @@ export default function DeliveryMap() {
                 </div>
 
                 {/* Progress bar */}
-                <div className="relative">
+                <div className="relative overflow-x-auto">
                   <div className="absolute top-5 left-0 w-full h-0.5 bg-slate-200" />
                   <div
                     className="absolute top-5 left-0 h-0.5 bg-teal-600 transition-all duration-500"
                     style={{ width: `${(currentIndex / (STEPS.length - 1)) * 100}%` }}
                   />
-                  <div className="relative flex justify-between">
+                  <div className="relative flex justify-between min-w-[320px]">
                     {STEPS.map((_, i) => {
                       const Icon = ICONS[i];
                       const done   = i < currentIndex;
@@ -160,15 +161,15 @@ export default function DeliveryMap() {
                 {/* Restaurant info */}
                 {delivery.Order?.Restaurant && (
                   <div className="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-600 to-cyan-500 text-white flex items-center justify-center font-bold text-lg">
+                    <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-600 to-cyan-500 text-white flex items-center justify-center font-bold text-lg shrink-0">
                       {delivery.Order.Restaurant.restaurant_name?.[0] ?? "R"}
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-xs text-slate-500">Pickup from</p>
-                      <p className="font-semibold text-slate-800">{delivery.Order.Restaurant.restaurant_name}</p>
+                      <p className="font-semibold text-slate-800 truncate">{delivery.Order.Restaurant.restaurant_name}</p>
                       {delivery.Order.Restaurant.address && (
                         <p className="text-xs text-slate-500 mt-0.5 flex items-center gap-1">
-                          <MapPin size={11} /> {delivery.Order.Restaurant.address}
+                          <MapPin size={11} className="shrink-0" /> <span className="truncate">{delivery.Order.Restaurant.address}</span>
                         </p>
                       )}
                     </div>
@@ -180,7 +181,7 @@ export default function DeliveryMap() {
                   <button
                     onClick={handleAdvance}
                     disabled={updating}
-                    className="w-full bg-gradient-to-r from-teal-600 to-teal-500 text-white py-4 rounded-2xl font-semibold shadow hover:scale-[1.01] transition disabled:opacity-50"
+                    className="btn-press w-full bg-gradient-to-r from-teal-600 to-teal-500 text-white py-4 rounded-2xl font-semibold shadow hover:scale-[1.01] transition disabled:opacity-50"
                   >
                     {updating ? "Updating…" : BUTTONS[currentIndex]}
                   </button>
@@ -191,7 +192,7 @@ export default function DeliveryMap() {
                     ✓ Delivery completed!
                   </div>
                 )}
-              </div>
+              </Reveal>
             </div>
           )}
         </main>

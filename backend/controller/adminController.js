@@ -255,6 +255,9 @@ export const createRestaurant = async (req, res) => {
       phone
     } = req.body;
 
+    const logo = req.files?.logo?.[0]?.filename;
+    const image = req.files?.image?.[0]?.filename;
+
     const restaurant = await Restaurant.create({
       restaurant_name,
       user_id,
@@ -264,6 +267,8 @@ export const createRestaurant = async (req, res) => {
       phone: phone || "",
       status: "open",
       average_rating: 0,
+      ...(logo && { logo }),
+      ...(image && { image }),
     });
 
     res.status(201).json({
@@ -287,7 +292,14 @@ export const updateRestaurant = async (req, res) => {
       return res.status(404).json({ message: "Not found" });
     }
 
-    await restaurant.update(req.body);
+    const logo = req.files?.logo?.[0]?.filename;
+    const image = req.files?.image?.[0]?.filename;
+
+    await restaurant.update({
+      ...req.body,
+      ...(logo && { logo }),
+      ...(image && { image }),
+    });
 
     res.json({
       success: true,

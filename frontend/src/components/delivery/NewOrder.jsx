@@ -10,7 +10,7 @@ export default function NewOrder({ order, onAccepted }) {
   const [declined, setDeclined] = useState(false);
   const [error, setError] = useState("");
 
-  const user = JSON.parse(sessionStorage.getItem("user"));
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const handleAccept = async () => {
     console.log(user);
@@ -66,9 +66,9 @@ export default function NewOrder({ order, onAccepted }) {
   if (declined) return null;
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 hover:shadow-md hover:-translate-y-0.5 transition space-y-4">
+    <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 card-hover space-y-4">
       {/* Header */}
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-3">
         <div>
           <p className="text-xs text-slate-400">
             Order #{order.order_id ?? order.delivery_id}
@@ -92,7 +92,7 @@ export default function NewOrder({ order, onAccepted }) {
             <span className="truncate">{order.Order.Restaurant.address}</span>
           </div>
         )}
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           <span className="flex items-center gap-1">
             <DollarSign size={14} className="text-slate-400" />
             ${parseFloat(order.payout ?? order.delivery_fee ?? 0).toFixed(2)} fee
@@ -116,14 +116,14 @@ export default function NewOrder({ order, onAccepted }) {
         <button
           onClick={handleDecline}
           disabled={declining || loading}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-slate-200 text-slate-500 hover:bg-red-50 hover:border-red-200 hover:text-red-500 text-sm font-medium disabled:opacity-50 transition"
+          className="btn-press flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-slate-200 text-slate-500 hover:bg-red-50 hover:border-red-200 hover:text-red-500 text-sm font-medium disabled:opacity-50 transition"
         >
           <XCircle size={16} /> {declining ? "Declining…" : "Decline"}
         </button>
         <button
           onClick={handleAccept}
           disabled={loading || declining}
-          className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-500 text-white text-sm font-medium shadow hover:scale-[1.02] disabled:opacity-50 transition"
+          className="btn-press flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-teal-600 to-teal-500 text-white text-sm font-medium shadow hover:scale-[1.02] disabled:opacity-50 transition"
         >
           <CheckCircle size={16} />
           {loading ? "Accepting…" : "Accept"}

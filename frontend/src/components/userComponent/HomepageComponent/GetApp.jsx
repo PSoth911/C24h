@@ -3,9 +3,9 @@ import image26 from '../../../assets/image copy 26.png'
 const GetApp = () => {
     return (
         <div>
-            <div className="px-30 py-20 bg-[#004953] grid grid-cols-2 items-center gap-10">
+            <div className="px-6 sm:px-12 lg:px-30 py-12 lg:py-20 bg-[#004953] grid grid-cols-1 lg:grid-cols-2 items-center gap-10">
                 <div className="space-y-6 text-white">
-                    <h1 className="text-5xl font-bold">
+                    <h1 className="text-3xl sm:text-5xl font-bold">
                         Get the Crave App
                     </h1>
 

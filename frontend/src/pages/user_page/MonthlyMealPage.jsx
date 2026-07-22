@@ -10,6 +10,7 @@ import { plansByRestaurant } from "../../data/monthlyMealData";
 import { getAllRestaurants } from "../../service/restaurantService";
 import { getActiveSubscription } from "../../service/subscriptionService";
 import { PATH } from "../../path";
+import Reveal from "../../components/common/Reveal";
 
 const MonthlyMealPage = () => {
   const navigate = useNavigate();
@@ -58,25 +59,25 @@ const MonthlyMealPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="px-15 py-5">
+      <div className="px-4 sm:px-8 lg:px-15 py-5">
         <Navbar />
 
-        <div className="mt-10 mb-8 flex items-end justify-between">
+        <div className="mt-10 mb-8 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
           <div>
-            <h1 className="text-4xl font-bold text-[#004953]">Monthly Meal Restaurants</h1>
+            <h1 className="text-3xl sm:text-4xl font-bold text-[#004953]">Monthly Meal Restaurants</h1>
             <p className="text-gray-500 mt-2">Subscribe to daily meals from your favorite restaurants.</p>
           </div>
           <p className="text-sm text-gray-400">{filtered.length} active plans</p>
         </div>
 
         {hasActiveSubscription && (
-          <div className="mb-6 flex items-center justify-between gap-4 rounded-2xl bg-amber-50 text-amber-700 px-5 py-4">
+          <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl bg-amber-50 text-amber-700 px-5 py-4">
             <p className="text-sm font-medium">
               You already have an active subscription. Cancel it before subscribing to a new plan.
             </p>
             <button
               onClick={() => navigate(PATH.USER.MySubscription)}
-              className="shrink-0 text-sm font-semibold underline hover:text-amber-800"
+              className="btn-press shrink-0 text-sm font-semibold underline hover:text-amber-800"
             >
               View My Subscription
             </button>
@@ -84,7 +85,7 @@ const MonthlyMealPage = () => {
         )}
 
         <div className="flex flex-wrap gap-3 mb-8 items-center">
-          <div className="relative flex-1 min-w-64 max-w-md">
+          <div className="relative flex-1 min-w-full sm:min-w-64 max-w-full sm:max-w-md">
             <FontAwesomeIcon icon={faMagnifyingGlass} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
@@ -118,7 +119,7 @@ const MonthlyMealPage = () => {
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((i) => (
               <div key={i} className="bg-white rounded-3xl h-80 animate-pulse" />
             ))}
@@ -126,11 +127,11 @@ const MonthlyMealPage = () => {
         ) : filtered.length === 0 ? (
           <div className="text-center py-32 text-gray-500 text-lg">No monthly meal restaurants found.</div>
         ) : (
-          <div className="grid grid-cols-4 gap-6">
-            {filtered.map((r) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {filtered.map((r, index) => (
+              <Reveal key={r.restaurant_id} delay={Math.min(index, 6) * 80}>
               <div
-                key={r.restaurant_id}
-                className="bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl hover:-translate-y-1 transition-all duration-300 flex flex-col"
+                className="card-hover bg-white rounded-3xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col"
               >
                 <div className="relative">
                   <img
@@ -142,7 +143,7 @@ const MonthlyMealPage = () => {
                   <span className="absolute top-3 left-3 bg-[#004953] text-white text-[11px] font-bold px-3 py-1 rounded-full">
                     Monthly Meal
                   </span>
-                  <button className="absolute top-3 right-3 w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-md hover:scale-110 transition-transform">
+                  <button className="btn-press absolute top-3 right-3 w-9 h-9 rounded-full bg-white flex items-center justify-center shadow-md hover:scale-110 transition-transform">
                     <FontAwesomeIcon icon={faHeart} className="text-gray-300" />
                   </button>
                 </div>
@@ -172,7 +173,7 @@ const MonthlyMealPage = () => {
                   <button
                     onClick={() => navigate(PATH.USER.MonthlyMealPlan(r.restaurant_id))}
                     disabled={hasActiveSubscription}
-                    className={`mt-4 w-full py-2.5 rounded-xl font-semibold transition ${
+                    className={`btn-press mt-4 w-full py-2.5 rounded-xl font-semibold transition ${
                       hasActiveSubscription
                         ? "bg-gray-100 text-gray-400 cursor-not-allowed"
                         : "bg-[#004953] text-white hover:bg-[#003940]"
@@ -182,6 +183,7 @@ const MonthlyMealPage = () => {
                   </button>
                 </div>
               </div>
+              </Reveal>
             ))}
           </div>
         )}

@@ -106,14 +106,14 @@ const Success = () => {
             <div className="flex flex-col md:flex-row gap-4 justify-center mt-8">
               <button
                 onClick={() => navigate(`${PATH.USER.Trackorder}/${id}`)}
-                className="px-8 py-3 rounded-full hover:cursor-pointer bg-[#004953] text-white shadow-lg hover:bg-gray-500 hover:text-black transition"
+                className="btn-press px-8 py-3 rounded-full hover:cursor-pointer bg-[#004953] text-white shadow-lg hover:bg-gray-500 hover:text-black transition"
               >
                 <FontAwesomeIcon icon={faPersonRunning} className="mr-2" />
                 Track My Order
               </button>
               <button
                 onClick={() => navigate(PATH.USER.HOME)}
-                className="px-8 py-3 rounded-full border-2 border-[#004953] text-black hover:cursor-pointer hover:text-white hover:bg-[#004953] transition"
+                className="btn-press px-8 py-3 rounded-full border-2 border-[#004953] text-black hover:cursor-pointer hover:text-white hover:bg-[#004953] transition"
               >
                 Back to Home
               </button>

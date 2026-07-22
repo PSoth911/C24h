@@ -32,10 +32,10 @@ const CheckoutPage = () => {
     <div>
       <Navbar />
 
-      <div className="py-10 px-30">
+      <div className="py-10 px-4 sm:px-8 lg:px-30">
         <h2 className="font-bold text-3xl">Your Cart</h2>
 
-        <div className="grid grid-cols-5 gap-10">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10">
           <LeftSection
             cart={cart?.cart}
             refreshCart={loadCart}

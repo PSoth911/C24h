@@ -6,10 +6,10 @@ const PromoModal = ({ isOpen, onClose, onSubmit, formData, setFormData }) => {
 
   return (
     <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl p-6 space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl p-6 space-y-4 animate-fade-in-scale max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center pb-2 border-b border-gray-100">
           <h3 className="text-xl font-bold text-gray-900">New Promotion</h3>
-          <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-700 cursor-pointer">
+          <button type="button" onClick={onClose} className="btn-press text-gray-400 hover:text-gray-700 cursor-pointer">
             <X size={20} />
           </button>
         </div>
@@ -20,7 +20,7 @@ const PromoModal = ({ isOpen, onClose, onSubmit, formData, setFormData }) => {
             <input type="text" required placeholder="e.g., Weekend Free Delivery" className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#004D40]" value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-teal-900 mb-1.5 uppercase tracking-wider">Promo Code</label>
               <div className="relative">
@@ -34,7 +34,7 @@ const PromoModal = ({ isOpen, onClose, onSubmit, formData, setFormData }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-bold text-teal-900 mb-1.5 uppercase tracking-wider">Start Date</label>
               <input type="date" required className="w-full px-3 py-2 border border-gray-200 rounded-xl text-sm outline-none focus:ring-2 focus:ring-[#004D40]" value={formData.startDate} onChange={(e) => setFormData({ ...formData, startDate: e.target.value })} />
@@ -46,8 +46,8 @@ const PromoModal = ({ isOpen, onClose, onSubmit, formData, setFormData }) => {
           </div>
 
           <div className="flex gap-3 justify-end pt-2">
-            <button type="button" onClick={onClose} className="px-4 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-xl cursor-pointer">Cancel</button>
-            <button type="submit" className="px-5 py-2 text-sm font-bold bg-[#004D40] text-white rounded-xl shadow-md cursor-pointer">Launch Offer</button>
+            <button type="button" onClick={onClose} className="btn-press px-4 py-2 text-sm font-bold text-gray-500 hover:bg-gray-50 rounded-xl cursor-pointer">Cancel</button>
+            <button type="submit" className="btn-press px-5 py-2 text-sm font-bold bg-[#004D40] text-white rounded-xl shadow-md cursor-pointer">Launch Offer</button>
           </div>
         </form>
       </div>

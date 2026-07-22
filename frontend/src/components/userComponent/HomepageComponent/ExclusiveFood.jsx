@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import placeholderFood from "../../../assets/image copy 2.png";
+import Reveal from "../../common/Reveal";
 
 const ExclusiveFood = ({ products }) => {
   const navigate = useNavigate();
@@ -7,8 +8,8 @@ const ExclusiveFood = ({ products }) => {
 
   return (
     <div className="bg-gray-200 rounded-3xl mt-10">
-      <div className="px-15 py-5">
-        <div className="flex justify-between items-center mb-8">
+      <div className="px-4 sm:px-8 lg:px-15 py-5">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-8">
           <div>
             <h1 className="text-2xl font-bold text-[#004953]">
               Exclusive Deals For You
@@ -19,17 +20,17 @@ const ExclusiveFood = ({ products }) => {
             </p>
           </div>
 
-          <button className="bg-[#004953] text-white px-6 py-3 rounded-full hover:bg-black transition">
+          <button className="btn-press bg-[#004953] text-white px-6 py-3 rounded-full hover:bg-black transition self-start sm:self-auto">
             View All Deals
           </button>
         </div>
 
-        <div className="grid grid-cols-5 gap-6">
-          {exclusiveProducts.map((product) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+          {exclusiveProducts.map((product, index) => (
+            <Reveal key={product.product_id} delay={Math.min(index, 6) * 80}>
             <div
-              key={product.product_id}
               onClick={() => navigate(`/restaurant/${product.Restaurant?.restaurant_id}`)}
-              className="relative overflow-hidden rounded-3xl group cursor-pointer"
+              className="card-hover relative overflow-hidden rounded-3xl group cursor-pointer"
             >
               <img
                 src={product.image ? `http://localhost:5000/uploads/${product.image}` : placeholderFood}
@@ -73,12 +74,13 @@ const ExclusiveFood = ({ products }) => {
                     )}
                   </div>
 
-                  <button className="bg-[#004953] hover:bg-[#006b63] px-5 py-2 rounded-full transition">
+                  <button className="btn-press bg-[#004953] hover:bg-[#006b63] px-5 py-2 rounded-full transition">
                     Order
                   </button>
                 </div>
               </div>
             </div>
+            </Reveal>
           ))}
         </div>
       </div>

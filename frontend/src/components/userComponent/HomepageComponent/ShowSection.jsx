@@ -44,14 +44,14 @@ const pillActions = {
     };
 
     return (
-        <div className="grid grid-cols-2 gap-16 px-12 bg-[#FFF8EF] shadow-lg rounded-2xl">
-            <div className="content flex flex-col py-20  gap-3">
-                <h1 className="text-4xl font-bold text-[#004953] ">Hungry right now?</h1>
-                <h1 className="text-4xl font-bold text-[#004953]">We got You Covered!</h1>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 px-6 sm:px-12 bg-[#FFF8EF] shadow-lg rounded-2xl">
+            <div className="content flex flex-col py-10 lg:py-20 gap-3">
+                <h1 className="text-3xl sm:text-4xl font-bold text-[#004953] ">Hungry right now?</h1>
+                <h1 className="text-3xl sm:text-4xl font-bold text-[#004953]">We got You Covered!</h1>
                 <p className="text-[#004953]">Discover the best flavors in your city, delivered fresh and hot in under 20 minutes.</p>
-                <div className="buttons flex gap-4 py-4">
-                    <button onClick={() => navigate('/user/allfood')} className="bg-[#004953] text-lg text-white border-2 border-[#004953] px-16 py-3.5 rounded-3xl transition-all duration-300 hover:bg-black hover:text-white">Order Now</button>
-                    <button onClick={() => navigate('/user/allfood?sort=popular')} className="bg-transparent text-lg text-[#004953] border-2 border-[#004953] px-16 py-3.5 rounded-3xl transition-all duration-300 hover:bg-[#004953] hover:text-white">Monthly Specials</button>
+                <div className="buttons flex flex-col sm:flex-row gap-4 py-4">
+                    <button onClick={() => navigate('/user/allfood')} className="btn-press bg-[#004953] text-lg text-white border-2 border-[#004953] px-8 sm:px-16 py-3.5 rounded-3xl transition-all duration-300 hover:bg-black hover:text-white">Order Now</button>
+                    <button onClick={() => navigate('/user/allfood?sort=popular')} className="btn-press bg-transparent text-lg text-[#004953] border-2 border-[#004953] px-8 sm:px-16 py-3.5 rounded-3xl transition-all duration-300 hover:bg-[#004953] hover:text-white">Monthly Specials</button>
                 </div>
                 <div className="">
                     <ul className="flex gap-4 text-sm text-[#004953] overflow-x-auto">
@@ -66,7 +66,7 @@ const pillActions = {
                 </div>
             </div>
             <div className="image">
-                <div className="right-section relative w-full  bg-transparent flex flex-col justify-between px-12 py-2">
+                <div className="right-section relative w-full h-72 sm:h-96 lg:h-120 bg-transparent flex flex-col justify-center px-4 sm:px-8 lg:px-12 py-2 overflow-hidden">
                     {/* Food Images */}
                     <div className="relative flex-1 flex items-center justify-center">
 
@@ -76,9 +76,9 @@ const pillActions = {
                             alt="Drink"
                             className="
                         absolute
-                        top-18
-                        right-15
-                        w-45
+                        top-6 sm:top-10 lg:top-18
+                        right-2 sm:right-8 lg:right-15
+                        w-24 sm:w-32 lg:w-45
                         rotate-[8deg]
                         z-20
                         drop-shadow-2xl
@@ -96,9 +96,9 @@ const pillActions = {
                             alt="Coffee"
                             className="
                         absolute
-                        top-50
-                        left-20
-                        w-50
+                        bottom-4 sm:bottom-8 lg:bottom-auto lg:top-50
+                        left-2 sm:left-8 lg:left-20
+                        w-24 sm:w-32 lg:w-50
                         z-20
                         rotate-[10deg]
                         drop-shadow-2xl
@@ -115,9 +115,9 @@ const pillActions = {
                             alt="Cake"
                             className="
                         absolute
-                        top-50
-                        right-15
-                        w-50
+                        bottom-4 sm:bottom-8 lg:bottom-auto lg:top-50
+                        right-2 sm:right-8 lg:right-15
+                        w-24 sm:w-32 lg:w-50
                         z-20
                         drop-shadow-2xl
                         transition-all
@@ -135,9 +135,8 @@ const pillActions = {
                             alt="Pizza"
                             className="
                         relative
-                        top-30
+                        w-32 sm:w-40 lg:w-50
                         z-25
-                        w-50
                         drop-shadow-2xl
                         transition-all
                         duration-300

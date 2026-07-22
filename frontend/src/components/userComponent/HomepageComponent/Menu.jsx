@@ -58,7 +58,7 @@ const Menu = () => {
             <button
               key={item.name}
               onClick={() => handleClick(item.name)}
-              className={`flex items-center mt-2 mb-2 gap-3 px-7 py-4 rounded-2xl whitespace-nowrap transition-all hover:cursor-pointer duration-300 font-semibold
+              className={`btn-press flex items-center mt-2 mb-2 gap-3 px-7 py-4 rounded-2xl whitespace-nowrap transition-all hover:cursor-pointer duration-300 font-semibold
                 ${
                   active === item.name
                     ? "bg-[#004953] text-white shadow-xl scale-105"

@@ -6,7 +6,7 @@ import cakeImg from '../../../assets/image copy 7.png';
 
 const RightSection_login = () => {
   return (
-    <div className="right-section relative w-full min-h-screen overflow-hidden bg-[#004953] flex flex-col justify-between px-12 py-6">
+    <div className="hidden lg:flex right-section relative w-full min-h-screen overflow-hidden bg-[#004953] flex-col justify-between px-12 py-6">
 
       {/* Logo */}
       <div className="z-20">

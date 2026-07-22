@@ -32,12 +32,12 @@ const AddressBook = () => {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-5">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-5">
         <h1 className="text-2xl font-bold text-[#1f2937]">
           Address Book
         </h1>
 
-        <button className="bg-[#00565B] text-white px-5 py-2 rounded-full flex items-center gap-2 hover:cursor-pointer">
+        <button className="btn-press bg-[#00565B] text-white px-5 py-2 rounded-full flex items-center gap-2 hover:cursor-pointer self-start sm:self-auto">
           <FontAwesomeIcon icon={faPlus}/>
           Add new address
         </button>
@@ -46,9 +46,9 @@ const AddressBook = () => {
         {addresses.map((item) => (
           <div
             key={item.id}
-            className="bg-white rounded-xl shadow-sm border-l-4 border-[#00565B] p-2"
+            className="card-hover bg-white rounded-xl shadow-sm border-l-4 border-[#00565B] p-2"
           >
-            <div className="flex justify-between">
+            <div className="flex flex-col sm:flex-row justify-between gap-4">
               <div>
                 <span className="bg-gray-200 text-gray-600 text-xs px-3 py-1 rounded-full">
                   {item.type}
@@ -67,18 +67,18 @@ const AddressBook = () => {
                   <span>{item.phone}</span>
                 </div>
               </div>
-              <div className="flex flex-col items-end gap-4">
+              <div className="flex flex-row sm:flex-col items-start sm:items-end gap-4">
                 <img
                   src={item.image}
                   alt=""
-                  className="w-24 h-20 rounded-lg object-cover"
+                  className="w-24 h-20 rounded-lg object-cover shrink-0"
                 />
                 <div className="flex gap-4">
-                  <button className="text-[#00565B] flex items-center gap-1">
+                  <button className="btn-press text-[#00565B] flex items-center gap-1">
                     <FontAwesomeIcon icon={faPen} />
                     Edit
                   </button>
-                  <button className="text-red-500 flex items-center gap-1">
+                  <button className="btn-press text-red-500 flex items-center gap-1">
                     <FontAwesomeIcon icon={faTrash}/>
                     Delete
                   </button>

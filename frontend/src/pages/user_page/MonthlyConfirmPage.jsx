@@ -72,7 +72,7 @@ const MonthlyConfirmPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="px-15 py-5">
+      <div className="px-4 sm:px-8 lg:px-15 py-5">
         <Navbar />
 
         <div className="mt-8 mb-8">
@@ -84,16 +84,16 @@ const MonthlyConfirmPage = () => {
           <p className="text-gray-500 mt-1">Please review your subscription details.</p>
         </div>
 
-        <div className="max-w-4xl mx-auto grid grid-cols-3 gap-6">
-          <div className="col-span-2 bg-white rounded-3xl shadow-md p-6">
-            <div className="flex items-center justify-between mb-5">
+        <div className="max-w-4xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 bg-white rounded-3xl shadow-md p-6">
+            <div className="flex flex-wrap items-center justify-between gap-2 mb-5">
               <h3 className="font-bold text-gray-800">Subscription Details</h3>
               <span className="text-xs font-semibold text-[#004953] bg-[#004953]/10 px-3 py-1 rounded-full">
                 {draft.duration}-day nourishment cycle
               </span>
             </div>
 
-            <div className="grid grid-cols-2 gap-y-5 gap-x-4 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-5 gap-x-4 text-sm">
               <DetailRow icon={faUtensils} label="Restaurant" value={draft.restaurantName} />
               <DetailRow icon={faLayerGroup} label="Plan" value={draft.planName} />
               <DetailRow icon={faCalendarDays} label="Duration" value={`${draft.duration} Days`} />
@@ -114,7 +114,7 @@ const MonthlyConfirmPage = () => {
               You can modify your meal choice daily before 9:00 PM for next-day delivery.
             </div>
 
-            <div className="grid grid-cols-2 gap-4 mt-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-5">
               <div className="bg-gray-50 rounded-2xl p-4 flex items-center gap-3">
                 <span className="w-9 h-9 rounded-xl bg-white flex items-center justify-center shrink-0">
                   <FontAwesomeIcon icon={faGift} className="text-[#004953]" />
@@ -151,14 +151,14 @@ const MonthlyConfirmPage = () => {
               <button
                 onClick={handleConfirm}
                 disabled={submitting}
-                className="w-full py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="btn-press w-full py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {submitting ? "Confirming…" : "Confirm Subscription"}
               </button>
 
               <button
                 onClick={() => navigate(PATH.USER.MonthlyMealDelivery)}
-                className="w-full mt-2 py-2.5 text-sm font-semibold text-gray-500 hover:text-[#004953] transition"
+                className="btn-press w-full mt-2 py-2.5 text-sm font-semibold text-gray-500 hover:text-[#004953] transition"
               >
                 Back to Delivery Details
               </button>

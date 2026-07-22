@@ -3,6 +3,7 @@ import AnalyticsMetrics from '../../components/Seller/AnalyticsMetrics';
 import VolumeTimelineChart from '../../components/Seller/VolumeTimelineChart';
 import SalesMixChart from '../../components/Seller/SalesMixChart';
 import { getAnalyticsSummary, getVolumeTimeline, getSalesMix } from '../../api/sellerApi';
+import Reveal from '../../components/common/Reveal';
 
 const Analytics = () => {
   const [summary, setSummary] = useState(null);
@@ -45,15 +46,21 @@ const Analytics = () => {
     <div className="max-w-7xl mx-auto space-y-6 pb-12 px-4 sm:px-6">
 
       <div>
-        <h2 className="text-2xl font-black text-gray-800 tracking-tight">Performance Analytics</h2>
+        <h2 className="text-xl sm:text-2xl font-black text-gray-800 tracking-tight">Performance Analytics</h2>
         <p className="text-sm text-gray-500 mt-0.5">Review gross metrics, sales channels, and consumer acquisition insights.</p>
       </div>
 
-      <AnalyticsMetrics summary={summary} />
+      <Reveal>
+        <AnalyticsMetrics summary={summary} />
+      </Reveal>
 
       <div className="flex flex-col lg:flex-row gap-6 items-stretch">
-        <VolumeTimelineChart data={timeline} />
-        <SalesMixChart data={salesMix} />
+        <Reveal delay={80} className="flex-1 min-w-0">
+          <VolumeTimelineChart data={timeline} />
+        </Reveal>
+        <Reveal delay={160} className="lg:shrink-0">
+          <SalesMixChart data={salesMix} />
+        </Reveal>
       </div>
 
     </div>

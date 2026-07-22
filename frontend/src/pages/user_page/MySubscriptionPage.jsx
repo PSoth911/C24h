@@ -84,14 +84,14 @@ const MySubscriptionPage = () => {
   if (!sub) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <div className="px-15 py-5">
+        <div className="px-4 sm:px-8 lg:px-15 py-5">
           <Navbar />
           <div className="text-center py-32">
             <h1 className="text-2xl font-bold text-[#004953]">No Active Subscription</h1>
             <p className="text-gray-500 mt-2">Subscribe to a monthly meal plan to see it here.</p>
             <button
               onClick={() => navigate(PATH.USER.MonthlyMeal)}
-              className="mt-6 px-6 py-3 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition"
+              className="btn-press mt-6 px-6 py-3 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition"
             >
               Browse Monthly Meals
             </button>
@@ -145,10 +145,10 @@ const MySubscriptionPage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="px-15 py-5">
+      <div className="px-4 sm:px-8 lg:px-15 py-5">
         <Navbar />
 
-        <div className="mt-8 mb-6 flex items-center justify-between">
+        <div className="mt-8 mb-6 flex flex-wrap items-center justify-between gap-2">
           <h1 className="text-3xl font-bold text-[#004953]">My Subscription</h1>
           <span className="flex items-center gap-1.5 text-xs font-semibold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
             ● {sub.status === "paused" ? "Paused" : "Active"}
@@ -181,8 +181,8 @@ const MySubscriptionPage = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-6">
-          <div className="col-span-2">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2">
             <div className="flex items-center justify-between mb-4">
               <h2 className="font-bold text-gray-800">Upcoming Meals</h2>
               <button
@@ -195,13 +195,13 @@ const MySubscriptionPage = () => {
 
             <div className="space-y-4">
               {upcoming.map((meal) => (
-                <div key={meal.key} className="bg-white rounded-2xl shadow-sm p-4 flex items-center gap-4">
+                <div key={meal.key} className="bg-white rounded-2xl shadow-sm p-4 flex flex-wrap sm:flex-nowrap items-center gap-4">
                   <div className="w-16 h-16 rounded-xl bg-[#004953]/10 flex items-center justify-center shrink-0">
                     <FontAwesomeIcon icon={faCalendarDays} className="text-[#004953]" />
                   </div>
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <p className="text-[10px] font-bold text-gray-400">{meal.label}</p>
-                    <p className="font-semibold text-gray-800">{meal.name}</p>
+                    <p className="font-semibold text-gray-800 truncate">{meal.name}</p>
                     <button
                       onClick={() => {
                         setFocusMealTime(meal.mealTime);
@@ -223,7 +223,7 @@ const MySubscriptionPage = () => {
                   <button
                     onClick={() => navigate(PATH.USER.DailyMealChoice)}
                     disabled={!meal.editable}
-                    className={`flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border shrink-0 transition ${
+                    className={`btn-press flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border shrink-0 transition ${
                       meal.editable
                         ? "border-[#004953] text-[#004953] hover:bg-[#004953] hover:text-white"
                         : "border-gray-200 text-gray-300 cursor-not-allowed"
@@ -252,19 +252,19 @@ const MySubscriptionPage = () => {
 
               <button
                 onClick={() => navigate(PATH.USER.MonthlyMeal)}
-                className="w-full py-3 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition mb-2"
+                className="btn-press w-full py-3 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition mb-2"
               >
                 Renew / Upgrade Plan ⤴
               </button>
               <button
                 onClick={() => navigate(PATH.USER.PauseSubscription)}
-                className="w-full py-3 rounded-xl border border-gray-200 font-semibold text-gray-600 hover:bg-gray-50 transition mb-2"
+                className="btn-press w-full py-3 rounded-xl border border-gray-200 font-semibold text-gray-600 hover:bg-gray-50 transition mb-2"
               >
                 Pause Subscription
               </button>
               <button
                 onClick={() => setShowCancel(true)}
-                className="w-full py-2 text-sm font-semibold text-red-500 hover:text-red-600 transition"
+                className="btn-press w-full py-2 text-sm font-semibold text-red-500 hover:text-red-600 transition"
               >
                 Cancel Subscription ✕
               </button>
@@ -274,7 +274,7 @@ const MySubscriptionPage = () => {
                   setFocusMealTime(null);
                   setShowEditSchedule(true);
                 }}
-                className="w-full mt-3 text-xs font-semibold text-[#004953] hover:underline"
+                className="btn-press w-full mt-3 text-xs font-semibold text-[#004953] hover:underline"
               >
                 Want to change your delivery time? Edit here →
               </button>

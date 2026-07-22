@@ -40,18 +40,18 @@ const FoodSection = () => {
   }
 
   return (
-    <div className="grid grid-cols-6 px-5 gap-8">
-      
-      <div className="col-span-2">
+    <div className="grid grid-cols-1 lg:grid-cols-6 px-4 sm:px-5 gap-8">
+
+      <div className="lg:col-span-2">
         <LeftSection
           activeCategory={activeCategory}
           cartitems={cartItems}
           setcartitems={setCartItems}
-          categories={categories} 
+          categories={categories}
         />
       </div>
 
-      <div className="col-span-4">
+      <div className="lg:col-span-4">
         <RightSection
           products={products}
           setActiveCategory={setActiveCategory}

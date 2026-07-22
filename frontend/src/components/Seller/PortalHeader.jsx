@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, Menu } from 'lucide-react';
 import { getProfile } from '../../api/sellerApi';
 
-const PortalHeader = () => {
+const PortalHeader = ({ onMenuClick = () => {} }) => {
   const [restaurant, setRestaurant] = useState({ restaurant_name: '', status: 'open' });
-  const user = JSON.parse(sessionStorage.getItem('user') ?? 'null');
+  const user = JSON.parse(localStorage.getItem('user') ?? 'null');
 
   useEffect(() => {
     const load = async () => {
@@ -26,10 +26,17 @@ const PortalHeader = () => {
     .toUpperCase();
 
   return (
-    <header className="h-16 bg-white border-b border-gray-100 px-8 flex items-center justify-between sticky top-0 z-40">
+    <header className="h-16 bg-white border-b border-gray-100 px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30">
 
-      <div className="flex items-center gap-3">
-        <h2 className="text-lg font-bold text-slate-800">{restaurant.restaurant_name}</h2>
+      <div className="flex items-center gap-3 min-w-0">
+        <button
+          onClick={onMenuClick}
+          className="btn-press lg:hidden p-2 -ml-2 rounded-lg text-slate-500 hover:bg-gray-50 shrink-0"
+          aria-label="Open menu"
+        >
+          <Menu size={20} />
+        </button>
+        <h2 className="text-lg font-bold text-slate-800 truncate">{restaurant.restaurant_name}</h2>
         <span
           className={`text-xs font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1.5 border ${
             isOpen

@@ -54,11 +54,11 @@ const UserProfile = () => {
   const meta = SECTION_META[activeMenu] || SECTION_META.Orders;
 
   return (
-    <div className="h-screen flex flex-col bg-[#eef2f2]">
+    <div className="lg:h-screen flex flex-col bg-[#eef2f2]">
       <Navbar />
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-col lg:flex-row flex-1 lg:overflow-hidden">
         {/* Sidebar */}
-        <div className="flex-1 rounded-2xl">
+        <div className="lg:flex-1 rounded-2xl">
             <LeftSectionProfile
             activeMenu={activeMenu}
             setactiveMenu={setactiveMenu}
@@ -66,8 +66,8 @@ const UserProfile = () => {
             loading={loadingUser}
           />
         </div>
-        <div className="flex-[3] overflow-y-auto">
-          <div className="sticky top-0 z-10 bg-[#eef2f2] backdrop-blur-sm border-b border-black/5 px-10 py-4 flex items-center gap-3">
+        <div className="lg:flex-[3] lg:overflow-y-auto">
+          <div className="sticky top-0 z-10 bg-[#eef2f2] backdrop-blur-sm border-b border-black/5 px-4 sm:px-10 py-4 flex items-center gap-3">
             <div className="w-8 h-8 rounded-xl bg-white shadow-sm flex items-center justify-center">
               <FontAwesomeIcon icon={meta.icon} className={`text-sm ${meta.color}`} />
             </div>
@@ -79,7 +79,7 @@ const UserProfile = () => {
             </div>
           </div>
 
-          <div className="px-10 py-8">
+          <div className="px-4 sm:px-10 py-8">
             {renderMenus()}
           </div>
         </div>

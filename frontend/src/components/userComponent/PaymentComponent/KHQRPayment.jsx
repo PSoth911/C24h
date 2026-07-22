@@ -98,12 +98,12 @@ const KHQRPayment = ({ total = 0 }) => {
       {/* BUTTON */}
       <div className="mt-4">
         {isExpired ? (
-          <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#005566] py-3 font-semibold text-white">
+          <button className="btn-press flex w-full items-center justify-center gap-2 rounded-xl bg-[#005566] py-3 font-semibold text-white">
             <FontAwesomeIcon icon={faRotateRight} />
             Generate New QR
           </button>
         ) : (
-          <button className="w-full rounded-xl border border-[#005566] py-3 font-semibold text-[#005566] hover:bg-[#005566] hover:text-white">
+          <button className="btn-press w-full rounded-xl border border-[#005566] py-3 font-semibold text-[#005566] hover:bg-[#005566] hover:text-white">
             Waiting for Payment...
           </button>
         )}

@@ -55,7 +55,7 @@ const LeftSectionFilter = ({ onApply }) => {
   const displayedCategories = showAll ? categories : categories.slice(0, 5);
 
   return (
-    <div className="col-span-2 sticky top-20">
+    <div className="lg:col-span-2 sticky top-20">
       <div className="flex flex-col bg-white border border-gray-100 shadow-md rounded-2xl overflow-hidden">
 
         {/* Header */}
@@ -63,7 +63,7 @@ const LeftSectionFilter = ({ onApply }) => {
           <h2 className="text-[#004953] font-bold text-lg">Filters</h2>
           <button
             onClick={handleReset}
-            className="text-sm text-[#004953] font-medium cursor-pointer hover:underline"
+            className="btn-press text-sm text-[#004953] font-medium cursor-pointer hover:underline"
           >
             Reset all
           </button>
@@ -148,7 +148,7 @@ const LeftSectionFilter = ({ onApply }) => {
                 <button
                   key={opt.value}
                   onClick={() => setSort(opt.value)}
-                  className={`text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                  className={`btn-press text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                     sort === opt.value
                       ? "bg-[#004953] text-white shadow-sm"
                       : "bg-gray-50 text-gray-700 hover:bg-[#004953] hover:text-[#004953]"
@@ -166,7 +166,7 @@ const LeftSectionFilter = ({ onApply }) => {
         <div className="px-5 pb-5 pt-1 border-t border-gray-100">
           <button
             onClick={handleApply}
-            className="w-full bg-[#004953] text-white py-3 rounded-2xl font-semibold hover:bg-black transition-all cursor-pointer"
+            className="btn-press w-full bg-[#004953] text-white py-3 rounded-2xl font-semibold hover:bg-black transition-all cursor-pointer"
           >
             Apply Filters
           </button>

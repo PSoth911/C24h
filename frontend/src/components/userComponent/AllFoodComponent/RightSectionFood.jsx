@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import placeholderFood from "../../../assets/image copy 2.png";
 import { PATH } from "../../../path";
+import Reveal from "../../common/Reveal";
 import {
   getFavouriteProducts,
   addFavouriteProduct,
@@ -55,17 +56,17 @@ const RightSectionFood = ({ products = [] }) => {
   };
 
   return (
-    <div className="col-span-5">
-      <div className="grid grid-cols-3 gap-5">
+    <div className="lg:col-span-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
         {products.length > 0 ? (
-          products.map((product) => {
+          products.map((product, index) => {
             const isFav = favouriteIds.has(product.product_id);
             const isPopped = poppedId === product.product_id;
             return (
+              <Reveal key={product.product_id} delay={Math.min(index, 6) * 80}>
               <div
-                key={product.product_id}
                 onClick={() => navigate(PATH.USER.Restaurant(product.restaurant_id))}
-                className="bg-white rounded-2xl shadow-md overflow-hidden hover:scale-[1.02] transition-all cursor-pointer relative"
+                className="card-hover bg-white rounded-2xl shadow-md overflow-hidden transition-all cursor-pointer relative"
               >
                 <img
                   src={product.image ? `http://localhost:5000/uploads/${product.image}` : placeholderFood}
@@ -78,8 +79,8 @@ const RightSectionFood = ({ products = [] }) => {
                   onClick={(e) => toggleFavourite(e, product.product_id)}
                   disabled={togglingId === product.product_id}
                   title={isFav ? "Remove from favourites" : "Add to favourites"}
-                  className={`absolute top-3 right-3 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md
-                    transition-transform duration-150 hover:scale-110 active:scale-90 disabled:cursor-not-allowed
+                  className={`btn-press absolute top-3 right-3 w-10 h-10 rounded-full bg-white flex items-center justify-center shadow-md
+                    transition-transform duration-150 hover:scale-110 disabled:cursor-not-allowed
                     ${isPopped ? "scale-125" : "scale-100"}`}
                 >
                   <FontAwesomeIcon
@@ -106,10 +107,11 @@ const RightSectionFood = ({ products = [] }) => {
                   </div>
                 </div>
               </div>
+              </Reveal>
             );
           })
         ) : (
-          <div className="col-span-3 text-center py-20 text-gray-500">No food found.</div>
+          <div className="col-span-full text-center py-20 text-gray-500">No food found.</div>
         )}
       </div>
     </div>

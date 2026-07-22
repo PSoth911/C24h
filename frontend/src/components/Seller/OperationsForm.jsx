@@ -10,16 +10,16 @@ const OperationsForm = ({ options, onToggle }) => {
   return (
     <div className="divide-y divide-gray-100">
       {toggles.map((item, index) => (
-        <div key={item.id} className={`flex items-center justify-between gap-6 ${index === 0 ? 'pb-4' : 'py-4 last:pb-0'}`}>
+        <div key={item.id} className={`flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-6 ${index === 0 ? 'pb-4' : 'py-4 last:pb-0'}`}>
           <div className="space-y-0.5">
             <h5 className="text-xs font-bold text-gray-800">{item.title}</h5>
             <p className="text-xs text-gray-400">{item.label}</p>
           </div>
-          
+
           <button
             type="button"
             onClick={() => onToggle(item.id)}
-            className={`w-10 h-5 rounded-full transition-colors relative outline-none shrink-0 cursor-pointer ${
+            className={`btn-press w-10 h-5 rounded-full transition-colors relative outline-none shrink-0 cursor-pointer ${
               options[item.id] ? 'bg-[#004D40]' : 'bg-gray-200'
             }`}
           >

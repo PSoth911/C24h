@@ -4,7 +4,7 @@ const Login = ()=>{
     
     return(
         <div>
-            <div className="signup-page grid grid-cols-2 h-screen">
+            <div className="signup-page grid grid-cols-1 lg:grid-cols-2 h-screen">
                 <LeftSection_login />
                 <RightSection_login />
             </div>

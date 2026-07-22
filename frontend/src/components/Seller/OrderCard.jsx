@@ -26,7 +26,7 @@ const OrderCard = ({ order, onAccept, onPrepare, onSendForDelivery, onCancel }) 
   const handlePrimary = () => actionHandlers[primaryAction.handler](order.order_id);
 
   return (
-    <div className="bg-white border border-gray-200/90 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between hover:border-gray-300 transition-all">
+    <div className="card-hover bg-white border border-gray-200/90 rounded-2xl shadow-sm overflow-hidden flex flex-col justify-between hover:border-gray-300 transition-all">
       <div className="p-5 space-y-4">
 
         <div className="flex justify-between items-start">
@@ -65,7 +65,7 @@ const OrderCard = ({ order, onAccept, onPrepare, onSendForDelivery, onCancel }) 
           {canCancel && (
             <button
               onClick={() => onCancel(order.order_id)}
-              className="text-gray-400 hover:text-rose-600 p-2 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
+              className="btn-press text-gray-400 hover:text-rose-600 p-2 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
               title="Cancel order"
             >
               <X size={16} />
@@ -75,7 +75,7 @@ const OrderCard = ({ order, onAccept, onPrepare, onSendForDelivery, onCancel }) 
           {primaryAction && (
             <button
               onClick={handlePrimary}
-              className={`text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer ${primaryAction.btnClass}`}
+              className={`btn-press text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors shadow-sm cursor-pointer ${primaryAction.btnClass}`}
             >
               {primaryAction.text}
               <ArrowRight size={14} />

@@ -5,8 +5,8 @@ const TopRestaurants = ({ restaurants }) => {
     const navigate = useNavigate();
     return (
         <div>
-            <div className="px-15 py-5 mt-10 rounded-2xl bg-gray-300">
-                <h1 className="text-3xl text-[#004953] font-bold mb-8">
+            <div className="px-4 sm:px-8 lg:px-15 py-5 mt-10 rounded-2xl bg-gray-300">
+                <h1 className="text-2xl sm:text-3xl text-[#004953] font-bold mb-8">
                     World-Class Dining Experience
                 </h1>
 
@@ -15,12 +15,12 @@ const TopRestaurants = ({ restaurants }) => {
                         <div
                             key={item.restaurant_id}
                             onClick={() => navigate(`/restaurant/${item.restaurant_id}`)}
-                            className="relative min-w-[24%] shrink-0 overflow-hidden rounded-3xl group cursor-pointer"
+                            className="relative min-w-[75%] sm:min-w-[45%] lg:min-w-[24%] shrink-0 overflow-hidden rounded-3xl group cursor-pointer"
                         >
                             <img
                                 src={item.logo ? `http://localhost:5000/uploads/${item.logo}` : placeholderRestaurant}
                                 alt={item.restaurant_name}
-                                className="w-100 h-80 object-cover transition-all duration-500 group-hover:scale-110"
+                                className="w-full h-80 object-cover transition-all duration-500 group-hover:scale-110"
                                 onError={(e) => { e.target.src = placeholderRestaurant; }}
                             />
 

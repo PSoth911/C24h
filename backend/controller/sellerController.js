@@ -159,6 +159,7 @@ export const createProduct = async (req, res) => {
       price,
       category_id,
       status: "available",
+      ...(req.file && { image: req.file.filename }),
     });
 
     res.status(201).json({ success: true, data: product });
@@ -188,6 +189,7 @@ export const updateProduct = async (req, res) => {
       ...(description !== undefined && { description }),
       ...(price !== undefined && { price }),
       ...(category_id !== undefined && { category_id }),
+      ...(req.file && { image: req.file.filename }),
     });
 
     res.status(200).json({ success: true, data: product });

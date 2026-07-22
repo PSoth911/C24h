@@ -7,6 +7,7 @@ import {
   MessageSquare,
   MapPin,
 } from "lucide-react";
+import Reveal from "../common/Reveal";
 
 export default function DeliveryTrackingCard() {
   const currentStep = 1;
@@ -19,13 +20,13 @@ export default function DeliveryTrackingCard() {
   ];
 
   return (
-    <div className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm p-8 space-y-8">
+    <Reveal className="bg-white/70 backdrop-blur-xl border border-white/40 rounded-3xl shadow-sm p-5 sm:p-8 space-y-6 sm:space-y-8">
 
       {/* Header */}
-      <div className="flex justify-between items-start">
+      <div className="flex flex-wrap justify-between items-start gap-3">
         <div>
           <p className="text-sm text-slate-500">Active Delivery</p>
-          <h2 className="text-2xl font-bold text-slate-800">Order #CR24-8821</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-slate-800">Order #CR24-8821</h2>
         </div>
         <div className="bg-slate-100 px-4 py-2 rounded-full text-sm font-medium text-slate-700">
           2.4 km left
@@ -33,7 +34,7 @@ export default function DeliveryTrackingCard() {
       </div>
 
       {/* Progress */}
-      <div className="relative">
+      <div className="relative overflow-x-auto">
         {/* Track background */}
         <div className="absolute top-5 left-0 w-full h-0.5 bg-slate-200" />
         {/* Track fill */}
@@ -42,7 +43,7 @@ export default function DeliveryTrackingCard() {
           style={{ width: `${(currentStep / (steps.length - 1)) * 100}%` }}
         />
 
-        <div className="relative flex justify-between">
+        <div className="relative flex justify-between min-w-[320px]">
           {steps.map((step, index) => {
             const Icon = step.icon;
             const done = index < currentStep;
@@ -76,7 +77,7 @@ export default function DeliveryTrackingCard() {
 
       {/* Customer Card */}
       <div className="bg-slate-50 border border-slate-100 rounded-2xl p-5 space-y-4">
-        <div className="flex justify-between items-center">
+        <div className="flex flex-wrap justify-between items-center gap-3">
           <div className="flex gap-4 items-center">
             <img
               src="https://i.pravatar.cc/150?img=32"
@@ -90,10 +91,10 @@ export default function DeliveryTrackingCard() {
           </div>
 
           <div className="flex gap-2">
-            <button className="w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:bg-teal-50 hover:border-teal-300 hover:text-teal-700 transition">
+            <button className="btn-press w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:bg-teal-50 hover:border-teal-300 hover:text-teal-700 transition">
               <Phone size={17} />
             </button>
-            <button className="w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:bg-teal-50 hover:border-teal-300 hover:text-teal-700 transition">
+            <button className="btn-press w-10 h-10 rounded-xl border border-slate-200 bg-white flex items-center justify-center text-slate-600 hover:bg-teal-50 hover:border-teal-300 hover:text-teal-700 transition">
               <MessageSquare size={17} />
             </button>
           </div>
@@ -108,9 +109,9 @@ export default function DeliveryTrackingCard() {
       </div>
 
       {/* Action Button */}
-      <button className="w-full bg-gradient-to-r from-teal-600 to-teal-500 text-white py-4 rounded-2xl font-semibold shadow hover:scale-[1.01] transition">
+      <button className="btn-press w-full bg-gradient-to-r from-teal-600 to-teal-500 text-white py-4 rounded-2xl font-semibold shadow hover:scale-[1.01] transition">
         I've arrived at restaurant
       </button>
-    </div>
+    </Reveal>
   );
 }

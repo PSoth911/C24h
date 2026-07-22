@@ -81,7 +81,7 @@ const MonthlyDeliveryTimePage = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="px-15 py-5">
+      <div className="px-4 sm:px-8 lg:px-15 py-5">
         <Navbar />
 
         <div className="mt-8 mb-8">
@@ -104,7 +104,7 @@ const MonthlyDeliveryTimePage = () => {
                 const isEnabled = enabledMeals[meal.id];
                 const isDisabled = !isEnabled && selectedMealCount >= mealsPerDay;
                 return (
-                  <div key={meal.id} className="flex items-center justify-between p-3 rounded-2xl border border-gray-100">
+                  <div key={meal.id} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-3 rounded-2xl border border-gray-100">
                     <div className="flex items-center gap-3">
                       <span className="w-9 h-9 rounded-xl bg-[#004953]/10 text-[#004953] flex items-center justify-center">
                         <FontAwesomeIcon icon={MEAL_ICONS[meal.id]} />
@@ -152,7 +152,7 @@ const MonthlyDeliveryTimePage = () => {
                 <button
                   key={day}
                   onClick={() => toggleDay(day)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors cursor-pointer ${
+                  className={`btn-press px-4 py-2 rounded-full text-sm font-semibold transition-colors cursor-pointer ${
                     days.includes(day)
                       ? "bg-[#004953] text-white"
                       : "bg-gray-100 text-gray-500 hover:bg-gray-200"
@@ -182,7 +182,7 @@ const MonthlyDeliveryTimePage = () => {
           <button
             onClick={handleContinue}
             disabled={!canContinue}
-            className="w-full mt-6 py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="btn-press w-full mt-6 py-3.5 rounded-xl bg-[#004953] text-white font-semibold hover:bg-[#003940] transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Continue →
           </button>

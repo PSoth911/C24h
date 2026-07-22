@@ -27,7 +27,7 @@ function DeliveryLogin(){
                         <div className='flex flex-row-reverse'>
                             <h2 className='text-[#004953]'>Forgot Password?</h2>
                         </div>
-                        <div className='flex justify-center items-center gap-2 w-full bg-[#004953] py-3 rounded-4xl text-white'>
+                        <div className='btn-press flex justify-center items-center gap-2 w-full bg-[#004953] py-3 rounded-4xl text-white'>
                             <LogIn strokeWidth={1.5} size={20} />
                             <button>Sign in</button>
                         </div>
@@ -81,13 +81,13 @@ function DeliveryLogin(){
                         <div className='flex flex-row-reverse'>
                             <h2 className='text-[#004953]'>Forgot Password?</h2>
                         </div>
-                        <div className='flex justify-center items-center gap-2 w-full bg-[#004953] py-3 rounded-4xl text-[#8cc751]'>
+                        <div className='btn-press flex justify-center items-center gap-2 w-full bg-[#004953] py-3 rounded-4xl text-[#8cc751]'>
                             <LogIn strokeWidth={1.5} size={20} />
                             <button>Sign in</button>
                         </div>
                         <div className='flex justify-center items-center gap-2'>
                             <h2 className='text-[#7b7b7b]'>New Rider?</h2>
-                            <button className='text-[#004953]'>Apply to Join</button>
+                            <button className='btn-press text-[#004953]'>Apply to Join</button>
                         </div>
                     </div>
                 </div>

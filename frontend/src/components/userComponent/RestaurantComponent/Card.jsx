@@ -101,7 +101,7 @@ const handleCheckout = async () => {
 
                 <button
                   onClick={() => decreaseQuantity(item.product_id)}
-                  className="w-8 h-8 flex items-center justify-center bg-white rounded-full"
+                  className="btn-press w-8 h-8 flex items-center justify-center bg-white rounded-full"
                 >
                   <FontAwesomeIcon icon={faMinus} />
                 </button>
@@ -112,7 +112,7 @@ const handleCheckout = async () => {
 
                 <button
                   onClick={() => increaseQuantity(item.product_id)}
-                  className="w-8 h-8 flex items-center justify-center bg-[#004953] text-white rounded-full"
+                  className="btn-press w-8 h-8 flex items-center justify-center bg-[#004953] text-white rounded-full"
                 >
                   <FontAwesomeIcon icon={faPlus} />
                 </button>
@@ -148,7 +148,7 @@ const handleCheckout = async () => {
       <button
         disabled={cartitems.length === 0}
         onClick={handleCheckout}
-        className={`w-full mt-5 py-4 rounded-2xl font-semibold transition-all ${
+        className={`btn-press w-full mt-5 py-4 rounded-2xl font-semibold transition-all ${
           cartitems.length === 0
             ? "bg-gray-300 text-gray-500 cursor-not-allowed"
             : "bg-[#004953] text-white hover:scale-[1.03]"

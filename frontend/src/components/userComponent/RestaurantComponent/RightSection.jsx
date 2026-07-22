@@ -97,15 +97,15 @@ const RightSection = ({ setActiveCategory, setcartitems }) => {
               .map((food) => (
                 <div
                   key={food.product_id}
-                  className="bg-white shadow-lg border-l-4 border-[#004953] rounded-xl p-3 flex gap-4"
+                  className="card-hover bg-white shadow-lg border-l-4 border-[#004953] rounded-xl p-3 flex gap-4"
                 >
                   <img
                     src={food.image ? `http://localhost:5000/uploads/${food.image}` : placeholderFood}
-                    className="w-24 h-24 rounded-lg object-cover"
+                    className="w-24 h-24 rounded-lg object-cover shrink-0"
                     onError={(e) => { e.target.src = placeholderFood; }}
                   />
 
-                  <div className="flex-1">
+                  <div className="flex-1 min-w-0">
                     <h3 className="font-semibold text-lg">
                       {food.product_name}
                     </h3>
@@ -125,7 +125,7 @@ const RightSection = ({ setActiveCategory, setcartitems }) => {
                           setQuantity(1);
                           setModalopen(true);
                         }}
-                        className="border px-6 py-1.5 hover:bg-[#004953] hover:text-white rounded-lg"
+                        className="btn-press border px-6 py-1.5 hover:bg-[#004953] hover:text-white rounded-lg"
                       >
                         ADD
                       </button>

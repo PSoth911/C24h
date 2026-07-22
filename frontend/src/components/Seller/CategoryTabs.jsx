@@ -8,7 +8,7 @@ const CategoryTabs = ({ activeCategory, setActiveCategory, categories }) => {
           key={cat.id}
           type="button"
           onClick={() => setActiveCategory(cat.id)}
-          className={`px-4 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
+          className={`btn-press px-4 py-2 rounded-xl text-sm font-bold transition-all whitespace-nowrap cursor-pointer ${
             activeCategory === cat.id
               ? 'bg-[#004D40] text-white shadow-sm'
               : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'

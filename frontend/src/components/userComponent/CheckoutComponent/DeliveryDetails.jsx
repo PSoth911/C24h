@@ -71,7 +71,7 @@ const DeliveryDetails = ({
         <div className="lg:col-span-2 bg-white rounded-3xl shadow-xl p-8">
 
           {/* Header */}
-          <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
             <div className="flex items-start gap-4">
               <div className="bg-[#004953] text-white w-14 h-14 rounded-2xl flex items-center justify-center shrink-0">
                 <FontAwesomeIcon icon={faHouse} className="text-xl" />
@@ -90,7 +90,7 @@ const DeliveryDetails = ({
             {!editing ? (
               <button
                 onClick={() => setEditing(true)}
-                className="flex items-center gap-2 border border-gray-200 text-[#004953] px-5 py-2 rounded-xl hover:bg-gray-50 transition shrink-0"
+                className="btn-press flex items-center gap-2 border border-gray-200 text-[#004953] px-5 py-2 rounded-xl hover:bg-gray-50 transition shrink-0"
               >
                 <FontAwesomeIcon icon={faPen} />
                 <span className="font-semibold">Edit</span>
@@ -98,7 +98,7 @@ const DeliveryDetails = ({
             ) : (
               <button
                 onClick={saveAddress}
-                className="bg-[#004953] text-white px-6 py-2.5 rounded-xl hover:bg-black transition shrink-0 font-semibold"
+                className="btn-press bg-[#004953] text-white px-6 py-2.5 rounded-xl hover:bg-black transition shrink-0 font-semibold"
               >
                 Save
               </button>
@@ -121,7 +121,7 @@ const DeliveryDetails = ({
               </div>
               <button
                 onClick={() => setShowSafetyBanner(false)}
-                className="text-gray-400 hover:text-gray-600"
+                className="btn-press text-gray-400 hover:text-gray-600"
               >
                 <FontAwesomeIcon icon={faXmark} />
               </button>
@@ -253,7 +253,7 @@ const DeliveryDetails = ({
 
           <button
             onClick={() => navigate(PATH.USER.Payment)}
-            className="w-full mt-8 bg-[#004953] text-white py-4 rounded-2xl text-lg font-semibold hover:bg-black transition flex items-center justify-center gap-3"
+            className="btn-press w-full mt-8 bg-[#004953] text-white py-4 rounded-2xl text-lg font-semibold hover:bg-black transition flex items-center justify-center gap-3"
           >
             <FontAwesomeIcon icon={faCreditCard} />
             Continue To Payment

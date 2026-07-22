@@ -56,7 +56,7 @@ const RestaurantPage = () => {
     <div className="min-h-screen bg-gray-50">
       <Nav />
 
-      <div className="px-10">
+      <div className="px-4 sm:px-6 lg:px-10">
         <Title
           restaurantId={id}
           status={restaurant.status}

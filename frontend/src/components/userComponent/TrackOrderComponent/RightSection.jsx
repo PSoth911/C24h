@@ -44,12 +44,12 @@ const RightSection = () => {
       </div>
 
       <div className="flex gap-3">
-        <button className="flex-1 border-2 border-[#004953] rounded-full hover:bg-[#004953] hover:text-white duration-200 py-3 flex justify-center items-center gap-2">
+        <button className="btn-press flex-1 border-2 border-[#004953] rounded-full hover:bg-[#004953] hover:text-white duration-200 py-3 flex justify-center items-center gap-2">
           <FontAwesomeIcon icon={faPhone} />
           Call
         </button>
 
-        <button className="flex-1 border-2 border-[#004953] rounded-full hover:bg-[#004953] hover:text-white duration-200 py-3 flex justify-center items-center gap-2">
+        <button className="btn-press flex-1 border-2 border-[#004953] rounded-full hover:bg-[#004953] hover:text-white duration-200 py-3 flex justify-center items-center gap-2">
           <FontAwesomeIcon icon={faMessage} />
           Chat
         </button>

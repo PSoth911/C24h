@@ -7,7 +7,7 @@ const ProcessStep = ({currentStep=1}) => {
   ];
 
   return (
-    <div className="w-250">
+    <div className="w-full max-w-2xl mx-auto">
       <div className="flex items-center justify-between">
         {steps.map((step, index) => (
           <div key={step.id} className="flex items-center flex-1">

@@ -27,11 +27,11 @@ const DashboardMetrics = ({ metrics }) => {
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {items.map((item, index) => {
         const Icon = item.icon;
         return (
-          <div key={index} className="bg-white border border-gray-200/80 p-6 rounded-2xl shadow-sm flex items-center gap-4">
+          <div key={index} className="card-hover bg-white border border-gray-200/80 p-6 rounded-2xl shadow-sm flex items-center gap-4">
             <div className={`p-3 rounded-xl ${item.bg}`}>
               <Icon size={22} />
             </div>

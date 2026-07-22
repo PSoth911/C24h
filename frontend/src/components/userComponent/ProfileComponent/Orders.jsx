@@ -97,7 +97,7 @@ const Orders = ({ setactiveMenu }) => {
   return (
     <div className="space-y-6">
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard icon={faReceipt} color="bg-[#004953]/10" iconColor="text-[#004953]" value={orders.length} label="Total Orders" />
         <StatCard icon={faSpinner} color="bg-amber-50" iconColor="text-amber-600" value={activeCount} label="Active"       />
         <StatCard icon={faCircleCheck} color="bg-green-50" iconColor="text-green-600"  value={pastCount} label="Completed"    />
@@ -105,7 +105,7 @@ const Orders = ({ setactiveMenu }) => {
 
       {/* Orders section */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-gray-100">
           <h2 className="font-bold text-[#004953] text-lg">Order History</h2>
 
           <div className="flex bg-gray-100 rounded-xl p-1 gap-1">
@@ -117,7 +117,7 @@ const Orders = ({ setactiveMenu }) => {
               <button
                 key={key}
                 onClick={() => setSelect(key)}
-                className={`px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200
+                className={`btn-press px-4 py-1.5 rounded-lg text-sm font-semibold transition-all duration-200
                   ${select === key
                     ? "bg-white text-[#004953] shadow-sm"
                     : "text-gray-500 hover:text-gray-700"
@@ -200,7 +200,7 @@ const Orders = ({ setactiveMenu }) => {
                             ? navigate(`${PATH.USER.Trackorder}/${order.order_id}`)
                             : navigate(PATH.USER.HOME)
                         }
-                        className={`flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200
+                        className={`btn-press flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200
                           ${active
                             ? "bg-[#004953] text-white hover:bg-[#003940] shadow-sm"
                             : "bg-gray-100 text-gray-600 hover:bg-gray-200"
@@ -249,14 +249,14 @@ const Orders = ({ setactiveMenu }) => {
             <p className="text-xs text-gray-300 mt-1">Tap the heart on any restaurant to save it here</p>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {favRestaurants.slice(0, 3).map(item => {
               const r = item.Restaurant;
               return (
                 <div
                   key={item.favourite_id}
                   onClick={() => navigate(`/restaurant/${r.restaurant_id}`)}
-                  className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer group"
+                  className="card-hover bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 cursor-pointer group"
                 >
                   <div className="relative h-36 overflow-hidden">
                     <img
@@ -270,7 +270,7 @@ const Orders = ({ setactiveMenu }) => {
                       onClick={e => handleRemoveFav(e, r.restaurant_id)}
                       disabled={removingFavId === r.restaurant_id}
                       title="Remove from favourites"
-                      className="absolute top-2.5 right-2.5 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow hover:scale-110 active:scale-90 transition-transform disabled:opacity-50"
+                      className="btn-press absolute top-2.5 right-2.5 w-8 h-8 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow hover:scale-110 transition-transform disabled:opacity-50"
                     >
                       <FontAwesomeIcon icon={faHeart} className="text-red-500 text-sm" />
                     </button>

@@ -3,6 +3,7 @@ import { Plus } from 'lucide-react';
 import CategoryTabs from '../../components/Seller/CategoryTabs';
 import MenuItemCard from '../../components/Seller/MenuItemCard';
 import MenuModal from '../../components/Seller/MenuModal';
+import Reveal from '../../components/common/Reveal';
 import {
   getProducts,
   getCategories,
@@ -20,7 +21,7 @@ const MenuManagement = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const [formData, setFormData] = useState({ name: '', price: '', category: '', description: '' });
+  const [formData, setFormData] = useState({ name: '', price: '', category: '', description: '', image: null, imagePreview: null });
 
   useEffect(() => {
     const load = async () => {
@@ -79,12 +80,13 @@ const MenuManagement = () => {
       description: formData.description || 'No description provided.',
       price: parseFloat(formData.price) || 0.0,
       category_id: formData.category,
+      ...(formData.image && { image: formData.image }),
     });
 
     if (res.success) {
       setItems((prev) => [res.data, ...prev]);
       setIsModalOpen(false);
-      setFormData({ name: '', price: '', category: categories[0]?.category_id ?? '', description: '' });
+      setFormData({ name: '', price: '', category: categories[0]?.category_id ?? '', description: '', image: null, imagePreview: null });
     }
   };
 
@@ -95,14 +97,17 @@ const MenuManagement = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 pb-12 px-4 sm:px-6">
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-black text-gray-800 tracking-tight">Menu Catalog</h2>
+          <h2 className="text-xl sm:text-2xl font-black text-gray-800 tracking-tight">Menu Catalog</h2>
           <p className="text-sm text-gray-500 mt-0.5">Maintain active product configurations, modify retail values, and shift item stock configurations.</p>
         </div>
         <button
-          onClick={() => setIsModalOpen(true)}
-          className="bg-[#004D40] text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center gap-2 hover:bg-[#003d33] transition-all shadow-sm cursor-pointer shrink-0"
+          onClick={() => {
+            setFormData({ name: '', price: '', category: categories[0]?.category_id ?? '', description: '', image: null, imagePreview: null });
+            setIsModalOpen(true);
+          }}
+          className="btn-press bg-[#004D40] text-white px-4 py-2.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-[#003d33] transition-all shadow-sm cursor-pointer shrink-0"
         >
           <Plus size={16} /> Add Product
         </button>
@@ -112,8 +117,10 @@ const MenuManagement = () => {
 
       {filteredItems.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {filteredItems.map(item => (
-            <MenuItemCard key={item.product_id} item={item} onToggleStatus={handleToggleStatus} onDeleteItem={handleDeleteItem} onRestockItem={handleRestockItem} />
+          {filteredItems.map((item, index) => (
+            <Reveal key={item.product_id} delay={Math.min(index, 6) * 80}>
+              <MenuItemCard item={item} onToggleStatus={handleToggleStatus} onDeleteItem={handleDeleteItem} onRestockItem={handleRestockItem} />
+            </Reveal>
           ))}
         </div>
       ) : (

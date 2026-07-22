@@ -9,6 +9,7 @@ import {
   faIdCard,
   faLocationCrosshairs,
   faXmark,
+  faBars,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { useNavigate, useLocation } from "react-router-dom";
@@ -38,6 +39,7 @@ const Navbar = () => {
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState("");
   const [isLoggedIn] = useState(!!localStorage.getItem("accessToken"));
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const profileRef = useRef(null);
   const locationRef = useRef(null);
@@ -61,6 +63,10 @@ const Navbar = () => {
       window.removeEventListener("focus", handler);
     };
   }, []);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
 
   useEffect(() => {
     const handleClickOutside = (e) => {
@@ -127,15 +133,15 @@ const Navbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 bg-[#FFF8EF] rounded-xl shadow-sm">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-3">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-3">
 
         <Logo to={PATH.USER.HOME} />
-        <ul className="flex items-center gap-1">
+        <ul className="hidden lg:flex items-center gap-1">
           {NAV_LINKS.map(({ label, path }) => (
             <li key={path}>
               <button
                 onClick={() => navigate(path)}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                className={`btn-press px-4 py-2 rounded-xl text-sm font-medium transition-all cursor-pointer ${
                   isActive(path)
                     ? "bg-[#004953] text-white shadow-sm"
                     : "text-gray-600 hover:bg-[#004953] hover:text-white"
@@ -148,13 +154,13 @@ const Navbar = () => {
         </ul>
 
         {/* RIGHT SIDE */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
 
           {/* LOCATION */}
-          <div className="relative" ref={locationRef}>
+          <div className="relative hidden md:block" ref={locationRef}>
             <button
               onClick={() => { setLocationOpen((o) => !o); setLocationError(""); }}
-              className="flex items-center gap-1.5 border border-[#004953] hover:border-[#004953] rounded-full px-3 py-1.5 text-sm text-[#004953] font-medium transition-colors cursor-pointer max-w-40"
+              className="btn-press flex items-center gap-1.5 border border-[#004953] hover:border-[#004953] rounded-full px-3 py-1.5 text-sm text-[#004953] font-medium transition-colors cursor-pointer max-w-40"
             >
               <FontAwesomeIcon icon={faLocationDot} className="text-xs shrink-0" />
               <span className="truncate">
@@ -173,7 +179,7 @@ const Navbar = () => {
             </button>
 
             {locationOpen && (
-              <div className="absolute left-0 mt-2 w-64 bg-white rounded-2xl shadow-lg border border-gray-100 p-4 z-50">
+              <div className="animate-fade-in-scale absolute left-0 mt-2 w-64 bg-white rounded-2xl shadow-lg border border-gray-100 p-4 z-50">
                 <p className="text-xs font-semibold text-gray-400 uppercase tracking-wide mb-3">
                   Your Delivery Location
                 </p>
@@ -212,7 +218,7 @@ const Navbar = () => {
               {/* CART */}
               <button
                 onClick={() => navigate(PATH.USER.Checkout)}
-                className="relative p-2.5 rounded-xl text-gray-600 hover:bg-[#004953] hover:text-white transition-colors cursor-pointer"
+                className="btn-press relative p-2.5 rounded-xl text-gray-600 hover:bg-[#004953] hover:text-white transition-colors cursor-pointer"
               >
                 <FontAwesomeIcon icon={faCartShopping} className="text-lg" />
                 {cartCount > 0 && (
@@ -226,17 +232,17 @@ const Navbar = () => {
               <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setProfileOpen((o) => !o)}
-                  className="flex items-center gap-2 bg-[#004953] hover:bg-[#003940] text-white px-3 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer"
+                  className="btn-press flex items-center gap-2 bg-[#004953] hover:bg-[#003940] text-white px-3 py-2 rounded-xl text-sm font-medium transition-colors cursor-pointer"
                 >
                   <FontAwesomeIcon icon={faUser} />
                   <FontAwesomeIcon
                     icon={faChevronDown}
-                    className={`text-xs transition-transform ${profileOpen ? "rotate-180" : ""}`}
+                    className={`hidden sm:inline text-xs transition-transform ${profileOpen ? "rotate-180" : ""}`}
                   />
                 </button>
 
                 {profileOpen && (
-                  <div className="absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden py-1 z-50">
+                  <div className="animate-fade-in-scale absolute right-0 mt-2 w-44 bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden py-1 z-50">
                     <button
                       onClick={() => { navigate(PATH.USER.Profile); setProfileOpen(false); }}
                       className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-700 hover:bg-[#004953] hover:text-white transition-colors cursor-pointer"
@@ -257,23 +263,82 @@ const Navbar = () => {
               </div>
             </>
           ) : (
-            <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-2">
               <button
                 onClick={() => navigate(PATH.AUTH.LOGIN)}
-                className="px-4 py-2 text-sm font-medium text-[#004953] hover:bg-[#004953] rounded-xl transition-colors cursor-pointer"
+                className="btn-press px-4 py-2 text-sm font-medium text-[#004953] hover:bg-[#004953] rounded-xl transition-colors cursor-pointer"
               >
                 Login
               </button>
               <button
                 onClick={() => navigate(PATH.AUTH.SIGNUP)}
-                className="px-4 py-2 text-sm font-medium bg-[#004953] text-white hover:bg-[#003940] rounded-xl transition-colors cursor-pointer"
+                className="btn-press px-4 py-2 text-sm font-medium bg-[#004953] text-white hover:bg-[#003940] rounded-xl transition-colors cursor-pointer"
+              >
+                Sign Up
+              </button>
+            </div>
+          )}
+
+          {/* MOBILE MENU TOGGLE */}
+          <button
+            onClick={() => setMobileMenuOpen((o) => !o)}
+            className="btn-press lg:hidden p-2.5 rounded-xl text-gray-600 hover:bg-[#004953] hover:text-white transition-colors cursor-pointer"
+            aria-label="Toggle menu"
+          >
+            <FontAwesomeIcon icon={mobileMenuOpen ? faXmark : faBars} className="text-lg" />
+          </button>
+        </div>
+      </div>
+
+      {/* MOBILE MENU PANEL */}
+      {mobileMenuOpen && (
+        <div className="animate-slide-down lg:hidden border-t border-black/5 px-4 sm:px-6 py-3 flex flex-col gap-1">
+          {NAV_LINKS.map(({ label, path }) => (
+            <button
+              key={path}
+              onClick={() => navigate(path)}
+              className={`btn-press text-left px-4 py-2.5 rounded-xl text-sm font-medium transition-all cursor-pointer ${
+                isActive(path)
+                  ? "bg-[#004953] text-white shadow-sm"
+                  : "text-gray-600 hover:bg-[#004953] hover:text-white"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+
+          <div className="md:hidden mt-1">
+            <button
+              onClick={handleDetectLocation}
+              disabled={locationLoading}
+              className="btn-press w-full flex items-center gap-2 border border-[#004953] rounded-xl px-4 py-2.5 text-sm text-[#004953] font-medium disabled:opacity-60 cursor-pointer"
+            >
+              <FontAwesomeIcon
+                icon={faLocationDot}
+                className={locationLoading ? "animate-spin" : ""}
+              />
+              {locationLoading ? "Detecting…" : locationLabel || "Set Location"}
+            </button>
+          </div>
+
+          {!isLoggedIn && (
+            <div className="sm:hidden flex items-center gap-2 mt-1">
+              <button
+                onClick={() => navigate(PATH.AUTH.LOGIN)}
+                className="btn-press flex-1 px-4 py-2.5 text-sm font-medium text-[#004953] border border-[#004953] rounded-xl transition-colors cursor-pointer"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => navigate(PATH.AUTH.SIGNUP)}
+                className="btn-press flex-1 px-4 py-2.5 text-sm font-medium bg-[#004953] text-white rounded-xl transition-colors cursor-pointer"
               >
                 Sign Up
               </button>
             </div>
           )}
         </div>
-      </div>
+      )}
     </nav>
   );
 };

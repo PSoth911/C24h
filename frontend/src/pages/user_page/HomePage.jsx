@@ -16,6 +16,7 @@ import { getProfile } from "../../service/profileService"
 import { getAllProducts } from '../../service/productService'
 import { getAllRestaurants } from '../../service/restaurantService'
 import { useEffect, useState } from "react";
+import Reveal from "../../components/common/Reveal";
 
 
 const HomePage = () => {
@@ -61,26 +62,26 @@ const HomePage = () => {
     }, []);
     return (
         <div>
-            <div className='px-15 py-5'>
+            <div className='px-4 sm:px-8 lg:px-15 py-5'>
 
                 <Navbar />
-                <h1 className="font-bold text-3xl text-[#004953] py-5">
+                <h1 className="font-bold text-2xl sm:text-3xl text-[#004953] py-5">
                     {getGreeting()}, {user?.full_name}
                 </h1>
                 <ShowSection />
                 <Search />
                 <Menu />
-                <div id="section-discounts"><ExclusiveFood products={products} /></div>
-                <ExploreCuisines products={products} />
-                <BrowAllfood products={products} />
-                <div id="section-trending"><Tredingfood products={products} /></div>
-                <div id="section-restaurants"><FeaturedRestaurants restaurants={restaurants} /></div>
-                <div id="section-top-rate"><TopRestaurants restaurants={restaurants} /></div>
-                <div id="section-fast-delivery"><SuperfastDelivery restaurants={restaurants} /></div>
-                <div id="section-new-arrivals"><NewMenu products={products} /></div>
+                <Reveal as="div" id="section-discounts"><ExclusiveFood products={products} /></Reveal>
+                <Reveal><ExploreCuisines products={products} /></Reveal>
+                <Reveal><BrowAllfood products={products} /></Reveal>
+                <Reveal as="div" id="section-trending"><Tredingfood products={products} /></Reveal>
+                <Reveal as="div" id="section-restaurants"><FeaturedRestaurants restaurants={restaurants} /></Reveal>
+                <Reveal as="div" id="section-top-rate"><TopRestaurants restaurants={restaurants} /></Reveal>
+                <Reveal as="div" id="section-fast-delivery"><SuperfastDelivery restaurants={restaurants} /></Reveal>
+                <Reveal as="div" id="section-new-arrivals"><NewMenu products={products} /></Reveal>
 
             </div>
-            <GetApp />
+            <Reveal><GetApp /></Reveal>
             <Footer />
         </div>
     )

@@ -61,13 +61,13 @@ const ItemModal = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
-      <div className="bg-white w-107 rounded-2xl overflow-hidden shadow-2xl relative">
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
+      <div className="animate-fade-in-scale bg-white w-full max-w-107 rounded-2xl overflow-hidden shadow-2xl relative max-h-[90vh] overflow-y-auto">
 
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-4 top-4 text-xl hover:text-red-500"
+          className="btn-press absolute right-4 top-4 text-xl hover:text-red-500 z-10"
         >
           <FontAwesomeIcon icon={faXmark} />
         </button>
@@ -118,7 +118,7 @@ const ItemModal = ({
 
               <button
                 onClick={decreaseQuantity}
-                className="w-9 h-9 rounded-full border hover:bg-gray-100"
+                className="btn-press w-9 h-9 rounded-full border hover:bg-gray-100"
               >
                 <FontAwesomeIcon icon={faMinus} />
               </button>
@@ -129,7 +129,7 @@ const ItemModal = ({
 
               <button
                 onClick={increaseQuantity}
-                className="w-9 h-9 rounded-full border hover:bg-gray-100"
+                className="btn-press w-9 h-9 rounded-full border hover:bg-gray-100"
               >
                 <FontAwesomeIcon icon={faPlus} />
               </button>
@@ -145,7 +145,7 @@ const ItemModal = ({
           {/* Add to Cart */}
           <button
             onClick={addToCart}
-            className="w-full mt-6 bg-[#004953] text-white py-3 rounded-xl hover:bg-black transition"
+            className="btn-press w-full mt-6 bg-[#004953] text-white py-3 rounded-xl hover:bg-black transition"
           >
             Add To Cart
           </button>

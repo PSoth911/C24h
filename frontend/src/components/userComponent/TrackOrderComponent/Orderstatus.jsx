@@ -44,7 +44,7 @@ const Orderstatus = ({ order }) => {
             </div>
 
             <span
-              className={`mt-3 text-sm font-medium
+              className={`mt-3 text-[11px] sm:text-sm font-medium text-center
                 ${index <= currentStep ? "text-teal-700" : "text-gray-400"}`}
             >
               {step.title}

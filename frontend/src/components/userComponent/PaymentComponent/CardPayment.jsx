@@ -31,7 +31,7 @@ const CardPayment = () => {
             </div>
           </div>
 
-          <button className="mt-4 text-sm font-medium text-[#004953] hover:underline">
+          <button className="btn-press mt-4 text-sm font-medium text-[#004953] hover:underline">
             + Use a new card
           </button>
         </div>
@@ -112,14 +112,14 @@ const CardPayment = () => {
           </label>
         </div>
       </div>
-      <div className="flex items-center justify-between rounded-2xl border border-gray-200 bg-white px-6 py-5 shadow-sm">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl border border-gray-200 bg-white px-6 py-5 shadow-sm">
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-full bg-green-100"> <img className="h-8" src="https://png.pngtree.com/png-vector/20250307/ourmid/pngtree-encrypted-file-icon-png-image_15744476.png" alt="" /> </div>
           <span className="text-sm font-medium text-gray-700">
             256-bit encrypted · Safe to pay
           </span>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           <img
             src="https://1000logos.net/wp-content/uploads/2021/11/VISA-logo.png"
             alt="Visa"

@@ -1,6 +1,7 @@
 import express from "express";
 import { verifyToken } from "../middleware/auth_middleware.js";
 import { authorizeRoles } from "../middleware/roleMiddleware.js";
+import { upload } from "../middleware/upload.js";
 import {
   getAllUsers,
   getAllRestaurants,
@@ -107,8 +108,13 @@ router.delete("/users/:id", deleteUser);
 router.patch("/deliveries/:id/status", toggleDriverStatus);
 router.put("/deliveries/:id", updateDriver);
 router.delete("/deliveries/:id", deleteDriver);
-router.post("/restaurants", createRestaurant);
-router.put("/restaurants/:id", updateRestaurant);
+const restaurantImageFields = upload.fields([
+  { name: "logo", maxCount: 1 },
+  { name: "image", maxCount: 1 },
+]);
+
+router.post("/restaurants", restaurantImageFields, createRestaurant);
+router.put("/restaurants/:id", restaurantImageFields, updateRestaurant);
 router.delete("/restaurants/:id", deleteRestaurant);
 router.put("/profile", updateProfileHandler);
 

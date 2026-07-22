@@ -87,13 +87,13 @@ const Payment = () => {
   return (
     <div>
       <Navbar />
-      <div className="px-30 py-5">
+      <div className="px-4 sm:px-8 lg:px-30 py-5">
         <div className="mx-auto mt-5 max-w-2xl">
           <ProcessStep currentStep={2} />
         </div>
 
-        <div className="mt-5 grid grid-cols-6 gap-5">
-          <div className="col-span-4">
+        <div className="mt-5 grid grid-cols-1 lg:grid-cols-6 gap-5">
+          <div className="lg:col-span-4">
             <LeftSection
               methods={paymentMethods}
               selected={selectedMethod}

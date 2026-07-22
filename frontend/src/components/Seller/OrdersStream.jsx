@@ -31,7 +31,7 @@ const OrdersStream = ({ orders = [] }) => {
           {orders.map((order) => {
             const status = STATUS_LABELS[order.status] ?? { label: order.status, badge: 'bg-gray-100 text-gray-600' };
             return (
-              <div key={order.id} className="py-3.5 flex justify-between items-center first:pt-0 last:pb-0">
+              <div key={order.id} className="py-3.5 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 first:pt-0 last:pb-0">
                 <div className="space-y-0.5">
                   <div className="flex items-center gap-2">
                     <span className="font-mono font-bold text-sm text-gray-800">#{order.id}</span>

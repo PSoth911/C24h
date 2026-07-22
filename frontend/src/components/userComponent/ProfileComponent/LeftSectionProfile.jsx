@@ -92,7 +92,7 @@ const LeftSectionProfile = ({ activeMenu, setactiveMenu, userData, loading }) =>
             <button
               key={item.id}
               onClick={() => handleMenuClick(item.id)}
-              className={`group flex items-center gap-3.5 px-3.5 py-3 rounded-2xl w-full text-left transition-all duration-200
+              className={`btn-press group flex items-center gap-3.5 px-3.5 py-3 rounded-2xl w-full text-left transition-all duration-200
                 ${active ? "bg-white shadow-xl shadow-black/20" : "hover:bg-white/8"}`}
             >
               {/* Icon box */}
@@ -128,7 +128,7 @@ const LeftSectionProfile = ({ activeMenu, setactiveMenu, userData, loading }) =>
       <div className="px-4 pb-6 pt-3 border-t border-white/10">
         <button
           onClick={handleLogout}
-          className="group flex items-center gap-3.5 px-3.5 py-3 rounded-2xl w-full text-left transition-all duration-200 hover:bg-red-500/15"
+          className="btn-press group flex items-center gap-3.5 px-3.5 py-3 rounded-2xl w-full text-left transition-all duration-200 hover:bg-red-500/15"
         >
           <div className="w-9 h-9 rounded-xl bg-red-500/12 flex items-center justify-center shrink-0 group-hover:bg-red-500/25 transition-colors duration-200">
             <FontAwesomeIcon icon={faRightFromBracket} className="text-sm text-red-400/80 group-hover:text-red-300" />
